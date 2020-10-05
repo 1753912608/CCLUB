@@ -27,7 +27,7 @@
                 </el-input>
                 <el-input type="text" v-model="form.code" style="width:220px;margin-top:20px;" placeholder="验证码" >
                 </el-input>
-                <el-button type="primary" plain style="margin-left:15px;" @click="sendPhoneCode">发送验证码</el-button>
+                <el-button type="primary" plain style="margin-left:15px;" @click="sendPhoneCode" size="medium">{{code_state}}</el-button>
                 <el-button type="primary" class="login" style="margin-left:-1px;" @click="check">登录</el-button>
             </el-form>
         </div>
@@ -42,7 +42,8 @@
                 phone: '',
                 code: ''
             },
-            uuid: ''
+            uuid: '',
+            code_state: '发送验证码'
         },
         created(){
 
@@ -63,12 +64,30 @@
                      });
                  }
                  else{
-                     let result=await axios.get('/sendPhoneCode?phone='+this.form.phone+'&rand_uuid='+this.uuid);
-                     console.log(result);
-                     if(result.data===1){
-                         alert("请求成功")
-                     }else{
-                         alert("请求服务器失败");
+                     if(this.code_state==='发送验证码'){
+                         let lastTime = 59;
+                         let timer = setInterval(() => {
+                             if(lastTime>0){
+                                 this.code_state = lastTime + 's';
+                                 lastTime--;
+                             } else {
+                                 window.clearInterval(timer);
+                                 this.code_state = '发送验证码'
+                             }
+                         }, 1000);
+                         let result=await axios.get('/sendPhoneCode?phone='+this.form.phone+'&rand_uuid='+this.uuid);
+                         console.log(result);
+                         if(result.data===1){
+                             alert("请求成功")
+                         }else{
+                             alert("请求服务器失败");
+                         }
+                     }
+                     else{
+                         this.$message({
+                             message: '请不要频繁点击哦',
+                             type: 'warning'
+                         });
                      }
                  }
             },
