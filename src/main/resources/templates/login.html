@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CCLUB登录</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+    <link rel="stylesheet" href="css/login.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <div style="font-weight: 600;font-size:24px;">{{name}}</div>
+    <el-divider></el-divider>
+    <div class="box">
+        <div class="top">欢迎使用</div>
+        <el-divider></el-divider>
+        <div class="center">
+            输入手机号，开始创建视频会议
+        </div>
+        <div>
+            <el-form :model="form" class="form">
+                <el-input type="text" v-model="form.phone" style="width:350px;" placeholder="手机号">
+                </el-input>
+                <el-input type="text" v-model="form.code" style="width:220px;margin-top:20px;" placeholder="验证码" >
+                </el-input>
+                <el-button type="primary" plain style="margin-left:15px;" @click="sendPhoneCode">发送验证码</el-button>
+                <el-button type="primary" class="login" style="margin-left:-1px;" @click="check">登录</el-button>
+            </el-form>
+        </div>
+    </div>
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            name: 'CCLUB 云视频会议',
+            form:{
+                phone: '',
+                code: ''
+            },
+            uuid: ''
+        },
+        created(){
+
+        },
+        methods:{
+            async getUUid(){
+                 let rand='';
+                 for(let i=0;i<10;i++)rand+=Math.floor(Math.random()*10);
+                 this.uuid=rand;
+            },
+            async sendPhoneCode(){
+                 this.getUUid();
+                 if(this.form.phone.length===0){
+                     this.$message({
+                         showClose: true,
+                         message: '手机号码不能为空',
+                         type: 'error'
+                     });
+                 }
+                 else{
+                     let result=await axios.get('/sendPhoneCode?phone='+this.form.phone+'&rand_uuid='+this.uuid);
+                     console.log(result);
+                     if(result.data===1){
+                         alert("请求成功")
+                     }else{
+                         alert("请求服务器失败");
+                     }
+                 }
+            },
+            async check(){
+                if(this.form.phone.length===0){
+                    this.$message({
+                        showClose: true,
+                        message: '手机号码不能为空',
+                        type: 'error'
+                    });
+                }else if(this.form.code.length===0){
+                    this.$message({
+                        showClose: true,
+                        message: '验证码不能为空',
+                        type: 'error'
+                    });
+                }else{
+                    let result= await axios.get('/check?rand_uuid='+this.uuid+'&code='+this.form.code+'&phone='+this.form.phone);
+                    if(result.data===1){
+                        this.login();
+                    }else if(result.data===2){
+                        this.goto_Index();
+                    }
+                    else{
+                        this.$message({
+                            showClose: true,
+                            message: '验证码输入错误',
+                            type: 'error'
+                        });
+                    }
+                }
+            },
+            login(){
+                window.location.href="/test_login_init";
+            },
+            goto_Index(){
+                window.location.href="/ming"
+            }
+        }
+    })
+</script>
+</body>
+</html>

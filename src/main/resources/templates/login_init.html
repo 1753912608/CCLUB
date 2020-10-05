@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CCLUB创建公司</title>
+    <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="css/login.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <div style="font-weight: 600;font-size:24px;">{{name}}</div>
+    <el-divider></el-divider>
+    <div class="box">
+        <div class="top">创建公司</div>
+        <el-divider></el-divider>
+        <div class="center_login_init">
+            可以邀请其他成员加入公司，共同创建面试
+        </div>
+        <div>
+            <el-form :model="form" class="form">
+                <el-input type="text" v-model="form.company" style="width:350px;" placeholder="团队名称">
+                </el-input>
+                <el-button type="primary" class="login" style="margin-left:-1px;" @click="init_company">创建</el-button>
+            </el-form>
+        </div>
+    </div>
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            name: 'CCLUB 云视频会议',
+            form:{
+                company: ''
+            }
+        },
+        created(){
+
+        },
+        methods:{
+            async init_company(){
+                let result=await axios.get('/init_company?user_company='+this.form.company);
+                if(result.data===1){
+                    this.goto_Index();
+                }else{
+                    this.$message({
+                        showClose: true,
+                        message: '服务器繁忙,请稍候',
+                        type: 'error'
+                    });
+                }
+            },
+            goto_Index(){
+                window.location.href="/ming"
+            }
+        }
+    })
+</script>
+</body>
+</html>
