@@ -3,6 +3,7 @@ package cclub.demo.controller;
 import cclub.demo.dao.SessionInfo;
 import cclub.demo.service.RedisServiceImpl;
 import cclub.demo.service.UserServiceImpl;
+import cclub.demo.service.aliyunUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ public class UserController {
 
     @Autowired
     private RedisServiceImpl redisService;
+
 
 
 //    /**
@@ -57,8 +59,8 @@ public class UserController {
         String code=userService.sendPhoneCode();
         int result=1;
         try{
+            aliyunUtils.sendCode(phone,code);
             redisService.savePhoneCode(rand_uuid,code);
-            System.out.println(phone+"的验证码为:"+code);
         }catch (Exception e){
             result=0;
             System.out.println("服务器请求错误");
