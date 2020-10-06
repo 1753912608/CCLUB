@@ -12,8 +12,13 @@ public class Interview {
     private String interview_judge_mail;
     private int interview_recording;
     private int interview_candidate_resume;
+    private int interview_time_length;
 
-    public Interview(String interview_id, String interview_create_user_id, String interview_begin_time, String interview_company_name, String interview_candidate_position, String interview_candidate_name, String interview_candidate_mail, String interview_judge_name, String interview_judge_mail, int interview_recording, int interview_candidate_resume) {
+    public Interview(String interview_id, String interview_create_user_id, String interview_begin_time,
+                     String interview_company_name, String interview_candidate_position,
+                     String interview_candidate_name, String interview_candidate_mail,
+                     String interview_judge_name, String interview_judge_mail,
+                     int interview_recording, int interview_candidate_resume, int interview_time_length) {
         this.interview_id = interview_id;
         this.interview_create_user_id = interview_create_user_id;
         this.interview_begin_time = interview_begin_time;
@@ -25,6 +30,7 @@ public class Interview {
         this.interview_judge_mail = interview_judge_mail;
         this.interview_recording = interview_recording;
         this.interview_candidate_resume = interview_candidate_resume;
+        this.interview_time_length = interview_time_length;
     }
 
     public void setInterview_id(String interview_id) {
@@ -113,5 +119,13 @@ public class Interview {
 
     public int getInterview_candidate_resume() {
         return interview_candidate_resume;
+    }
+
+    public int getInterview_time_length() {
+        return interview_time_length;
+    }
+
+    public void setInterview_time_length(int interview_time_length) {
+        this.interview_time_length = interview_time_length;
     }
 }

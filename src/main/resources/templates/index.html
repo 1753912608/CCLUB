@@ -17,6 +17,20 @@
         .el-icon-arrow-down {
             font-size: 12px;
         }
+        .el-font-color{
+            text-decoration:none;
+            color:rgb(39, 186, 156);
+            size:13px;
+        }
+        .el-font-color_link{
+            text-decoration:none;
+            color:#5272ff;
+            size:13px;
+        }
+        .el-font-color-no{
+            color:#ff7062;
+            size:13px;
+        }
     </style>
 </head>
 <body>
@@ -45,36 +59,173 @@
                     <el-tab-pane label="我创建的面试" name="first">
                         <div>
                             <span style="float:left;">我创建的面试({{number}})</span>
-                            <el-button type="primary" style="float:left;margin-left:1230px;" size="small">新建视频面试</el-button>
+                            <el-button type="primary" style="float:left;margin-left:1230px;" size="small" @click="dialogVisible_my_create=true">新建视频面试</el-button>
                         </div>
                         <div style="padding-top:40px;">
                             <template>
                                 <el-table :data="tableData" stripe style="width: 100%">
                                     <el-table-column prop="info" label="基本信息" width="220">
                                         <template slot-scope="scope">
-                                            <p>公司:{{scope.row.info.company}}</p>
-                                            <p>职位:{{scope.row.info.position}}</p>
-                                            <p>候选人:{{scope.row.info.candidate}}</p>
+                                            <p>
+                                                <span style="float:left;">公司:</span>
+                                                <span style="float:left;margin-left:5px;">{{scope.row.info.company}}</span>
+                                            </p>
+                                            <p style="padding-top:25px;">
+                                                <span style="float:left;">职位:</span>
+                                                <span style="float:left;margin-left:5px;">{{scope.row.info.position}}</span>
+                                            </p>
+                                            <p style="padding-top:10px;">
+                                                <span style="float:left;">候选人:</span>
+                                                <span style="float:left;margin-left:5px;">{{scope.row.info.candidate}}</span>
+                                            </p>
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="date" label="视频面试开始时间" width="180" sortable>
                                     </el-table-column>
                                     <el-table-column prop="" label="面试官接入" width="220">
+                                        <template slot-scope="scope">
+                                            <p><a href="javascript:void(0);" class="el-font-color">进入面试</a></p>
+                                            <p>
+                                                <span style="float:left;">
+                                                    <a href="javascript:void(0);" class="el-font-color_link">复制链接</a>
+                                                </span>
+                                                <span style="float:left;margin-left:10px;">
+                                                    <a href="javascript:void(0);" class="el-font-color_link">复制通知</a>
+                                                </span>
+                                            </p>
+                                        </template>
                                     </el-table-column>
                                     <el-table-column prop="" label="候选人接入" width="220">
+                                        <template slot-scope="scope">
+                                            <p><a href="javascript:void(0);" class="el-font-color">进入面试</a></p>
+                                            <p>
+                                                <span style="float:left;">
+                                                    <a href="javascript:void(0);" class="el-font-color_link">复制链接</a>
+                                                </span>
+                                                <span style="float:left;margin-left:10px;">
+                                                    <a href="javascript:void(0);" class="el-font-color_link">复制通知</a>
+                                                </span>
+                                            </p>
+                                        </template>
                                     </el-table-column>
                                     <el-table-column prop="" label="回放" width="160">
+                                        <template slot-scope="scope">
+                                            <p><a href="javascript:void(0);" class="el-font-color_link">查看回放</a></p>
+                                            <p style="font-size:13px;color:rgb(139, 143, 148);">时长:1分28秒</p>
+                                        </template>
                                     </el-table-column>
-                                    <el-table-column prop="" label="状态" width="180">
+                                    <el-table-column prop="" label="状态" width="140">
+                                        <p class="el-font-color-no">面试官未进入</p>
+                                        <p class="el-font-color-no">候选人未进入</p>
                                     </el-table-column>
-                                    <el-table-column prop="" label="操作" width="140">
+                                    <el-table-column prop="" label="操作" width="180">
+                                        <p>
+                                            <span style="float:left;">
+                                                <a href="javascript:void(0);" class="el-font-color_link" @click="dialogVisible_cancel_interview=true;">取消</a>
+                                            </span>
+                                            <span style="float:left;margin-left:15px;">
+                                                <a href="javascript:void(0);" class="el-font-color_link">编辑面试</a>
+                                            </span>
+                                            <span style="float:left;margin-left:15px;">
+                                                <a href="javascript:void(0);" class="el-font-color_link" @click="delete_interview">删除</a>
+                                            </span>
+                                        </p>
+                                        <p style="padding-top:30px;">
+                                            <a href="javascript:void(0);" class="el-font-color_link" @click="end_interview">结束面试</a>
+                                        </p>
                                     </el-table-column>
                                     <el-table-column prop="" label="备注" width="180">
+                                        <p>
+                                            <a href="javascript:void(0);" @click="dialogVisible_remarks_interview=true;">
+                                                <i class="el-icon-edit-outline" style="font-size:20px;color:#5272ff;"></i>
+                                            </a>
+                                        </p>
                                     </el-table-column>
                                 </el-table>
                             </template>
                         </div>
                     </el-tab-pane>
+                    <!--创建/编辑视频面试-->
+                    <el-dialog title="创建/编辑视频面试" :visible.sync="dialogVisible_my_create" width="40%" before-close="handleClose" >
+                        <el-form ref="form" :model="form"  label-width="100px">
+                            <el-form-item label="面试时间">
+                                <el-col :span="11">
+                                    <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+                                </el-col>
+                                <el-col class="line" :span="2">-</el-col>
+                                <el-col :span="11">
+                                    <el-time-picker placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
+                                </el-col>
+                            </el-form-item>
+                            <el-form-item label="公司名称">
+                                <el-input v-model="form.name" placeholder="公司/团队名称"></el-input>
+                            </el-form-item>
+                            <el-form-item label="应聘职位名称">
+                                <el-input v-model="form.name" placeholder="职位名称，如开发工程师"></el-input>
+                            </el-form-item>
+                            <el-form-item label="通知候选人">
+                                <el-input v-model="form.name" placeholder="姓名" style="width:150px;" size="small"></el-input>
+                                <el-input v-model="form.name" placeholder="手机号" style="width:150px;" size="small"></el-input>
+                                <el-input v-model="form.name" placeholder="邮箱" style="width:150px;" size="small"></el-input>
+                            </el-form-item>
+                            <el-form-item label="通知面试官">
+                                <el-input v-model="form.name" placeholder="姓名" style="width:150px;" size="small"></el-input>
+                                <el-input v-model="form.name" placeholder="手机号" style="width:150px;" size="small"></el-input>
+                                <el-input v-model="form.name" placeholder="邮箱" style="width:150px;" size="small"></el-input>
+                            </el-form-item>
+                            <el-form-item label="面试过程录制">
+                                <el-switch v-model="form.recording"></el-switch>
+                            </el-form-item>
+                            <el-form-item label="候选人简历">
+                                <el-checkbox v-model="form.checked" @change="change">上传候选人简历</el-checkbox>
+                                <p><el-button type="primary" size="mini" :style="{display:form.resume}">点击上传</el-button></p>
+                            </el-form-item>
+                        </el-form>
+                        <span slot="footer" class="dialog-footer">
+                            <el-button @click="dialogVisible_my_create = false">取 消</el-button>
+                            <el-button type="primary" @click="dialogVisible_my_create = false">确 定</el-button>
+                        </span>
+                    </el-dialog>
+                    <!--取消该面试-->
+                    <el-dialog title="是否取消面试" :visible.sync="dialogVisible_cancel_interview" width="30%" before-close="handleClose" >
+                        <el-form ref="form" :model="form"  label-width="100px">
+                            <el-form-item label="通知候选人">
+                                <el-checkbox v-model="form.checked" @change="change">发送短信和邮件通知</el-checkbox>
+                            </el-form-item>
+                        </el-form>
+                        <span slot="footer" class="dialog-footer">
+                            <el-button @click="dialogVisible_cancel_interview = false">取 消</el-button>
+                            <el-button type="primary" @click="dialogVisible_cancel_interview = false">确 定</el-button>
+                        </span>
+                    </el-dialog>
+                    <!--备注面试-->
+                    <el-dialog title="面试反馈" :visible.sync="dialogVisible_remarks_interview" width="30%" before-close="handleClose">
+                        <el-form ref="form" :model="form"  label-width="0px">
+                            <el-form-item style="margin-top:-20px;">
+                                <p>结果</p>
+                                <p style="font-size:13px;color:#8b8f94;margin-top:-30px;">请给出候选人的面试结果</p>
+                            </el-form-item>
+                            <el-form-item style="margin-top:-45px;">
+                                <template>
+                                    <el-radio v-model="radio" label="1">通过</el-radio>
+                                    <el-radio v-model="radio" label="2">拒绝</el-radio>
+                                    <el-radio v-model="radio" label="3">待定</el-radio>
+                                </template>
+                            </el-form-item>
+                            <el-form-item style="margin-top:-25px;">
+                                <p>综合评价</p>
+                                <p style="font-size:13px;color:#8b8f94;margin-top:-30px;">请详细说明候选人的优势、不足及任何值得注意的方面</p>
+                            </el-form-item>
+                            <el-form-item style="margin-top:-30px;">
+                                <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="textarea">
+                                </el-input>
+                            </el-form-item>
+                        </el-form>
+                        <span slot="footer" class="dialog-footer">
+                            <el-button @click="dialogVisible_remarks_interview = false">取 消</el-button>
+                            <el-button type="primary" @click="dialogVisible_remarks_interview = false">确 定</el-button>
+                        </span>
+                    </el-dialog>
                     <el-tab-pane label="我参与的面试" name="second">我参与的面试</el-tab-pane>
                     <el-tab-pane label="公司全部面试" name="third">公司全部面试</el-tab-pane>
                     <el-tab-pane label="空中宣讲" name="fourth">空中宣讲</el-tab-pane>
@@ -96,46 +247,34 @@
                 user_phone: '18229583486',
                 user_company: '茗少集团'
             },
+            form:{
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: '',
+                recording:false,
+                checked: false,
+                resume: 'none'
+            },
             activeName: 'first',
             number: '1',
             tableData: [{
                 info:{
-                   company: 'dsadsadddsa',
-                   position: 'dasdasddsa',
-                   candidate: 'dsadsadsda'
+                   company: '茗少集团',
+                   position: 'java后端开发工程师',
+                   candidate: 'test'
                 },
-                date: '2016-05-02 10:10',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄',
-
-            }, {
-                info:{
-                    company: 'dsadsadddsa',
-                    position: 'dasdasddsa',
-                    candidate: 'dsadsadsda'
-                },
-                date: '2016-05-04 10:20',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1517 弄'
-            }, {
-                info:{
-                    company: 'dsadsadddsa',
-                    position: 'dasdasddsa',
-                    candidate: 'dsadsadsda'
-                },
-                date: '2016-05-01 10:30',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1519 弄'
-            }, {
-                info:{
-                    company: 'dsadsadddsa',
-                    position: 'dasdasddsa',
-                    candidate: 'dsadsadsda'
-                },
-                date: '2016-05-03 10:40',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1516 弄'
-            }]
+                date: '2016-05-02 10:10'
+            }],
+            dialogVisible_my_create:false,
+            dialogVisible_cancel_interview:false,
+            dialogVisible_remarks_interview:false,
+            radio: '1',
+            textarea: ''
         },
         created(){
 
@@ -143,6 +282,49 @@
         methods:{
             handleClick(tab, event) {
                 console.log(tab, event);
+            },
+            change(){
+                this.form.resume=this.form.checked===true?'block':'none';
+            },
+            cancel_interview(){
+
+            },
+            modify_interview(){
+
+            },
+            delete_interview(){
+                this.$confirm('此操作将永久删除该面试记录, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            end_interview(){
+                this.$confirm('结束面试后无法继续进行面试，是否确定结束面试?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '结束面试成功!'
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消结束面试'
+                    });
+                });
             }
         }
     })

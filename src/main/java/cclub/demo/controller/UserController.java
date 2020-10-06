@@ -59,7 +59,8 @@ public class UserController {
         String code=userService.sendPhoneCode();
         int result=1;
         try{
-            aliyunUtils.sendCode(phone,code);
+            System.out.println(phone+"的验证码为:"+code);
+            //aliyunUtils.sendCode(phone,code);
             redisService.savePhoneCode(rand_uuid,code);
         }catch (Exception e){
             result=0;
