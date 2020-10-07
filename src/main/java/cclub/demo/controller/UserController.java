@@ -1,6 +1,7 @@
 package cclub.demo.controller;
 
 import cclub.demo.dao.SessionInfo;
+import cclub.demo.dao.User;
 import cclub.demo.service.RedisServiceImpl;
 import cclub.demo.service.UserServiceImpl;
 import cclub.demo.service.aliyunUtils;
@@ -110,7 +111,7 @@ public class UserController {
      * @param request
      * @param user_company
      * @return
-     *
+     *初始化用户所在公司
      */
     @ResponseBody
     @RequestMapping("/init_company")
@@ -119,5 +120,34 @@ public class UserController {
         HttpSession session=request.getSession();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
         return userService.init_company(user_id,user_company);
+    }
+
+
+    /**
+     *
+     * @param request
+     * @return
+     * 根获取用户信息
+     */
+    @ResponseBody
+    @RequestMapping("/getUserInfo")
+    public User getUserInfo(HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        return userService.getUserInfo(user_id);
+    }
+
+
+    /**
+     *
+     * @param request
+     * @return
+     * 退出登录
+     */
+    @ResponseBody
+    @RequestMapping("/signOut")
+    public void signOut(HttpServletRequest request){
+        HttpSession session=request.getSession();
+        session.removeAttribute(SessionInfo.Session_phone);
     }
 }

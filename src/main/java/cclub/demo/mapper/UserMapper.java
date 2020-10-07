@@ -1,6 +1,7 @@
 package cclub.demo.mapper;
 
 
+import cclub.demo.dao.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -37,4 +38,13 @@ public interface UserMapper {
      */
     @Update("update user set user_company=#{user_company} where user_id=#{user_id}")
     void init_company(String user_id,String user_company);
+
+    /**
+     *
+     * @param user_id
+     * @return
+     * 根据用户id查询用户信息
+     */
+    @Select("select * from user where user_id=#{user_id}")
+    User getUserInfo(String user_id);
 }

@@ -1,11 +1,10 @@
 package cclub.demo.dao;
 
-import java.util.Date;
 
 public class Interview {
     private String interview_id;
     private String interview_create_user_id;
-    private Date interview_begin_time;
+    private String interview_begin_time;
     private String interview_company_name;
     private String interview_candidate_position;
     private String interview_candidate_phone;
@@ -20,10 +19,11 @@ public class Interview {
     private String interview_invitation_judge_notice;
     private String interview_invitation_candidate_url;
     private String interview_invitation_candidate_notice;
+    //00代表双方未进入面试,01代表面试官未进入面试,10代表候选人未进入面试,11代表双方都已经进入面试,22代表面试结束
     private String interview_room_state;
 
     public Interview(String interview_id, String interview_create_user_id,
-                     Date interview_begin_time, String interview_company_name,
+                     String interview_begin_time, String interview_company_name,
                      String interview_candidate_position, String interview_candidate_phone,
                      String interview_candidate_name, String interview_candidate_mail,
                      String interview_judge_phone, String interview_judge_name,
@@ -59,7 +59,7 @@ public class Interview {
         this.interview_create_user_id = interview_create_user_id;
     }
 
-    public void setInterview_begin_time(Date interview_begin_time) {
+    public void setInterview_begin_time(String interview_begin_time) {
         this.interview_begin_time = interview_begin_time;
     }
 
@@ -131,7 +131,7 @@ public class Interview {
         return interview_create_user_id;
     }
 
-    public Date getInterview_begin_time() {
+    public String getInterview_begin_time() {
         return interview_begin_time;
     }
 

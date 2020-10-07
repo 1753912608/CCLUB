@@ -46,7 +46,11 @@
                     <el-dropdown-item disabled style="font-size:12px;">当前公司:</el-dropdown-item>
                     <el-dropdown-item style="font-size:12px;">&nbsp;&nbsp;&nbsp;{{userInfo.user_company}}</el-dropdown-item>
                     <el-dropdown-item >个人中心</el-dropdown-item>
-                    <el-dropdown-item divided>退出登录</el-dropdown-item>
+                    <el-dropdown-item divided>
+                        <a href="javascript:void(0);" @click="signOut" style="text-decoration:none;color:rgb(30,30,30);">
+                            退出登录
+                        </a>
+                    </el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
@@ -57,7 +61,7 @@
                 <el-tabs v-model="activeName" @tab-click="handleClick">
                     <el-tab-pane label="我创建的面试" name="first">
                         <div>
-                            <span style="float:left;">我创建的面试({{number}})</span>
+                            <span style="float:left;">我创建的面试({{tableData.length}})</span>
                             <el-button type="primary" style="float:left;margin-left:1230px;" size="small" @click="dialogVisible_my_create=true">新建视频面试</el-button>
                         </div>
                         <div style="padding-top:40px;">
@@ -149,28 +153,28 @@
                         <el-form ref="form" :model="form"  label-width="100px">
                             <el-form-item label="面试时间">
                                 <el-col :span="11">
-                                    <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+                                    <el-date-picker type="date" placeholder="选择日期" v-model="form.date.date1" style="width: 100%;"></el-date-picker>
                                 </el-col>
                                 <el-col class="line" :span="2">-</el-col>
                                 <el-col :span="11">
-                                    <el-time-picker placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
+                                    <el-time-picker placeholder="选择时间" v-model="form.date.date2" style="width: 100%;"></el-time-picker>
                                 </el-col>
                             </el-form-item>
                             <el-form-item label="公司名称">
-                                <el-input v-model="form.name" placeholder="公司/团队名称"></el-input>
+                                <el-input v-model="form.company" placeholder="公司/团队名称"></el-input>
                             </el-form-item>
                             <el-form-item label="应聘职位名称">
-                                <el-input v-model="form.name" placeholder="职位名称，如开发工程师"></el-input>
+                                <el-input v-model="form.position" placeholder="职位名称，如开发工程师"></el-input>
                             </el-form-item>
                             <el-form-item label="通知候选人">
-                                <el-input v-model="form.name" placeholder="姓名" style="width:150px;" size="small"></el-input>
-                                <el-input v-model="form.name" placeholder="手机号" style="width:150px;" size="small"></el-input>
-                                <el-input v-model="form.name" placeholder="邮箱" style="width:150px;" size="small"></el-input>
+                                <el-input v-model="form.candidate.name" placeholder="姓名" style="width:150px;" size="small"></el-input>
+                                <el-input v-model="form.candidate.phone" placeholder="手机号" style="width:150px;" size="small"></el-input>
+                                <el-input v-model="form.candidate.mail" placeholder="邮箱" style="width:150px;" size="small"></el-input>
                             </el-form-item>
                             <el-form-item label="通知面试官">
-                                <el-input v-model="form.name" placeholder="姓名" style="width:150px;" size="small"></el-input>
-                                <el-input v-model="form.name" placeholder="手机号" style="width:150px;" size="small"></el-input>
-                                <el-input v-model="form.name" placeholder="邮箱" style="width:150px;" size="small"></el-input>
+                                <el-input v-model="form.judge.name" placeholder="姓名" style="width:150px;" size="small"></el-input>
+                                <el-input v-model="form.judge.phone" placeholder="手机号" style="width:150px;" size="small"></el-input>
+                                <el-input v-model="form.judge.mail" placeholder="邮箱" style="width:150px;" size="small"></el-input>
                             </el-form-item>
                             <el-form-item label="面试过程录制">
                                 <el-switch v-model="form.recording"></el-switch>
@@ -243,24 +247,34 @@
         data: {
             name: 'CCLUB 视频面试',
             userInfo:{
-                user_phone: '18229583486',
-                user_company: '茗少集团'
+                user_phone: '',
+                user_company: ''
             },
             form:{
-                name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: false,
-                type: [],
-                resource: '',
-                desc: '',
+                date:{
+                    date1: '',
+                    date2: ''
+                },
+                company: '',
+                position: '',
+                candidate:{
+                   name: '',
+                   phone: '',
+                   mail: ''
+                },
+                judge:{
+                    name: '',
+                    phone: '',
+                    mail: ''
+                },
                 recording:false,
                 checked: false,
                 resume: 'none'
             },
+            remarks:{
+
+            },
             activeName: 'first',
-            number: '1',
             tableData: [{
                 info:{
                    company: '茗少集团',
@@ -276,7 +290,7 @@
             textarea: ''
         },
         created(){
-
+            this.getUserInfo();
         },
         methods:{
             handleClick(tab, event) {
@@ -324,6 +338,19 @@
                         message: '已取消结束面试'
                     });
                 });
+            },
+            async create_Interview(){
+                let result=await axios.get('')
+            },
+            async getUserInfo(){
+                let result= await axios.get('/getUserInfo');
+                this.userInfo.user_phone=result.data.user_id;
+                console.log(result.data.user_company);
+                this.userInfo.user_company=result.data.user_company;
+            },
+            async signOut(){
+                await axios.get('/signOut');
+                window.location.href="/test_login";
             }
         }
     })

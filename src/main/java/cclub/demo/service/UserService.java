@@ -1,5 +1,8 @@
 package cclub.demo.service;
 
+
+import cclub.demo.dao.User;
+
 public interface UserService {
 
     /**
@@ -26,4 +29,13 @@ public interface UserService {
      * 根据新注册的用户初始化对应的团队
      */
     int init_company(String user_id,String user_company);
+
+
+    /**
+     *
+     * @param user_id
+     * @return
+     * 根据用户id获取用户信息
+     */
+    User getUserInfo(String user_id);
 }

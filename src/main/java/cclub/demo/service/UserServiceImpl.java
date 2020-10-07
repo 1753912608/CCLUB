@@ -1,7 +1,9 @@
 package cclub.demo.service;
 
 
+import cclub.demo.dao.Interview;
 import cclub.demo.dao.Rand;
+import cclub.demo.dao.User;
 import cclub.demo.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,5 +37,10 @@ public class UserServiceImpl implements UserService{
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    public User getUserInfo(String user_id) {
+        return userMapper.getUserInfo(user_id);
     }
 }
