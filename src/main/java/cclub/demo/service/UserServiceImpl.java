@@ -1,7 +1,6 @@
 package cclub.demo.service;
 
 
-import cclub.demo.dao.Interview;
 import cclub.demo.dao.Rand;
 import cclub.demo.dao.User;
 import cclub.demo.mapper.UserMapper;

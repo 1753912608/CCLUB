@@ -30,8 +30,15 @@ public class PageController {
         return "login";
     }
 
+
     @RequestMapping("/test_login_init")
     public String test_login_init(){
         return "login_init";
+    }
+
+
+    @RequestMapping("/test_interview")
+    public String test_interview(String code){
+        return "interview";
     }
 }

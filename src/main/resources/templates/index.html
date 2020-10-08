@@ -186,7 +186,7 @@
                         </el-form>
                         <span slot="footer" class="dialog-footer">
                             <el-button @click="dialogVisible_my_create = false">取 消</el-button>
-                            <el-button type="primary" @click="dialogVisible_my_create = false">确 定</el-button>
+                            <el-button type="primary" @click="create_Interview">确 定</el-button>
                         </span>
                     </el-dialog>
                     <!--取消该面试-->
@@ -340,7 +340,33 @@
                 });
             },
             async create_Interview(){
-                let result=await axios.get('')
+                this.dialogVisible_my_create=false;
+                let params=new URLSearchParams();
+                let that=this.form.date.date2;
+                let date=that.getFullYear()+"-"+(parseInt(that.getMonth())+1)+"-"+that.getDate()+" "+that.getHours()+":"+that.getMinutes()
+                params.append("interview_begin_time",date);
+                params.append("interview_company_name",this.form.company);
+                params.append("interview_candidate_position",this.form.position);
+                params.append("interview_candidate_phone",this.form.candidate.phone);
+                params.append("interview_candidate_name",this.form.candidate.name);
+                params.append("interview_candidate_mail",this.form.candidate.mail);
+                params.append("interview_judge_phone",this.form.judge.phone);
+                params.append("interview_judge_name",this.form.judge.name);
+                params.append("interview_judge_mail",this.form.judge.mail);
+                params.append("interview_recording",this.form.recording);
+                params.append("interview_candidate_resume",this.form.checked);
+                let result= await axios.post("/createInterview",params);
+                if(result.data===1){
+                    this.$message({
+                        type: 'success',
+                        message: '创建视频面试成功!'
+                    });
+                }else {
+                    this.$message({
+                        type: 'info',
+                        message: '创建视频面试失败'
+                    });
+                }
             },
             async getUserInfo(){
                 let result= await axios.get('/getUserInfo');

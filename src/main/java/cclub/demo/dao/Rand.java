@@ -31,4 +31,19 @@ public class Rand {
         }
         return buffer.toString();
     }
+
+
+    /**
+     *
+     * @return
+     * 生成面试房间的链接
+     */
+    public static String getInterviewCode(){
+        StringBuffer buffer=new StringBuffer("");
+        Random rand=new Random();
+        for(int i=0;i<10;i++){
+            buffer.append(rand.nextInt(10));
+        }
+        return buffer.toString();
+    }
 }
