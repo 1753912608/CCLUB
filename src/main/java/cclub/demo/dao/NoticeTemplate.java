@@ -1,12 +1,9 @@
 package cclub.demo.dao;
 
 
-import org.springframework.beans.factory.annotation.Value;
-
 public class NoticeTemplate {
 
-    @Value("${com.cclub_url}")
-    private static String cclub_url;
+    private static String cclub_url="127.0.0.1:8080";
 
 
     public static String candidateNotice(String company,String position,String begin_time,String code,String user_id){

@@ -5,32 +5,9 @@
     <title>CClub视频面试</title>
     <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="css/index.css">
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <style>
-        .el-dropdown-link {
-            cursor: pointer;
-            font-size:16px;
-            color:rgb(30,30,30);
-        }
-        .el-icon-arrow-down {
-            font-size: 12px;
-        }
-        .el-font-color{
-            text-decoration:none;
-            color:rgb(39, 186, 156);
-            size:13px;
-        }
-        .el-font-color_link{
-            text-decoration:none;
-            color:#5272ff;
-            size:13px;
-        }
-        .el-font-color-no{
-            color:#ff7062;
-            size:13px;
-        }
-    </style>
 </head>
 <body>
 <div id="app">
@@ -71,43 +48,53 @@
                                         <template slot-scope="scope">
                                             <p>
                                                 <span style="float:left;">公司:</span>
-                                                <span style="float:left;margin-left:5px;">{{scope.row.info.company}}</span>
+                                                <span style="float:left;margin-left:5px;">{{scope.row.interview_company_name}}</span>
                                             </p>
                                             <p style="padding-top:25px;">
                                                 <span style="float:left;">职位:</span>
-                                                <span style="float:left;margin-left:5px;">{{scope.row.info.position}}</span>
+                                                <span style="float:left;margin-left:5px;">{{scope.row.interview_candidate_position}}</span>
                                             </p>
                                             <p style="padding-top:10px;">
                                                 <span style="float:left;">候选人:</span>
-                                                <span style="float:left;margin-left:5px;">{{scope.row.info.candidate}}</span>
+                                                <span style="float:left;margin-left:5px;">{{scope.row.interview_candidate_name}}</span>
                                             </p>
                                         </template>
                                     </el-table-column>
-                                    <el-table-column prop="date" label="视频面试开始时间" width="180" sortable>
+                                    <el-table-column prop="interview_begin_time" label="视频面试开始时间" width="180" sortable>
                                     </el-table-column>
                                     <el-table-column prop="" label="面试官接入" width="220">
                                         <template slot-scope="scope">
-                                            <p><a href="javascript:void(0);" class="el-font-color">进入面试</a></p>
-                                            <p>
+                                            <p>接入码:&nbsp;&nbsp;{{scope.row.interview_judge_code}}</p>
+                                            <p ><a href="javascript:void(0);" class="el-font-color">进入面试</a></p>
+                                            <p style="margin-top:-10px;">
                                                 <span style="float:left;">
                                                     <a href="javascript:void(0);" class="el-font-color_link">复制链接</a>
                                                 </span>
                                                 <span style="float:left;margin-left:10px;">
                                                     <a href="javascript:void(0);" class="el-font-color_link">复制通知</a>
                                                 </span>
+                                            </p>
+                                            <p style="margin-top:40px;">
+                                                <span style="float:left;">{{scope.row.interview_judge_name}}</span>
+                                                <span style="float:left;margin-left:10px;">{{scope.row.interview_judge_phone}}</span>
                                             </p>
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="" label="候选人接入" width="220">
                                         <template slot-scope="scope">
+                                            <p>接入码:&nbsp;&nbsp;{{scope.row.interview_candidate_code}}</p>
                                             <p><a href="javascript:void(0);" class="el-font-color">进入面试</a></p>
-                                            <p>
+                                            <p style="margin-top:-10px;">
                                                 <span style="float:left;">
                                                     <a href="javascript:void(0);" class="el-font-color_link">复制链接</a>
                                                 </span>
                                                 <span style="float:left;margin-left:10px;">
                                                     <a href="javascript:void(0);" class="el-font-color_link">复制通知</a>
                                                 </span>
+                                            </p>
+                                            <p style="margin-top:40px;">
+                                                <span style="float:left;">{{scope.row.interview_candidate_name}}</span>
+                                                <span style="float:left;margin-left:10px;">{{scope.row.interview_candidate_phone}}</span>
                                             </p>
                                         </template>
                                     </el-table-column>
@@ -118,24 +105,48 @@
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="" label="状态" width="140">
-                                        <p class="el-font-color-no">面试官未进入</p>
-                                        <p class="el-font-color-no">候选人未进入</p>
+                                        <template slot-scope="scope">
+                                            <div v-if="scope.row.interview_room_state==='01'">
+                                                <p class="el-font-color-no">面试官未进入</p>
+                                                <p>候选人已进入</p>
+                                            </div>
+                                            <div v-if="scope.row.interview_room_state==='00'">
+                                                <p class="el-font-color-no">面试官未进入</p>
+                                                <p class="el-font-color-no">候选未已进入</p>
+                                            </div>
+                                            <div v-if="scope.row.interview_room_state==='10'">
+                                                <p>面试官已进入</p>
+                                                <p class="el-font-color-no">候选未已进入</p>
+                                            </div>
+                                            <div v-if="scope.row.interview_room_state==='11'">
+                                                <p>面试官已进入</p>
+                                                <p>候选未已进入</p>
+                                            </div>
+                                            <div v-if="scope.row.interview_room_state==='22'">
+                                                <p>面试已取消</p>
+                                            </div>
+                                            <div v-if="scope.row.interview_room_state==='33'">
+                                                <p>面试已结束</p>
+                                            </div>
+                                        </template>
                                     </el-table-column>
                                     <el-table-column prop="" label="操作" width="180">
-                                        <p>
+                                        <template slot-scope="scope">
+                                            <p>
                                             <span style="float:left;">
                                                 <a href="javascript:void(0);" class="el-font-color_link" @click="dialogVisible_cancel_interview=true;">取消</a>
                                             </span>
-                                            <span style="float:left;margin-left:15px;">
+                                                <span style="float:left;margin-left:15px;">
                                                 <a href="javascript:void(0);" class="el-font-color_link">编辑面试</a>
                                             </span>
-                                            <span style="float:left;margin-left:15px;">
-                                                <a href="javascript:void(0);" class="el-font-color_link" @click="delete_interview">删除</a>
+                                                <span style="float:left;margin-left:15px;">
+                                                <a href="javascript:void(0);" class="el-font-color_link" @click="delete_interview_open(scope.row.interview_id)">删除</a>
                                             </span>
-                                        </p>
-                                        <p style="padding-top:30px;">
-                                            <a href="javascript:void(0);" class="el-font-color_link" @click="end_interview">结束面试</a>
-                                        </p>
+                                            </p>
+                                            <p style="padding-top:30px;">
+                                                <a href="javascript:void(0);" class="el-font-color_link" @click="end_interview_open(scope.row.interview_id)">结束面试</a>
+                                            </p>
+                                        </template>
                                     </el-table-column>
                                     <el-table-column prop="" label="备注" width="180">
                                         <p>
@@ -181,7 +192,10 @@
                             </el-form-item>
                             <el-form-item label="候选人简历">
                                 <el-checkbox v-model="form.checked" @change="change">上传候选人简历</el-checkbox>
-                                <p><el-button type="primary" size="mini" :style="{display:form.resume}">点击上传</el-button></p>
+                                <p :style="{display:form.resume}">
+                                    <input type="file" name="" id="file" value="点击上传" @change="uploadBefore">
+                                    <span style="font-size:12px;color:rgb(200,200,200);">支持扩展名: .pdf .docx</span>
+                                </p>
                             </el-form-item>
                         </el-form>
                         <span slot="footer" class="dialog-footer">
@@ -275,14 +289,7 @@
 
             },
             activeName: 'first',
-            tableData: [{
-                info:{
-                   company: '茗少集团',
-                   position: 'java后端开发工程师',
-                   candidate: 'test'
-                },
-                date: '2016-05-02 10:10'
-            }],
+            tableData: [],
             dialogVisible_my_create:false,
             dialogVisible_cancel_interview:false,
             dialogVisible_remarks_interview:false,
@@ -291,6 +298,7 @@
         },
         created(){
             this.getUserInfo();
+            this.getMyCreateInterviewList();
         },
         methods:{
             handleClick(tab, event) {
@@ -305,16 +313,13 @@
             modify_interview(){
 
             },
-            delete_interview(){
+            async delete_interview_open(interview_id){
                 this.$confirm('此操作将永久删除该面试记录, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!'
-                    });
+                    this.deleteInterview(interview_id);
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -322,26 +327,24 @@
                     });
                 });
             },
-            end_interview(){
+            end_interview_open(interview_id){
                 this.$confirm('结束面试后无法继续进行面试，是否确定结束面试?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$message({
-                        type: 'success',
-                        message: '结束面试成功!'
-                    });
+                    this.modifyInterviewState(interview_id,"33");
                 }).catch(() => {
                     this.$message({
                         type: 'info',
                         message: '已取消结束面试'
                     });
                 });
+                this.getMyCreateInterviewList();
             },
             async create_Interview(){
                 this.dialogVisible_my_create=false;
-                let params=new URLSearchParams();
+                let params=new FormData();
                 let that=this.form.date.date2;
                 let date=that.getFullYear()+"-"+(parseInt(that.getMonth())+1)+"-"+that.getDate()+" "+that.getHours()+":"+that.getMinutes()
                 params.append("interview_begin_time",date);
@@ -353,20 +356,29 @@
                 params.append("interview_judge_phone",this.form.judge.phone);
                 params.append("interview_judge_name",this.form.judge.name);
                 params.append("interview_judge_mail",this.form.judge.mail);
-                params.append("interview_recording",this.form.recording);
-                params.append("interview_candidate_resume",this.form.checked);
-                let result= await axios.post("/createInterview",params);
+                params.append("interview_recording",this.form.recording===true?1:0);
+                params.append("interview_candidate_resume",this.form.checked===true?1:0);
+                params.append("resume",document.getElementById("file").files[0]);
+                let result=await axios({
+                    method: 'post',
+                    url: '/createInterview',
+                    data: params,
+                    headers:{
+                        "Content-Type": "multipart/form-data"
+                    }
+                 });
                 if(result.data===1){
                     this.$message({
                         type: 'success',
                         message: '创建视频面试成功!'
                     });
-                }else {
+                }else{
                     this.$message({
                         type: 'info',
                         message: '创建视频面试失败'
                     });
                 }
+                this.getMyCreateInterviewList();
             },
             async getUserInfo(){
                 let result= await axios.get('/getUserInfo');
@@ -377,6 +389,58 @@
             async signOut(){
                 await axios.get('/signOut');
                 window.location.href="/test_login";
+            },
+            async getMyCreateInterviewList(){
+                let result=await axios.get('/getMyCreateInterviewList');
+                this.tableData=result.data;
+            },
+            uploadBefore(){
+                let file=document.getElementById("file").files[0];
+                let fileType=file.name.substring(file.name.lastIndexOf(".")+1,file.name.length);
+                if(fileType!='pdf'&&fileType!='docx'){
+                    this.$message({
+                        type: 'error',
+                        message: '请上传pdf,docx格式文件'
+                    });
+                    document.getElementById("file").value='';
+                }
+                else if(file.length>1024*1024*2){
+                    this.$message({
+                        type: 'error',
+                        message: '文件太大,请处理后提交，最大2MB'
+                    });
+                    document.getElementById("file").value='';
+                }
+            },
+            async deleteInterview(interview_id){
+                let result= await axios.get('/delete_interview?interview_id='+interview_id);
+                if(result.data===1){
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }else{
+                    this.$message({
+                        type: 'error',
+                        message: '删除失败'
+                    });
+                }
+                this.getMyCreateInterviewList();
+            },
+            async modifyInterviewState(interview_id,interview_state){
+                let result=await axios.get('/modify_Interview_State?interview_id='+interview_id+'&interview_state='+interview_state);
+                if(result.data===1){
+                    this.$message({
+                        type: 'success',
+                        message: '修改面试状态成功'
+                    });
+                }else{
+                    this.$message({
+                        type: 'error',
+                        message: '修改面试状态失败'
+                    });
+                }
+                this.getMyCreateInterviewList();
             }
         }
     })

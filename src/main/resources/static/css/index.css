@@ -1,0 +1,22 @@
+.el-dropdown-link {
+    cursor: pointer;
+    font-size:16px;
+    color:rgb(30,30,30);
+}
+.el-icon-arrow-down {
+    font-size: 12px;
+}
+.el-font-color{
+    text-decoration:none;
+    color:rgb(39, 186, 156);
+    size:13px;
+}
+.el-font-color_link{
+    text-decoration:none;
+    color:#5272ff;
+    size:13px;
+}
+.el-font-color-no{
+    color:#ff7062;
+    size:13px;
+}

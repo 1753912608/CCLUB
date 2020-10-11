@@ -75,4 +75,16 @@ public class aliyunUtils {
         System.out.println("RequestId=" + sendSms.getRequestId());
         System.out.println("BizId=" + sendSms.getBizId());
     }
+
+
+    /**
+     *
+     * @param phone
+     * @param interview_candidate_name
+     * @param interview_position
+     * 取消视频面试给候选人发送短信
+     */
+    public static void sendCancelInterview(String phone,String interview_candidate_name,String interview_position){
+
+    }
 }
