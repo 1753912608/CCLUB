@@ -2,6 +2,7 @@ package cclub.demo.mapper;
 
 
 import cclub.demo.dao.Interview;
+import cclub.demo.dao.remarks;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -70,5 +71,26 @@ public interface InterviewMapper {
      * 修改视频面试的状态
      */
     @Update("update interview set interview_room_state=#{newState}")
-    void modifyInterviewState(String interview_id,String newState);
+    void endInterviewState(String interview_id,String newState);
+
+
+
+    /**
+     *
+     * @param user_id
+     * @return
+     * 获取当前用户创建的所有视频面试对应的备注
+     */
+    @Select("select remarks.* from remarks,interview where remarks.remarks_interview_id=interview.interview_id and interview.interview_create_user_id=#{user_id}")
+    List<remarks>getMyCreateInterviewRemarksList(String user_id);
+
+
+
+    /**
+     *
+     * @param remarks
+     * 对指定的视频面试进行评论
+     */
+    @Insert("insert into remarks values(#{remarks_interview_id},#{remarks_state},#{remarks_content})")
+    void setInterviewRemarks(remarks remarks);
 }

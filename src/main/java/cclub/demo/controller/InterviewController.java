@@ -1,10 +1,8 @@
 package cclub.demo.controller;
 
-import cclub.demo.dao.Interview;
-import cclub.demo.dao.Rand;
-import cclub.demo.dao.SessionInfo;
-import cclub.demo.dao.resume;
+import cclub.demo.dao.*;
 import cclub.demo.service.InterviewServiceImpl;
+import cclub.demo.service.aliyunUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -112,15 +110,67 @@ public class InterviewController {
      * @param interview_id
      * @param interview_state
      * @return
-     * 修改视频面试的状态
+     * 结束视频面试
      */
     @ResponseBody
     @RequestMapping("/modify_Interview_State")
-    public int modify_Interview_State(String interview_id,String interview_state){
-        if(interview_state.equals("22")){
-
-        }
-        return interviewService.modifyInterviewState(interview_id,interview_state);
+    public int end_Interview_State(String interview_id,String interview_state){
+        return interviewService.endInterviewState(interview_id,interview_state);
     }
 
+
+
+    /**
+     *
+     * @param interview
+     * @param interview_candidate_name
+     * @param interview_candidate_phone
+     * @param interview_position
+     * @return
+     * 取消视频面试
+     */
+    @ResponseBody
+    @RequestMapping("/cancel_Interview")
+    public int cancel_Interview(String interview,
+                                String interview_candidate_name,
+                                String interview_candidate_phone,
+                                String interview_position)
+    {
+        return 1;
+    }
+
+
+
+    /**
+     *
+     * @param request
+     * @return
+     * 获取当前用户创建的所有视频面试对应的备注
+     */
+    @ResponseBody
+    @RequestMapping("/getMyCreateInterviewRemarksList")
+    public List<remarks>getMyCreateInterviewRemarksList(HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        return interviewService.getMyCreateInterviewRemarksList(user_id);
+    }
+
+
+
+    /**
+     *
+     * @param interview_id
+     * @param state
+     * @param content
+     * @return
+     * 设置视频面试的备注
+     */
+    @ResponseBody
+    @RequestMapping("/setInterviewRemarks")
+    public int setInterviewRemarks(String interview_id,
+                                   String state,
+                                   String content)
+    {
+        return interviewService.setInterviewRemarks(new remarks(interview_id,state,content));
+    }
 }

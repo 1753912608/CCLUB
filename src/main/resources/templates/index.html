@@ -71,7 +71,7 @@
                                                     <a href="javascript:void(0);" class="el-font-color_link">复制链接</a>
                                                 </span>
                                                 <span style="float:left;margin-left:10px;">
-                                                    <a href="javascript:void(0);" class="el-font-color_link">复制通知</a>
+                                                    <a href="javascript:void(0);" class="el-font-color_link" @click="copyLinkContent(scope.row.interview_invitation_judge_notice)">复制通知</a>
                                                 </span>
                                             </p>
                                             <p style="margin-top:40px;">
@@ -86,10 +86,10 @@
                                             <p><a href="javascript:void(0);" class="el-font-color">进入面试</a></p>
                                             <p style="margin-top:-10px;">
                                                 <span style="float:left;">
-                                                    <a href="javascript:void(0);" class="el-font-color_link">复制链接</a>
+                                                    <a href="javascript:void(0);" class="el-font-color_link" @click="">复制链接</a>
                                                 </span>
                                                 <span style="float:left;margin-left:10px;">
-                                                    <a href="javascript:void(0);" class="el-font-color_link">复制通知</a>
+                                                    <a href="javascript:void(0);" class="el-font-color_link" @click="copyLinkContent(scope.row.interview_invitation_candidate_notice)">复制通知</a>
                                                 </span>
                                             </p>
                                             <p style="margin-top:40px;">
@@ -149,11 +149,13 @@
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="" label="备注" width="180">
-                                        <p>
-                                            <a href="javascript:void(0);" @click="dialogVisible_remarks_interview=true;">
-                                                <i class="el-icon-edit-outline" style="font-size:20px;color:#5272ff;"></i>
-                                            </a>
-                                        </p>
+                                        <template slot-scope="scope">
+                                            <p>
+                                                <a href="javascript:void(0);" @click="getOneInterviewRemarks(scope.row.interview_id)">
+                                                    <i class="el-icon-edit-outline" style="font-size:20px;color:#5272ff;"></i>
+                                                </a>
+                                            </p>
+                                        </template>
                                     </el-table-column>
                                 </el-table>
                             </template>
@@ -224,9 +226,9 @@
                             </el-form-item>
                             <el-form-item style="margin-top:-45px;">
                                 <template>
-                                    <el-radio v-model="radio" label="1">通过</el-radio>
-                                    <el-radio v-model="radio" label="2">拒绝</el-radio>
-                                    <el-radio v-model="radio" label="3">待定</el-radio>
+                                    <el-radio v-model="remarks.radio" label="1">通过</el-radio>
+                                    <el-radio v-model="remarks.radio" label="2">拒绝</el-radio>
+                                    <el-radio v-model="remarks.radio" label="3">待定</el-radio>
                                 </template>
                             </el-form-item>
                             <el-form-item style="margin-top:-25px;">
@@ -234,13 +236,13 @@
                                 <p style="font-size:13px;color:#8b8f94;margin-top:-30px;">请详细说明候选人的优势、不足及任何值得注意的方面</p>
                             </el-form-item>
                             <el-form-item style="margin-top:-30px;">
-                                <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="textarea">
+                                <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="remarks.textarea">
                                 </el-input>
                             </el-form-item>
                         </el-form>
                         <span slot="footer" class="dialog-footer">
                             <el-button @click="dialogVisible_remarks_interview = false">取 消</el-button>
-                            <el-button type="primary" @click="dialogVisible_remarks_interview = false">确 定</el-button>
+                            <el-button type="primary" @click="setInterviewRemarks">确 定</el-button>
                         </span>
                     </el-dialog>
                     <el-tab-pane label="我参与的面试" name="second">我参与的面试</el-tab-pane>
@@ -251,9 +253,9 @@
             </template>
         </div>
     </div>
-    <div></div>
-    <div></div>
-    <div></div>
+    <div style="margin-left:1100px;margin-top:20px;">
+        <el-pagination background layout="prev, pager, next" :total="100"></el-pagination>
+    </div>
 </div>
 <script>
     new Vue({
@@ -286,19 +288,21 @@
                 resume: 'none'
             },
             remarks:{
-
+                radio: '',
+                textarea: '',
+                interview_id: ''
             },
             activeName: 'first',
             tableData: [],
             dialogVisible_my_create:false,
             dialogVisible_cancel_interview:false,
             dialogVisible_remarks_interview:false,
-            radio: '1',
-            textarea: ''
+            remarksList:[]
         },
         created(){
             this.getUserInfo();
             this.getMyCreateInterviewList();
+            this.getMyCreateInterviewRemarksList();
         },
         methods:{
             handleClick(tab, event) {
@@ -333,7 +337,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.modifyInterviewState(interview_id,"33");
+                    this.InterviewState(interview_id,"33");
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -427,8 +431,8 @@
                 }
                 this.getMyCreateInterviewList();
             },
-            async modifyInterviewState(interview_id,interview_state){
-                let result=await axios.get('/modify_Interview_State?interview_id='+interview_id+'&interview_state='+interview_state);
+            async endInterviewState(interview_id,interview_state){
+                let result=await axios.get('/end_Interview_State?interview_id='+interview_id+'&interview_state='+interview_state);
                 if(result.data===1){
                     this.$message({
                         type: 'success',
@@ -441,6 +445,50 @@
                     });
                 }
                 this.getMyCreateInterviewList();
+            },
+            copyLinkContent(content){
+                console.log(content);
+                this.$copyText(content).then(function (e) {
+                    console.log(e)
+                }, function (e) {
+                    console.log(e)
+                });
+                this.$message({
+                    type: 'success',
+                    message: '复制内容成功'
+                });
+            },
+            async getMyCreateInterviewRemarksList(){
+                let result=await axios.get('/getMyCreateInterviewRemarksList');
+                this.remarksList=result.data;
+                console.log(this.remarksList);
+            },
+            getOneInterviewRemarks(interview_id){
+                this.remarks={};
+                this.dialogVisible_remarks_interview=true;
+                for(let i=0;i<this.remarksList.length;i++){
+                    if(this.remarksList[i].remarks_interview_id===interview_id){
+                        this.remarks.radio=this.remarksList[i].remarks_state;
+                        this.remarks.textarea=this.remarksList[i].remarks_content;
+                    }
+                }
+                this.remarks.interview_id=interview_id;
+            },
+            async setInterviewRemarks(){
+                let result=await axios.get('/setInterviewRemarks?interview_id='+this.remarks.interview_id+'&state='+this.remarks.radio+'&content='+this.remarks.textarea);
+                if(result.data===1){
+                    this.$message({
+                        type: 'success',
+                        message: '备注候选人面试信息成功'
+                    });
+                }else{
+                    this.$message({
+                        type: 'error',
+                        message: '备注候选人面试信息失败'
+                    });
+                }
+                this.dialogVisible_remarks_interview=false;
+                this.getMyCreateInterviewRemarksList();
             }
         }
     })

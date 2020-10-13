@@ -3,6 +3,7 @@ package cclub.demo.service;
 import cclub.demo.dao.Interview;
 import cclub.demo.dao.NoticeTemplate;
 import cclub.demo.dao.Rand;
+import cclub.demo.dao.remarks;
 import cclub.demo.mapper.InterviewMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,9 +66,25 @@ public class InterviewServiceImpl implements InterviewService{
     }
 
     @Override
-    public int modifyInterviewState(String interview_id, String newState) {
+    public int endInterviewState(String interview_id, String newState) {
         try{
-            interviewMapper.modifyInterviewState(interview_id,newState);
+            interviewMapper.endInterviewState(interview_id,newState);
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+        return 1;
+    }
+
+    @Override
+    public List<remarks> getMyCreateInterviewRemarksList(String user_id) {
+        return interviewMapper.getMyCreateInterviewRemarksList(user_id);
+    }
+
+    @Override
+    public int setInterviewRemarks(remarks remarks) {
+        try{
+            interviewMapper.setInterviewRemarks(remarks);
         }catch (Exception e){
             e.printStackTrace();
             return 0;

@@ -1,6 +1,7 @@
 package cclub.demo.service;
 
 import cclub.demo.dao.Interview;
+import cclub.demo.dao.remarks;
 
 import java.util.List;
 
@@ -76,5 +77,24 @@ public interface InterviewService {
      * @return
      * 修改视频面试的状态
      */
-    int modifyInterviewState(String interview_id,String newState);
+    int endInterviewState(String interview_id,String newState);
+
+
+
+    /**
+     *
+     * @param user_id
+     * @return
+     * 获取当前用户创建的所有视频面试对应的备注
+     */
+    List<remarks>getMyCreateInterviewRemarksList(String user_id);
+
+
+
+    /**
+     *
+     * @param remarks
+     * 对指定的视频面试进行评论
+     */
+    int setInterviewRemarks(remarks remarks);
 }
