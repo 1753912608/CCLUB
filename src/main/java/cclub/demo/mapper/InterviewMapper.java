@@ -70,7 +70,7 @@ public interface InterviewMapper {
      * @param newState
      * 修改视频面试的状态
      */
-    @Update("update interview set interview_room_state=#{newState}")
+    @Update("update interview set interview_room_state=#{newState} where interview_id=#{interview_id}")
     void endInterviewState(String interview_id,String newState);
 
 
@@ -93,4 +93,15 @@ public interface InterviewMapper {
      */
     @Insert("insert into remarks values(#{remarks_interview_id},#{remarks_state},#{remarks_content})")
     void setInterviewRemarks(remarks remarks);
+
+
+
+    /**
+     *
+     * @param interview_id
+     * @param newState
+     * 取消该面试
+     */
+    @Update("update interview set interview_room_state=#{newState} where interview_id=#{interview_id}")
+    void cancelInterview(String interview_id,String newState);
 }

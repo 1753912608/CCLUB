@@ -2,7 +2,7 @@ package cclub.demo.controller;
 
 import cclub.demo.dao.*;
 import cclub.demo.service.InterviewServiceImpl;
-import cclub.demo.service.aliyunUtils;
+import cclub.demo.service.mailDemoUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +22,9 @@ public class InterviewController {
 
      @Autowired
      private InterviewServiceImpl interviewService;
+
+     @Autowired
+     private mailDemoUtils mailDemoUtils;
 
 
     /**
@@ -44,9 +47,12 @@ public class InterviewController {
                                @RequestParam(value = "resume",required = false) MultipartFile resume)
     {
         String newFileName=interview_company_name+' '+interview_candidate_name+' '+interview_candidate_position;
-        String filename=resume.getOriginalFilename();
-        String suffex=filename.substring(filename.lastIndexOf('.'));
-        String filesrc="file/"+newFileName+suffex;
+        String filename="",suffex="",filesrc="";
+        if(interview_candidate_resume==1){
+            filename=resume.getOriginalFilename();
+            suffex=filename.substring(filename.lastIndexOf('.'));
+            filesrc="file/"+newFileName+suffex;
+        }
         HttpSession session=request.getSession();
         String interview_id= Rand.getInterviewId();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
@@ -58,8 +64,10 @@ public class InterviewController {
         try{
             //事务提交处理
             interviewService.createInterview(interview);
-            FileUtils.copyInputStreamToFile(resume.getInputStream(),new File("src/main/resources/static/"+filesrc));
-            interviewService.insertCandidateResume(interview_id,filesrc);
+            if(interview_candidate_resume==1){
+                FileUtils.copyInputStreamToFile(resume.getInputStream(),new File("src/main/resources/static/"+filesrc));
+                interviewService.insertCandidateResume(interview_id,filesrc);
+            }
         }catch (Exception e){
             e.printStackTrace();
             return 0;
@@ -113,7 +121,7 @@ public class InterviewController {
      * 结束视频面试
      */
     @ResponseBody
-    @RequestMapping("/modify_Interview_State")
+    @RequestMapping("/end_Interview_State")
     public int end_Interview_State(String interview_id,String interview_state){
         return interviewService.endInterviewState(interview_id,interview_state);
     }
@@ -172,5 +180,38 @@ public class InterviewController {
                                    String content)
     {
         return interviewService.setInterviewRemarks(new remarks(interview_id,state,content));
+    }
+
+
+    /**
+     *
+     * @param interview_id
+     * @param newState
+     * @param company
+     * @param position
+     * @param isSendMail
+     * @param interview_candidate_mail
+     * @param name
+     * @param request
+     * @return
+     * 取消该视频面试
+     */
+    @ResponseBody
+    @RequestMapping("/cancelInterview")
+    public int cancelInterview(String interview_id,
+                               String newState,
+                               String company,
+                               String position,
+                               int isSendMail,
+                               String interview_candidate_mail,
+                               String name,
+                               HttpServletRequest request)
+    {
+        if(isSendMail==1){
+            HttpSession session=request.getSession();
+            String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+            mailDemoUtils.sendTemplateNoticeCancel(interview_candidate_mail,name,position,company,user_id);
+        }
+        return interviewService.cancelInterview(interview_id,newState);
     }
 }

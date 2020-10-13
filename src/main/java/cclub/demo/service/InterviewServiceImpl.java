@@ -91,4 +91,15 @@ public class InterviewServiceImpl implements InterviewService{
         }
         return 1;
     }
+
+    @Override
+    public int cancelInterview(String interview_id, String newState) {
+        try{
+            interviewMapper.cancelInterview(interview_id,newState);
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+        return 1;
+    }
 }

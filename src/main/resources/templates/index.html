@@ -43,7 +43,7 @@
                         </div>
                         <div style="padding-top:40px;">
                             <template>
-                                <el-table :data="tableData" stripe style="width: 100%">
+                                <el-table :data="tableData" stripe style="width: 100%" :ref="tableData">
                                     <el-table-column prop="info" label="基本信息" width="220">
                                         <template slot-scope="scope">
                                             <p>
@@ -254,7 +254,7 @@
         </div>
     </div>
     <div style="margin-left:1100px;margin-top:20px;">
-        <el-pagination background layout="prev, pager, next" :total="100"></el-pagination>
+        <el-pagination background layout="prev, pager, next" :total="pageSize"></el-pagination>
     </div>
 </div>
 <script>
@@ -297,7 +297,9 @@
             dialogVisible_my_create:false,
             dialogVisible_cancel_interview:false,
             dialogVisible_remarks_interview:false,
-            remarksList:[]
+            remarksList:[],
+            pageSize: 0,
+            allInterviewData: []
         },
         created(){
             this.getUserInfo();
@@ -337,7 +339,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.InterviewState(interview_id,"33");
+                    this.endInterviewState(interview_id,"33");
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -397,6 +399,8 @@
             async getMyCreateInterviewList(){
                 let result=await axios.get('/getMyCreateInterviewList');
                 this.tableData=result.data;
+                this.pageSize=this.tableData.length/5;
+                this.pageSize*=10;
             },
             uploadBefore(){
                 let file=document.getElementById("file").files[0];

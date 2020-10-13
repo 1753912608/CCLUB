@@ -97,4 +97,15 @@ public interface InterviewService {
      * 对指定的视频面试进行评论
      */
     int setInterviewRemarks(remarks remarks);
+
+
+
+    /**
+     *
+     * @param interview_id
+     * @param newState
+     * @return
+     * 取消该面试
+     */
+    int cancelInterview(String interview_id,String newState);
 }
