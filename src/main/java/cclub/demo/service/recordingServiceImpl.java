@@ -5,6 +5,8 @@ import cclub.demo.mapper.recordingMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 public class recordingServiceImpl implements recordingService{
@@ -13,7 +15,7 @@ public class recordingServiceImpl implements recordingService{
      private recordingMapper recordingMapper;
 
     @Override
-    public recording getOneRecording(String interview_id) {
-        return recordingMapper.getOneRecording(interview_id);
+    public List<recording> getMyCreateInterviewRecording(String user_id) {
+        return recordingMapper.getMyCreateInterviewRecording(user_id);
     }
 }

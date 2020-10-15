@@ -1,15 +1,37 @@
 package cclub.demo.controller;
 
 
+import cclub.demo.dao.SessionInfo;
+import cclub.demo.dao.recording;
 import cclub.demo.service.recordingServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class recordingController {
 
-    @Autowired
-    private recordingServiceImpl recordingService;
+
+   @Autowired
+   private recordingServiceImpl recordingService;
 
 
+    /**
+     *
+     * @param request
+     * @return
+     * 根据user_id获取当前用户创建的视频面试的视频录制信息
+     */
+   @ResponseBody
+   @RequestMapping("/getMyCreateInterviewRecording")
+   public List<recording> getOneRecording(HttpServletRequest request){
+       HttpSession session=request.getSession();
+       String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+       return recordingService.getMyCreateInterviewRecording(user_id);
+   }
 }

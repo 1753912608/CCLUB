@@ -2,14 +2,16 @@ package cclub.demo.service;
 
 import cclub.demo.dao.recording;
 
+import java.util.List;
+
 public interface recordingService {
 
 
     /**
      *
-     * @param interview_id
+     * @param user_id
      * @return
-     * 根据interview_id获取recording信息
+     * 根据user_id获取当前用户创建的视频面试的视频录制信息
      */
-    recording getOneRecording(String interview_id);
+    List<recording>getMyCreateInterviewRecording(String user_id);
 }
