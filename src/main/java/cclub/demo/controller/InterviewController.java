@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -100,15 +101,7 @@ public class InterviewController {
     @ResponseBody
     @RequestMapping("/delete_interview")
     public int delete_interview(String interview_id){
-        System.out.println(interview_id);
-        try{
-            interviewService.deleteInterview(interview_id);
-            interviewService.deleteResume(interview_id);
-        }catch (Exception e){
-            e.printStackTrace();
-            return 0;
-        }
-        return 1;
+        return interviewService.deleteInterview(interview_id);
     }
 
 
@@ -124,27 +117,6 @@ public class InterviewController {
     @RequestMapping("/end_Interview_State")
     public int end_Interview_State(String interview_id,String interview_state){
         return interviewService.endInterviewState(interview_id,interview_state);
-    }
-
-
-
-    /**
-     *
-     * @param interview
-     * @param interview_candidate_name
-     * @param interview_candidate_phone
-     * @param interview_position
-     * @return
-     * 取消视频面试
-     */
-    @ResponseBody
-    @RequestMapping("/cancel_Interview")
-    public int cancel_Interview(String interview,
-                                String interview_candidate_name,
-                                String interview_candidate_phone,
-                                String interview_position)
-    {
-        return 1;
     }
 
 
@@ -186,11 +158,10 @@ public class InterviewController {
     /**
      *
      * @param interview_id
-     * @param newState
      * @param company
      * @param position
      * @param isSendMail
-     * @param interview_candidate_mail
+     * @param mail
      * @param name
      * @param request
      * @return
@@ -199,19 +170,63 @@ public class InterviewController {
     @ResponseBody
     @RequestMapping("/cancelInterview")
     public int cancelInterview(String interview_id,
-                               String newState,
                                String company,
                                String position,
-                               int isSendMail,
-                               String interview_candidate_mail,
+                               boolean isSendMail,
+                               String mail,
                                String name,
                                HttpServletRequest request)
     {
-        if(isSendMail==1){
+        System.out.println(interview_id+" "+company+" "+position+" "+isSendMail+" "+mail+" "+name);
+        if(isSendMail){
             HttpSession session=request.getSession();
             String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
-            mailDemoUtils.sendTemplateNoticeCancel(interview_candidate_mail,name,position,company,user_id);
+            mailDemoUtils.sendTemplateNoticeCancel(mail,name,position,company,user_id);
         }
-        return interviewService.cancelInterview(interview_id,newState);
+        return interviewService.cancelInterview(interview_id,"22");
+    }
+
+
+
+    /**
+     *
+     * @param interview_id
+     * @param company
+     * @param position
+     * @param recording
+     * @param resume
+     * @param file
+     * @return
+     * 修改视频面试信息
+     */
+    @ResponseBody
+    @RequestMapping(value = "updateInterview",method = RequestMethod.POST)
+    public int updateInterview(@RequestParam(value = "interview_id",required = false) String interview_id,
+                               @RequestParam(value = "company",required = false) String company,
+                               @RequestParam(value = "position",required = false) String position,
+                               @RequestParam(value = "recording",required = false) int recording,
+                               @RequestParam(value = "resume",required = false) int resume,
+                               @RequestParam(value = "time",required = false) String time,
+                               @RequestParam(value = "file",required = false) MultipartFile file)
+    throws IOException
+    {
+        String ordResumeUrl=interviewService.getResumeUrl(interview_id);
+        if(resume==1){
+            String filename="",suffex="",filesrc="";
+            if(ordResumeUrl!=null){
+                try{
+                    FileUtils.forceDeleteOnExit(new File("src/main/resources/static/"+ordResumeUrl));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                interviewService.deleteResume(interview_id);
+            }
+            filename=file.getOriginalFilename();
+            suffex=filename.substring(filename.lastIndexOf('.'));
+            filesrc="file/"+interview_id+suffex;
+            FileUtils.copyInputStreamToFile(file.getInputStream(),new File("src/main/resources/static/"+filesrc));
+            interviewService.insertCandidateResume(interview_id,filesrc);
+        }
+        return interviewService.updateInterview(new Interview(interview_id,time,company,position,recording,resume));
     }
 }

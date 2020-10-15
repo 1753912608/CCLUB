@@ -7,6 +7,8 @@ import cclub.demo.dao.remarks;
 import cclub.demo.mapper.InterviewMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,8 +58,15 @@ public class InterviewServiceImpl implements InterviewService{
     }
 
     @Override
-    public void deleteInterview(String interview_id) {
-        interviewMapper.deleteInterview(interview_id);
+    @Transactional(rollbackFor = {Exception.class})
+    public int deleteInterview(String interview_id) {
+        try{
+            interviewMapper.deleteInterview(interview_id);
+            interviewMapper.deleteResume(interview_id);
+            return 1;
+        }catch (Exception e){
+            throw e;
+        }
     }
 
     @Override
@@ -101,5 +110,21 @@ public class InterviewServiceImpl implements InterviewService{
             return 0;
         }
         return 1;
+    }
+
+    @Override
+    public int updateInterview(Interview interview) {
+        try{
+            interviewMapper.updateInterview(interview);
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+        return 1;
+    }
+
+    @Override
+    public String getResumeUrl(String resume_interview_id) {
+        return interviewMapper.getResumeUrl(resume_interview_id);
     }
 }

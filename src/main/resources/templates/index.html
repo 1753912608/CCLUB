@@ -133,17 +133,17 @@
                                     <el-table-column prop="" label="操作" width="180">
                                         <template slot-scope="scope">
                                             <p>
-                                            <span style="float:left;">
-                                                <a href="javascript:void(0);" class="el-font-color_link" @click="dialogVisible_cancel_interview=true;">取消</a>
+                                            <span style="float:left;" v-show="scope.row.interview_room_state==='01' || scope.row.interview_room_state=='10'">
+                                                <a href="javascript:void(0);" class="el-font-color_link" @click="cancel_interview_open(scope.row.interview_id)">取消</a>
                                             </span>
-                                                <span style="float:left;margin-left:15px;">
-                                                <a href="javascript:void(0);" class="el-font-color_link">编辑面试</a>
+                                                <span style="float:left;margin-left:15px;" v-show="scope.row.interview_room_state==='01' || scope.row.interview_room_state=='10'">
+                                                <a href="javascript:void(0);" class="el-font-color_link" @click="modify_interview_open(scope.row)">编辑面试</a>
                                             </span>
                                                 <span style="float:left;margin-left:15px;">
                                                 <a href="javascript:void(0);" class="el-font-color_link" @click="delete_interview_open(scope.row.interview_id)">删除</a>
                                             </span>
                                             </p>
-                                            <p style="padding-top:30px;">
+                                            <p style="padding-top:30px;" v-show="scope.row.interview_room_state==='01' || scope.row.interview_room_state=='10'">
                                                 <a href="javascript:void(0);" class="el-font-color_link" @click="end_interview_open(scope.row.interview_id)">结束面试</a>
                                             </p>
                                         </template>
@@ -161,8 +161,8 @@
                             </template>
                         </div>
                     </el-tab-pane>
-                    <!--创建/编辑视频面试-->
-                    <el-dialog title="创建/编辑视频面试" :visible.sync="dialogVisible_my_create" width="40%" before-close="handleClose" >
+                    <!--创建视频面试-->
+                    <el-dialog title="创建视频面试" :visible.sync="dialogVisible_my_create" width="40%" before-close="handleClose" >
                         <el-form ref="form" :model="form"  label-width="100px">
                             <el-form-item label="面试时间">
                                 <el-col :span="11">
@@ -209,12 +209,12 @@
                     <el-dialog title="是否取消面试" :visible.sync="dialogVisible_cancel_interview" width="30%" before-close="handleClose" >
                         <el-form ref="form" :model="form"  label-width="100px">
                             <el-form-item label="通知候选人">
-                                <el-checkbox v-model="form.checked" @change="change">发送短信和邮件通知</el-checkbox>
+                                <el-checkbox v-model="cancelObj.isSendMail" @change="change">发送短信和邮件通知</el-checkbox>
                             </el-form-item>
                         </el-form>
                         <span slot="footer" class="dialog-footer">
                             <el-button @click="dialogVisible_cancel_interview = false">取 消</el-button>
-                            <el-button type="primary" @click="dialogVisible_cancel_interview = false">确 定</el-button>
+                            <el-button type="primary" @click="cancel_interview">确 定</el-button>
                         </span>
                     </el-dialog>
                     <!--备注面试-->
@@ -243,6 +243,50 @@
                         <span slot="footer" class="dialog-footer">
                             <el-button @click="dialogVisible_remarks_interview = false">取 消</el-button>
                             <el-button type="primary" @click="setInterviewRemarks">确 定</el-button>
+                        </span>
+                    </el-dialog>
+                    <!--修改视频面试-->
+                    <el-dialog title="修改视频面试" :visible.sync="dialogVisible_interview_modify" width="40%" before-close="handleClose" >
+                        <el-form ref="formModify" :model="formModify"  label-width="100px">
+                            <el-form-item label="面试时间">
+                                <el-col :span="11">
+                                    <el-date-picker type="date" placeholder="选择日期" v-model="formModify.date.date1" style="width: 100%;"></el-date-picker>
+                                </el-col>
+                                <el-col class="line" :span="2">-</el-col>
+                                <el-col :span="11">
+                                    <el-time-picker placeholder="选择时间" v-model="formModify.date.date2" style="width: 100%;"></el-time-picker>
+                                </el-col>
+                            </el-form-item>
+                            <el-form-item label="公司名称">
+                                <el-input v-model="formModify.company" placeholder="公司/团队名称"></el-input>
+                            </el-form-item>
+                            <el-form-item label="应聘职位名称">
+                                <el-input v-model="formModify.position" placeholder="职位名称，如开发工程师"></el-input>
+                            </el-form-item>
+                            <el-form-item label="通知候选人">
+                                <el-input v-model="formModify.candidate.name" placeholder="姓名" style="width:150px;" size="small" :disabled="true"></el-input>
+                                <el-input v-model="formModify.candidate.phone" placeholder="手机号" style="width:150px;" size="small" :disabled="true"></el-input>
+                                <el-input v-model="formModify.candidate.mail" placeholder="邮箱" style="width:150px;" size="small" :disabled="true"></el-input>
+                            </el-form-item>
+                            <el-form-item label="通知面试官">
+                                <el-input v-model="formModify.judge.name" placeholder="姓名" style="width:150px;" size="small" :disabled="true"></el-input>
+                                <el-input v-model="formModify.judge.phone" placeholder="手机号" style="width:150px;" size="small" :disabled="true"></el-input>
+                                <el-input v-model="formModify.judge.mail" placeholder="邮箱" style="width:150px;" size="small" :disabled="true"></el-input>
+                            </el-form-item>
+                            <el-form-item label="面试过程录制">
+                                <el-switch v-model="formModify.recording"></el-switch>
+                            </el-form-item>
+                            <el-form-item label="候选人简历">
+                                <el-checkbox v-model="formModify.checked" @change="changeModify">上传候选人简历</el-checkbox>
+                                <p :style="{display:formModify.resume}">
+                                    <input type="file" name="" id="fileModify" value="点击上传" @change="uploadBefore">
+                                    <span style="font-size:12px;color:rgb(200,200,200);">支持扩展名: .pdf .docx</span>
+                                </p>
+                            </el-form-item>
+                        </el-form>
+                        <span slot="footer" class="dialog-footer">
+                            <el-button @click="dialogVisible_interview_modify = false">取 消</el-button>
+                            <el-button type="primary" @click="modify_interview">修改</el-button>
                         </span>
                     </el-dialog>
                     <el-tab-pane label="我参与的面试" name="second">我参与的面试</el-tab-pane>
@@ -274,9 +318,9 @@
                 company: '',
                 position: '',
                 candidate:{
-                   name: '',
-                   phone: '',
-                   mail: ''
+                    name: '',
+                    phone: '',
+                    mail: ''
                 },
                 judge:{
                     name: '',
@@ -284,7 +328,6 @@
                     mail: ''
                 },
                 recording:false,
-                checked: false,
                 resume: 'none'
             },
             remarks:{
@@ -297,9 +340,39 @@
             dialogVisible_my_create:false,
             dialogVisible_cancel_interview:false,
             dialogVisible_remarks_interview:false,
+            dialogVisible_interview_modify:false,
             remarksList:[],
             pageSize: 0,
-            allInterviewData: []
+            allInterviewData: [],
+            cancelObj:{
+                interview_id: '',
+                company: '',
+                position: '',
+                isSendMail: false,
+                mail: '',
+                name: ''
+            },
+            formModify:{
+                date:{
+                    date1: '',
+                    date2: ''
+                },
+                company: '',
+                position: '',
+                candidate:{
+                    name: '',
+                    phone: '',
+                    mail: ''
+                },
+                judge:{
+                    name: '',
+                    phone: '',
+                    mail: ''
+                },
+                recording:false,
+                resume: 'none',
+                interview_id: '',
+            }
         },
         created(){
             this.getUserInfo();
@@ -313,11 +386,83 @@
             change(){
                 this.form.resume=this.form.checked===true?'block':'none';
             },
-            cancel_interview(){
-
+            changeModify(){
+               this.formModify.resume=this.formModify.checked===true?'block':'none';
             },
-            modify_interview(){
-
+            cancel_interview_open(interview_id){
+                console.log(interview_id);
+                for(let i=0;i<this.tableData.length;i++){
+                    if(this.tableData[i].interview_id===interview_id){
+                        this.cancelObj.name=this.tableData[i].interview_candidate_name;
+                        this.cancelObj.position=this.tableData[i].interview_candidate_position;
+                        this.cancelObj.company=this.tableData[i].interview_company_name;
+                        this.cancelObj.mail=this.tableData[i].interview_candidate_mail;
+                    }
+                }
+                this.cancelObj.interview_id=interview_id;
+                this.dialogVisible_cancel_interview=true;
+            },
+            async cancel_interview(){
+                let result=await axios.get('/cancelInterview?interview_id='+this.cancelObj.interview_id+'&company='+this.cancelObj.company+'&position='+this.cancelObj.position+'&isSendMail='+this.cancelObj.isSendMail+'&mail='+this.cancelObj.mail+'&name='+this.cancelObj.name);
+                if(result.data===1){
+                    this.$message({
+                        type: 'success',
+                        message: '取消视频面试成功!'
+                    });
+                }else{
+                    this.$message({
+                        type: 'error',
+                        message: '取消视频面试失败'
+                    });
+                }
+                this.dialogVisible_cancel_interview=true;
+                this.getMyCreateInterviewList();
+            },
+            modify_interview_open(row){
+                this.formModify.interview_id=row.interview_id;
+                this.formModify.company=row.interview_company_name;
+                this.formModify.position=row.interview_candidate_position;
+                this.formModify.candidate.mail=row.interview_candidate_mail;
+                this.formModify.candidate.name=row.interview_judge_name;
+                this.formModify.candidate.phone=row.interview_judge_phone;
+                this.formModify.judge.mail=row.interview_judge_mail;
+                this.formModify.judge.name=row.interview_judge_name;
+                this.formModify.judge.phone=row.interview_judge_phone;
+                this.formModify.recording=row.interview_recording===1?true:false;
+                this.dialogVisible_interview_modify=true;
+            },
+            async modify_interview(){
+                this.dialogVisible_interview_modify=false;
+                let params=new FormData();
+                let that=this.formModify.date.date2;
+                let date=that.getFullYear()+"-"+(parseInt(that.getMonth())+1)+"-"+that.getDate()+" "+that.getHours()+":"+that.getMinutes();
+                params.append("interview_id",this.formModify.interview_id);
+                params.append("time",date);
+                params.append("company",this.formModify.company);
+                params.append("position",this.formModify.position);
+                params.append("recording",this.formModify.recording===true?1:0);
+                params.append("resume",this.formModify.checked===true?1:0);
+                params.append("file",document.getElementById("fileModify").files[0]);
+                let result=await axios({
+                    method: 'post',
+                    url: '/updateInterview',
+                    data: params,
+                    headers:{
+                        "Content-Type": "multipart/form-data"
+                    }
+                });
+                if(result.data===1){
+                    this.$message({
+                        type: 'success',
+                        message: '修改视频面试成功!'
+                    });
+                }else{
+                    this.$message({
+                        type: 'info',
+                        message: '修改视频面试失败'
+                    });
+                }
+                this.getMyCreateInterviewList();
             },
             async delete_interview_open(interview_id){
                 this.$confirm('此操作将永久删除该面试记录, 是否继续?', '提示', {
@@ -372,7 +517,7 @@
                     headers:{
                         "Content-Type": "multipart/form-data"
                     }
-                 });
+                });
                 if(result.data===1){
                     this.$message({
                         type: 'success',

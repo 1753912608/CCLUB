@@ -104,4 +104,31 @@ public interface InterviewMapper {
      */
     @Update("update interview set interview_room_state=#{newState} where interview_id=#{interview_id}")
     void cancelInterview(String interview_id,String newState);
+
+
+
+
+    /**
+     *
+     * @param interview
+     * 修改视频面试信息
+     */
+    @Update("update interview set interview_begin_time=#{interview_begin_time},interview_company_name=#{interview_company_name}," +
+            "interview_candidate_position=#{interview_candidate_position},interview_recording=#{interview_recording}," +
+            "interview_candidate_resume=#{interview_candidate_resume} where interview_id=#{interview_id}")
+    void updateInterview(Interview interview);
+
+
+
+
+    /**
+     *
+     * @param resume_interview_id
+     * @return
+     * 根据interview_id获取对应的候选人简历存储的url
+     */
+    @Select("select resume_content_url from resume where resume_interview_id=#{resume_interview_id}")
+    String getResumeUrl(String resume_interview_id);
+
+
 }

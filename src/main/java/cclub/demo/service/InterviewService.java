@@ -49,14 +49,13 @@ public interface InterviewService {
     int insertCandidateResume(String resume_interview_id,String resume_content_url);
 
 
-
     /**
      *
      * @param interview_id
      * @return
      * 删除指定的视频面试
      */
-    void deleteInterview(String interview_id);
+    int deleteInterview(String interview_id);
 
 
 
@@ -108,4 +107,25 @@ public interface InterviewService {
      * 取消该面试
      */
     int cancelInterview(String interview_id,String newState);
+
+
+
+    /**
+     *
+     * @param interview
+     * @return
+     * 修改面试信息
+     */
+    int updateInterview(Interview interview);
+
+
+
+
+    /**
+     *
+     * @param resume_interview_id
+     * @return
+     * 根据interview_id获取对应的候选人简历存储的url
+     */
+    String getResumeUrl(String resume_interview_id);
 }

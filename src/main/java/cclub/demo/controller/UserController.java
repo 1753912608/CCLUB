@@ -25,28 +25,6 @@ public class UserController {
     private RedisServiceImpl redisService;
 
 
-
-//    /**
-//     *
-//     * @param request
-//     * @param response
-//     * @param phone
-//     * @return
-//     * 短信验证码校验成功后登录
-//     */
-//    @RequestMapping("/login")
-//    public String login(HttpServletRequest request,
-//                        HttpServletResponse response,
-//                        String phone){
-//        System.out.println("进入login");
-//        HttpSession session=request.getSession();
-//        session.setAttribute(SessionInfo.Session_phone,phone);
-//        Cookie cookie=new Cookie(SessionInfo.CCLUB_phone,phone);
-//        cookie.setMaxAge(7*24*60*60);
-//        response.addCookie(cookie);
-//        return "login_init";
-//    }
-
     /**
      *
      * @param phone

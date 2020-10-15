@@ -50,6 +50,17 @@ public class Interview {
         this.interview_room_state = interview_room_state;
     }
 
+    public Interview(String interview_id, String interview_begin_time, String interview_company_name,
+                     String interview_candidate_position, int interview_recording, int interview_candidate_resume) {
+        this.interview_id = interview_id;
+        this.interview_begin_time = interview_begin_time;
+        this.interview_company_name = interview_company_name;
+        this.interview_candidate_position = interview_candidate_position;
+        this.interview_recording = interview_recording;
+        this.interview_candidate_resume = interview_candidate_resume;
+    }
+    public Interview(){}
+
     public void setInterview_id(String interview_id) {
         this.interview_id = interview_id;
     }
