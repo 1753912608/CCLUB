@@ -372,12 +372,14 @@
                 recording:false,
                 resume: 'none',
                 interview_id: ''
-            }
+            },
+            recordingList:[]
         },
         created(){
             this.getUserInfo();
             this.getMyCreateInterviewList();
             this.getMyCreateInterviewRemarksList();
+            this.getMyCreateInterviewRecording();
         },
         methods:{
             handleClick(tab, event) {
@@ -639,8 +641,10 @@
                 this.dialogVisible_remarks_interview=false;
                 this.getMyCreateInterviewRemarksList();
             },
-            getOneRecording(){
-
+            async getMyCreateInterviewRecording(){
+                let result=await axios.get('/getMyCreateInterviewRecording');
+                this.recordingList=result.data;
+                console.log(this.recordingList);
             }
         }
     })
