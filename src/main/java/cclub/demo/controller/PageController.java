@@ -4,7 +4,6 @@ package cclub.demo.controller;
 import cclub.demo.dao.SessionInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -38,7 +37,14 @@ public class PageController {
 
 
     @RequestMapping("/test_interview")
-    public String test_interview(String code){
+    public String test_interview(String code,
+                                 String interview_state,
+                                 HttpServletRequest request){
+        if(interview_state.equals("22")||interview_state.equals("33")){
+            return "interview_end";
+        }
+        HttpSession session=request.getSession();
+        session.setAttribute(SessionInfo.Session_Interview_code,code);
         return "interview";
     }
 }

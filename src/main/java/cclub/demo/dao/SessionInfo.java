@@ -6,4 +6,7 @@ public class SessionInfo {
 
     //存储用户名的Cookie
     public static String CCLUB_phone="CCLUB_phone";
+
+
+    public static String Session_Interview_code="Session_Interview_code";
 }

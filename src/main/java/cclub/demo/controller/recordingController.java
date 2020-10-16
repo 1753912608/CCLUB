@@ -29,7 +29,7 @@ public class recordingController {
      */
    @ResponseBody
    @RequestMapping("/getMyCreateInterviewRecording")
-   public List<recording> getOneRecording(HttpServletRequest request){
+   public List<recording> getMyCreateInterviewRecording(HttpServletRequest request){
        HttpSession session=request.getSession();
        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
        return recordingService.getMyCreateInterviewRecording(user_id);

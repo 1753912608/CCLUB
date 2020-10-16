@@ -65,7 +65,7 @@
                                     <el-table-column prop="" label="面试官接入" width="220">
                                         <template slot-scope="scope">
                                             <p>接入码:&nbsp;&nbsp;{{scope.row.interview_judge_code}}</p>
-                                            <p ><a href="javascript:void(0);" class="el-font-color">进入面试</a></p>
+                                            <p><a href="javascript:void(0);" class="el-font-color" @click="centerInterview(scope.row.interview_judge_code,scope.row.interview_room_state)">进入面试</a></p>
                                             <p style="margin-top:-10px;">
                                                 <span style="float:left;">
                                                     <a href="javascript:void(0);" class="el-font-color_link">复制链接</a>
@@ -83,7 +83,7 @@
                                     <el-table-column prop="" label="候选人接入" width="220">
                                         <template slot-scope="scope">
                                             <p>接入码:&nbsp;&nbsp;{{scope.row.interview_candidate_code}}</p>
-                                            <p><a href="javascript:void(0);" class="el-font-color">进入面试</a></p>
+                                            <p><a href="javascript:void(0);" class="el-font-color" @click="centerInterview(scope.row.interview_candidate_code,scope.row.interview_room_state)">进入面试</a></p>
                                             <p style="margin-top:-10px;">
                                                 <span style="float:left;">
                                                     <a href="javascript:void(0);" class="el-font-color_link" @click="">复制链接</a>
@@ -645,6 +645,9 @@
                 let result=await axios.get('/getMyCreateInterviewRecording');
                 this.recordingList=result.data;
                 console.log(this.recordingList);
+            },
+            centerInterview(code,interview_state){
+                axios.get('/test_interview?code='+code+'&interview_state='+interview_state);
             }
         }
     })
