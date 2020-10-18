@@ -232,4 +232,16 @@ public class InterviewController {
 
 
 
+    /**
+     *
+     * @param interview_code
+     * @param request
+     * 将用户面试码存储在session中
+     */
+    @ResponseBody
+    @RequestMapping("/saveInterviewCode")
+    public void saveInterviewCode(String interview_code,HttpServletRequest request){
+        HttpSession session=request.getSession();
+        session.setAttribute(SessionInfo.Session_Interview_code,interview_code);
+    }
 }

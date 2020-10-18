@@ -37,14 +37,13 @@ public class PageController {
 
 
     @RequestMapping("/test_interview")
-    public String test_interview(String code,
-                                 String interview_state,
-                                 HttpServletRequest request){
-        if(interview_state.equals("22")||interview_state.equals("33")){
-            return "interview_end";
-        }
-        HttpSession session=request.getSession();
-        session.setAttribute(SessionInfo.Session_Interview_code,code);
+    public String test_interview(){
         return "interview";
+    }
+
+
+    @RequestMapping("/test_interview_end")
+    public String test_interview_end(){
+        return "interview_end";
     }
 }
