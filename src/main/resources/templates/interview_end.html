@@ -22,6 +22,10 @@
             border-radius:6px;
             background:#fff;
         }
+        .el-text-info{
+            font-size:14px;
+            color:#8b8f94;
+        }
     </style>
 </head>
 <body>
@@ -37,6 +41,28 @@
     <div>
         <div class="el-show-interviewInfo">
             <div><img src="/img/mid-top.png" alt="" width="80px" height="80px"></div>
+            <div style="font-size:18px;color:#2b313a;margin-left:160px;padding-top:20px;">
+                面试已结束,谢谢参与
+            </div>
+            <div style="width:300px;height:1px;background-color:#f6f6f6;margin-left:100px;margin-top:20px;"></div>
+            <div style="margin-top:30px;">
+                <div>
+                    <p class="el-text-info" style="margin-left:210px;">候选人名称</p>
+                    <p style="margin-left:190px;margin-top:-10px;">{{interviewInfo.interview_candidate_name}}</p>
+                </div>
+                <div style="margin-top:20px;">
+                    <p class="el-text-info" style="margin-left:190px;">面试时间（北京时间）</p>
+                    <p style="margin-left:190px;margin-top:-10px;">{{interviewInfo.interview_begin_time}}</p>
+                </div>
+                <div style="margin-top:20px;">
+                    <p class="el-text-info" style="margin-left:210px;">公司名称</p>
+                    <p style="margin-left:210px;margin-top:-10px;">{{interviewInfo.interview_company_name}}</p>
+                </div>
+                <div style="margin-top:20px;">
+                    <p class="el-text-info" style="margin-left:210px;">面试职位</p>
+                    <p style="margin-left:200px;margin-top:-10px;">{{interviewInfo.interview_candidate_position}}</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
