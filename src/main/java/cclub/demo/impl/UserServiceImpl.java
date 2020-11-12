@@ -1,14 +1,15 @@
-package cclub.demo.service;
+package cclub.demo.impl;
 
 
 import cclub.demo.dao.Rand;
 import cclub.demo.dao.User;
 import cclub.demo.mapper.UserMapper;
+import cclub.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;

@@ -1,10 +1,11 @@
-package cclub.demo.service;
+package cclub.demo.impl;
 
 import cclub.demo.dao.Interview;
 import cclub.demo.dao.NoticeTemplate;
 import cclub.demo.dao.Rand;
 import cclub.demo.dao.remarks;
 import cclub.demo.mapper.InterviewMapper;
+import cclub.demo.service.InterviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class InterviewServiceImpl implements InterviewService{
+public class InterviewServiceImpl implements InterviewService {
 
     @Autowired
     private InterviewMapper interviewMapper;

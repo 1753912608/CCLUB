@@ -1,8 +1,8 @@
 package cclub.demo.controller;
 
 import cclub.demo.dao.*;
-import cclub.demo.service.InterviewServiceImpl;
-import cclub.demo.service.mailDemoUtils;
+import cclub.demo.impl.InterviewServiceImpl;
+import mailDemoUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

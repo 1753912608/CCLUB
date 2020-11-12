@@ -1,5 +1,4 @@
-package cclub.demo.service;
-
+package cclub.demo.impl.mailServiceImpl;
 import cclub.demo.config.mailConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

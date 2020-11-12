@@ -1,4 +1,4 @@
-package cclub.demo.service;
+package cclub.demo.impl.redisUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

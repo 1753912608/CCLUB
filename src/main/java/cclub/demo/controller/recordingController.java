@@ -3,7 +3,7 @@ package cclub.demo.controller;
 
 import cclub.demo.dao.SessionInfo;
 import cclub.demo.dao.recording;
-import cclub.demo.service.recordingServiceImpl;
+import cclub.demo.impl.recordingServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
