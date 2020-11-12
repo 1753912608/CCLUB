@@ -7,8 +7,56 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        .el-a-style{
+            text-decoration:none;
+            font-size:14px;
+            color:#8b8f94;
+        }
+        .el-show-interviewInfo{
+            margin-left:500px;
+            margin-top:80px;
+            width:500px;
+            height:500px;
+            box-shadow: 0 2px 4px 0 rgba(62,68,76,.1);
+            border-radius:6px;
+            background:#fff;
+        }
+    </style>
 </head>
 <body>
-面试结束
+<div id="app">
+    <div style="width:100%;height:40px;">
+        <div style="padding-top:10px;">
+            <span style="font-size:24px;margin-left:30px;">{{name}}</span>
+            <span style="margin-left:1100px;"><a href="javascript:void(0);" class="el-a-style">设备检测</a></span>
+            <span style="margin-left:30px;"><a href="javascript:void(0);" class="el-a-style">帮助中心</a></span>
+        </div>
+    </div>
+    <el-divider></el-divider>
+    <div>
+        <div class="el-show-interviewInfo">
+            <div><img src="/img/mid-top.png" alt="" width="80px" height="80px"></div>
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    new Vue({
+        el: '#app',
+        data:{
+            name: 'CCLUB 视频面试',
+            interviewInfo:{}
+        },
+        created(){
+            this.getInterviewInfo();
+        },
+        methods:{
+            async getInterviewInfo(){
+                let result=await axios.get('/getOneInterviewInfo');
+                this.interviewInfo=result.data;
+            }
+        }
+    })
+</script>
 </html>

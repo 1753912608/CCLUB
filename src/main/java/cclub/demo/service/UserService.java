@@ -1,6 +1,7 @@
 package cclub.demo.service;
 
 
+import cclub.demo.dao.Interview;
 import cclub.demo.dao.User;
 
 public interface UserService {
@@ -38,4 +39,6 @@ public interface UserService {
      * 根据用户id获取用户信息
      */
     User getUserInfo(String user_id);
+
+
 }

@@ -128,4 +128,9 @@ public class InterviewServiceImpl implements InterviewService {
     public String getResumeUrl(String resume_interview_id) {
         return interviewMapper.getResumeUrl(resume_interview_id);
     }
+
+    @Override
+    public Interview getOneInterviewInfo(String interview_code) {
+        return interviewMapper.getOneInterviewInfo(interview_code);
+    }
 }

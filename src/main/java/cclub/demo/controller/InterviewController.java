@@ -2,7 +2,7 @@ package cclub.demo.controller;
 
 import cclub.demo.dao.*;
 import cclub.demo.impl.InterviewServiceImpl;
-import mailDemoUtils;
+import cclub.demo.impl.mailServiceImpl.mailDemoUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -243,5 +243,22 @@ public class InterviewController {
     public void saveInterviewCode(String interview_code,HttpServletRequest request){
         HttpSession session=request.getSession();
         session.setAttribute(SessionInfo.Session_Interview_code,interview_code);
+    }
+
+
+
+
+    /**
+     *
+     * @param request
+     * @return
+     * 根据用户点击过的视频面试接入码得到该视频面试的信息
+     */
+    @ResponseBody
+    @RequestMapping("/getOneInterviewInfo")
+    public Interview getOneInterviewInfo(HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String interview_code=(String)session.getAttribute(SessionInfo.Session_Interview_code);
+        return interviewService.getOneInterviewInfo(interview_code);
     }
 }

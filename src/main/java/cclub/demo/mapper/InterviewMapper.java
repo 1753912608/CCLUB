@@ -131,4 +131,14 @@ public interface InterviewMapper {
     String getResumeUrl(String resume_interview_id);
 
 
+
+
+    /**
+     *
+     * @param interview_code
+     * @return
+     * 根据用户点击过的视频面试接入码得到该视频面试的信息
+     */
+    @Select("select * from interview where interview_candidate_code=#{interview_code} or interview_judge_code=#{interview_code}")
+    Interview getOneInterviewInfo(String interview_code);
 }
