@@ -3,6 +3,7 @@ package cclub.demo.controller;
 import cclub.demo.dao.*;
 import cclub.demo.impl.InterviewServiceImpl;
 import cclub.demo.impl.mailServiceImpl.mailDemoUtils;
+import cclub.demo.impl.redisUtils.RedisServiceImpl;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -26,6 +29,9 @@ public class InterviewController {
 
      @Autowired
      private mailDemoUtils mailDemoUtils;
+
+     @Autowired
+     private RedisServiceImpl redisService;
 
 
     /**
@@ -64,6 +70,7 @@ public class InterviewController {
                 interview_recording,interview_candidate_resume,list.get(3),list.get(2),list.get(0),list.get(1),"00");
         try{
             //事务提交处理
+            redisService.saveMyCreatedInterview(user_id,new ArrayList<>(Arrays.asList(interview)),false);
             interviewService.createInterview(interview);
             if(interview_candidate_resume==1){
                 FileUtils.copyInputStreamToFile(resume.getInputStream(),new File("src/main/resources/static/"+filesrc));
@@ -85,10 +92,16 @@ public class InterviewController {
      */
     @ResponseBody
     @RequestMapping("/getMyCreateInterviewList")
-    public List<Interview>getMyCreateInterviewList(HttpServletRequest request){
+    public List<?>getMyCreateInterviewList(HttpServletRequest request){
         HttpSession session=request.getSession();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
-        return interviewService.getMyCreateInterviewList(user_id);
+        List<?> interviewList=redisService.getMyCreatedInterview(user_id);
+        if(interviewList.size()==0){
+            List<Interview>list= interviewService.getMyCreateInterviewList(user_id);
+            redisService.saveMyCreatedInterview(user_id,list,true);
+            return list;
+        }
+        return interviewList;
     }
 
 

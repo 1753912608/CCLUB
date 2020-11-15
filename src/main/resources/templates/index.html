@@ -133,17 +133,17 @@
                                     <el-table-column prop="" label="操作" width="180">
                                         <template slot-scope="scope">
                                             <p>
-                                            <span style="float:left;" v-show="scope.row.interview_room_state==='01' || scope.row.interview_room_state=='10'">
+                                            <span style="float:left;" v-show="scope.row.interview_room_state==='01' || scope.row.interview_room_state==='10' || scope.row.interview_room_state==='00'">
                                                 <a href="javascript:void(0);" class="el-font-color_link" @click="cancel_interview_open(scope.row.interview_id)">取消</a>
                                             </span>
-                                                <span style="float:left;margin-left:15px;" v-show="scope.row.interview_room_state==='01' || scope.row.interview_room_state=='10'">
+                                                <span style="float:left;margin-left:15px;" v-show="scope.row.interview_room_state==='01' || scope.row.interview_room_state=='10' || scope.row.interview_room_state==='00'">
                                                 <a href="javascript:void(0);" class="el-font-color_link" @click="modify_interview_open(scope.row)">编辑面试</a>
                                             </span>
-                                                <span style="float:left;margin-left:15px;">
+                                            <span style="float:left;margin-left:15px;">
                                                 <a href="javascript:void(0);" class="el-font-color_link" @click="delete_interview_open(scope.row.interview_id)">删除</a>
                                             </span>
                                             </p>
-                                            <p style="padding-top:30px;" v-show="scope.row.interview_room_state==='01' || scope.row.interview_room_state=='10'">
+                                            <p style="padding-top:30px;" v-show="scope.row.interview_room_state==='01' || scope.row.interview_room_state=='10' || scope.row.interview_room_state==='00'">
                                                 <a href="javascript:void(0);" class="el-font-color_link" @click="end_interview_open(scope.row.interview_id)">结束面试</a>
                                             </p>
                                         </template>
@@ -376,6 +376,7 @@
             recordingList:[]
         },
         created(){
+            this.nowTime=new Date();
             this.getUserInfo();
             this.getMyCreateInterviewList();
             this.getMyCreateInterviewRemarksList();
@@ -499,7 +500,7 @@
                 this.dialogVisible_my_create=false;
                 let params=new FormData();
                 let that=this.form.date.date2;
-                let date=that.getFullYear()+"-"+(parseInt(that.getMonth())+1)+"-"+that.getDate()+" "+that.getHours()+":"+that.getMinutes()
+                let date=that.getFullYear()+"-"+(parseInt(that.getMonth())+1)+"-"+that.getDate()+" "+that.getHours()+":"+that.getMinutes();
                 params.append("interview_begin_time",date);
                 params.append("interview_company_name",this.form.company);
                 params.append("interview_candidate_position",this.form.position);
@@ -545,7 +546,8 @@
             },
             async getMyCreateInterviewList(){
                 let result=await axios.get('/getMyCreateInterviewList');
-                this.tableData=result.data;
+                this.tableData=result.data[0];
+                console.log(result.data);
                 this.pageSize=this.tableData.length/5;
                 this.pageSize*=10;
             },

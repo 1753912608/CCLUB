@@ -208,4 +208,28 @@ public class Interview {
     public String getInterview_room_state() {
         return interview_room_state;
     }
+
+    @Override
+    public String toString() {
+        return "Interview{" +
+                "interview_id='" + interview_id + '\'' +
+                ", interview_create_user_id='" + interview_create_user_id + '\'' +
+                ", interview_begin_time='" + interview_begin_time + '\'' +
+                ", interview_company_name='" + interview_company_name + '\'' +
+                ", interview_candidate_position='" + interview_candidate_position + '\'' +
+                ", interview_candidate_phone='" + interview_candidate_phone + '\'' +
+                ", interview_candidate_name='" + interview_candidate_name + '\'' +
+                ", interview_candidate_mail='" + interview_candidate_mail + '\'' +
+                ", interview_judge_phone='" + interview_judge_phone + '\'' +
+                ", interview_judge_name='" + interview_judge_name + '\'' +
+                ", interview_judge_mail='" + interview_judge_mail + '\'' +
+                ", interview_recording=" + interview_recording +
+                ", interview_candidate_resume=" + interview_candidate_resume +
+                ", interview_invitation_judge_notice='" + interview_invitation_judge_notice + '\'' +
+                ", interview_invitation_candidate_notice='" + interview_invitation_candidate_notice + '\'' +
+                ", interview_candidate_code='" + interview_candidate_code + '\'' +
+                ", interview_judge_code='" + interview_judge_code + '\'' +
+                ", interview_room_state='" + interview_room_state + '\'' +
+                '}';
+    }
 }

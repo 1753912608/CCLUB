@@ -1,9 +1,13 @@
 package cclub.demo.impl.redisUtils;
 
+import cclub.demo.dao.Interview;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 
@@ -34,5 +38,32 @@ public class RedisServiceImpl {
      */
     public String getPhoneCode(String rand_uuid){
         return (String)redisTemplate.opsForValue().get(rand_uuid);
+    }
+
+
+
+    /**
+     *
+     * @param user_id
+     * @param list
+     * 将新创建的视频面试的信息缓存到redis
+     */
+    public void saveMyCreatedInterview(String user_id, List<?> list,boolean init){
+        if(init)
+            redisTemplate.opsForList().leftPushAll("interview:interview_id:"+user_id,list);
+        else
+            redisTemplate.opsForList().leftPush("interview:interview_id:"+user_id,list.get(0));
+    }
+
+
+
+    /**
+     *
+     * @param user_id
+     * @return
+     * 在缓存中获取用户创建的视频面试
+     */
+    public List<?> getMyCreatedInterview(String user_id){
+        return redisTemplate.opsForList().range("interview:interview_id:"+user_id,0,-1);
     }
 }
