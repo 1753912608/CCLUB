@@ -7,16 +7,46 @@
     <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <style>
+        .el-a-style{
+            text-decoration:none;
+            font-size:14px;
+            color:#8b8f94;
+        }
+    </style>
 </head>
 <body>
 <div id="app">
-    {{name}}
+    <div style="width:100%;height:40px;">
+        <div style="padding-top:10px;">
+            <span style="font-size:24px;margin-left:30px;">{{name}}</span>
+            <span style="margin-left:1100px;"><a href="javascript:void(0);" class="el-a-style">设备检测</a></span>
+            <span style="margin-left:30px;"><a href="javascript:void(0);" class="el-a-style">帮助中心</a></span>
+        </div>
+    </div>
+    <el-divider></el-divider>
+    <div style="margin-top:10px;">
+        <div style="float:left;margin-left:50px;">
+            <video width="620" height="440" controls>
+                <source src="/video/movie.mp4" type="video/mp4">
+                <source src="/video/movie.ogg" type="video/ogg">
+                您的浏览器不支持Video标签。
+            </video>
+        </div>
+        <div style="float:left;margin-left:50px;">
+            <video width="620" height="440" controls>
+                <source src="/video/movie.mp4" type="video/mp4">
+                <source src="/video/movie.ogg" type="video/ogg">
+                您的浏览器不支持Video标签。
+            </video>
+        </div>
+    </div>
 </div>
 <script>
     new Vue({
         el :'#app',
         data:{
-            name: 'CCLUB视频面试页面'
+            name: 'CCLUB 视频面试'
         },
         created() {
 

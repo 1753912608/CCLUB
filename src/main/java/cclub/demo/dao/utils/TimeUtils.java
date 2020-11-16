@@ -14,6 +14,6 @@ public class TimeUtils {
     public static boolean IsExpireTime(String interview_begin_time){
         int day=(interview_begin_time.charAt(8)-'0')*10+interview_begin_time.charAt(9)-'0';
         Calendar now=Calendar.getInstance();
-        return now.get(Calendar.DAY_OF_MONTH)==day;
+        return now.get(Calendar.DAY_OF_MONTH)<day;
     }
 }
