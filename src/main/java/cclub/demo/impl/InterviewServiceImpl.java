@@ -4,6 +4,7 @@ import cclub.demo.dao.Interview;
 import cclub.demo.dao.NoticeTemplate;
 import cclub.demo.dao.Rand;
 import cclub.demo.dao.remarks;
+import cclub.demo.dao.utils.TimeUtils;
 import cclub.demo.mapper.InterviewMapper;
 import cclub.demo.service.InterviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class InterviewServiceImpl implements InterviewService {
 
     @Override
     public List<Interview> getMyCreateInterviewList(String user_id) {
-        return interviewMapper.getMyCreateInterviewList(user_id);
+        return handleInterviewList(interviewMapper.getMyCreateInterviewList(user_id));
     }
 
     @Override
@@ -132,5 +133,22 @@ public class InterviewServiceImpl implements InterviewService {
     @Override
     public Interview getOneInterviewInfo(String interview_code) {
         return interviewMapper.getOneInterviewInfo(interview_code);
+    }
+
+
+    /**
+     *
+     * @param list
+     * @return
+     * 将时间过期的视频面试数据进行筛选处理
+     */
+    private List<Interview> handleInterviewList(List<Interview>list){
+        for(Interview view:list){
+            if(TimeUtils.IsExpireTime(view.getInterview_begin_time())){
+                view.setInterview_room_state("33");
+                endInterviewState(view.getInterview_id(),"33");
+            }
+        }
+        return list;
     }
 }

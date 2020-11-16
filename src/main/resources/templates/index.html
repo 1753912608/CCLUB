@@ -546,7 +546,7 @@
             },
             async getMyCreateInterviewList(){
                 let result=await axios.get('/getMyCreateInterviewList');
-                this.tableData=result.data[0];
+                this.tableData=result.data;
                 console.log(result.data);
                 this.pageSize=this.tableData.length/5;
                 this.pageSize*=10;

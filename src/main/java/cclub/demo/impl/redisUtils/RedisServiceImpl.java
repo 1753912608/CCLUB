@@ -41,29 +41,4 @@ public class RedisServiceImpl {
     }
 
 
-
-    /**
-     *
-     * @param user_id
-     * @param list
-     * 将新创建的视频面试的信息缓存到redis
-     */
-    public void saveMyCreatedInterview(String user_id, List<?> list,boolean init){
-        if(init)
-            redisTemplate.opsForList().leftPushAll("interview:interview_id:"+user_id,list);
-        else
-            redisTemplate.opsForList().leftPush("interview:interview_id:"+user_id,list.get(0));
-    }
-
-
-
-    /**
-     *
-     * @param user_id
-     * @return
-     * 在缓存中获取用户创建的视频面试
-     */
-    public List<?> getMyCreatedInterview(String user_id){
-        return redisTemplate.opsForList().range("interview:interview_id:"+user_id,0,-1);
-    }
 }

@@ -70,7 +70,6 @@ public class InterviewController {
                 interview_recording,interview_candidate_resume,list.get(3),list.get(2),list.get(0),list.get(1),"00");
         try{
             //事务提交处理
-            redisService.saveMyCreatedInterview(user_id,new ArrayList<>(Arrays.asList(interview)),false);
             interviewService.createInterview(interview);
             if(interview_candidate_resume==1){
                 FileUtils.copyInputStreamToFile(resume.getInputStream(),new File("src/main/resources/static/"+filesrc));
@@ -92,16 +91,11 @@ public class InterviewController {
      */
     @ResponseBody
     @RequestMapping("/getMyCreateInterviewList")
-    public List<?>getMyCreateInterviewList(HttpServletRequest request){
+    public List<Interview>getMyCreateInterviewList(HttpServletRequest request){
         HttpSession session=request.getSession();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
-        List<?> interviewList=redisService.getMyCreatedInterview(user_id);
-        if(interviewList.size()==0){
-            List<Interview>list= interviewService.getMyCreateInterviewList(user_id);
-            redisService.saveMyCreatedInterview(user_id,list,true);
-            return list;
-        }
-        return interviewList;
+        List<Interview>list= interviewService.getMyCreateInterviewList(user_id);
+        return list;
     }
 
 
@@ -113,7 +107,8 @@ public class InterviewController {
      */
     @ResponseBody
     @RequestMapping("/delete_interview")
-    public int delete_interview(String interview_id){
+    public int delete_interview(String interview_id,
+                                String index){
         return interviewService.deleteInterview(interview_id);
     }
 
