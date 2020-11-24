@@ -46,4 +46,10 @@ public class PageController {
     public String test_interview_end(){
         return "interview_end";
     }
+
+
+    @RequestMapping("/Test")
+    public String test(){
+        return "test";
+    }
 }
