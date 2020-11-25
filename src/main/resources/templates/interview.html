@@ -7,6 +7,7 @@
     <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <script type="text/javascript" src="js/ckplayer/ckplayer.js"></script>
     <style>
         .el-a-style{
             text-decoration:none;
@@ -27,11 +28,7 @@
     <el-divider></el-divider>
     <div style="margin-top:10px;">
         <div style="float:left;margin-left:50px;">
-            <video width="620" height="440" controls>
-                <source src="/video/movie.mp4" type="video/mp4">
-                <source src="/video/movie.ogg" type="video/ogg">
-                您的浏览器不支持Video标签。
-            </video>
+            <div id="video" style="width:620px;height:440px"></div>
         </div>
         <div style="float:left;margin-left:50px;">
             <video width="620" height="440" controls>
@@ -49,10 +46,19 @@
             name: 'CCLUB 视频面试'
         },
         created() {
-
+            this.init();
         },
         methods:{
-
+            init(){
+                var videoObject={
+                  container: '#video',
+                  variable: 'player',
+                  autoplay: true,
+                  live: true,
+                  video: 'rtmp://127.0.0.1:1935/live/home'
+                };
+                var player=new ckplayer(videoObject);
+            }
         }
     })
 </script>

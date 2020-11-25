@@ -148,7 +148,6 @@ public class InterviewServiceImpl implements InterviewService {
                 view.setInterview_room_state("33");
                 endInterviewState(view.getInterview_id(),"33");
             }
-            System.out.println(view.toString());
         }
         return list;
     }

@@ -499,8 +499,9 @@
             async create_Interview(){
                 this.dialogVisible_my_create=false;
                 let params=new FormData();
-                let that=this.form.date.date2;
-                let date=that.getFullYear()+"-"+(parseInt(that.getMonth())+1)+"-"+that.getDate()+" "+that.getHours()+":"+that.getMinutes();
+                let date1=this.form.date.date1;
+                let date2=this.form.date.date2;
+                let date=date1.getFullYear()+"-"+(parseInt(date1.getMonth())+1)+"-"+date1.getDate()+" "+date2.getHours()+":"+date2.getMinutes();
                 params.append("interview_begin_time",date);
                 params.append("interview_company_name",this.form.company);
                 params.append("interview_candidate_position",this.form.position);
