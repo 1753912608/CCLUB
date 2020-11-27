@@ -37,7 +37,7 @@ public class PageController {
 
 
     @RequestMapping("/test_interview")
-    public String test_interview(){
+    public String test_interview(String code){
         return "interview";
     }
 

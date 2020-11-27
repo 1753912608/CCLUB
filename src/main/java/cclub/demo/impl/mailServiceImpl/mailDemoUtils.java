@@ -27,11 +27,11 @@ public class mailDemoUtils {
     }
 
 
-    public void sendModifyTemplateNotice(String to,String name,String newTime,String company,String position,String user_id){
+    public void sendModifyTemplateNotice(String to,String content){
         //邮箱内容
         StringBuffer sb = new StringBuffer();
-        sb.append("<!DOCTYPE>"+"<div bgcolor='#f1fcfa'   style='border:1px solid #d9f4ee; font-size:14px; line-height:22px; color:#005aa0;padding-left:1px;padding-top:5px;   padding-bottom:5px;'><span style='font-weight:bold;'>温馨提示：</span>"
-                + "<div style='width:950px;font-family:arial;'>亲爱的"+name+"同学你好,已修改"+company+"公司的"+position+"职位的面试时间为"+newTime+",如有特殊情况可联系hr:"+user_id+"<br/><h2 style='color:green'></h2><br/>本邮件由系统自动发出，请勿回复。<br/>感谢您的使用。<br/>茗少集团科技有限公司</div>"
+        sb.append("<!DOCTYPE>"+"<div bgcolor='#f1fcfa'   style='border:1px solid #d9f4ee; font-size:14px; line-height:22px;padding-left:1px;padding-top:5px;   padding-bottom:5px;'><span style='font-weight:bold;'>温馨提示：</span>"
+                + "<div style='width:950px;font-family:arial;'>"+content+"<br/>感谢您的使用。<br/>茗少集团科技有限公司</div>"
                 +"</div>");
         send(user,password,host,from,to,sb);
     }
