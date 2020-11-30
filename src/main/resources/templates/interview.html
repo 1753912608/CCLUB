@@ -27,23 +27,32 @@
     </div>
     <el-divider></el-divider>
     <div style="margin-top:10px;">
-        <div style="float:left;margin-left:50px;">
-            <div id="video" style="width:620px;height:440px"></div>
+        <div style="float:left;margin-left:150px;">
+            <div id="video" style="width:960px;height:580px"></div>
         </div>
-        <div style="float:left;margin-left:50px;">
-            <video width="620" height="440" controls>
-                <source src="/video/movie.mp4" type="video/mp4">
-                <source src="/video/movie.ogg" type="video/ogg">
-                您的浏览器不支持Video标签。
-            </video>
+        <div style="float:left;">
+            <div style="">
+                <div id="video1" style="width:280px;height:180px"></div>
+            </div>
+            <div style="width:280px;height:350px;background-color:rgb(240,240,240);" id="chatContent">
+
+            </div>
+            <div style="width:280px;height:50px;background-color:rgb(60,60,60)">
+                <div style="float:left;"><el-input v-model="input" placeholder="请输入内容" style="width:210px;padding-top:5px;"></el-input></div>
+                <div style="float:left;margin-top:5px;"><el-button type="primary">发送</el-button></div>
+            </div>
         </div>
+    </div>
+    <div>
+
     </div>
 </div>
 <script>
     new Vue({
         el :'#app',
         data:{
-            name: 'CCLUB 视频面试'
+            name: 'CCLUB 视频面试',
+            input: ''
         },
         created() {
             this.init();
@@ -58,6 +67,14 @@
                   video: 'rtmp://127.0.0.1:1935/live/home'
                 };
                 var player=new ckplayer(videoObject);
+                var vedioObject1={
+                    container: '#video1',
+                    variable: 'player',
+                    autoplay: true,
+                    live: true,
+                    video: 'rtmp://127.0.0.1:1935/live/home1'
+                }
+                var player1=new ckplayer(vedioObject1);
             }
         }
     })

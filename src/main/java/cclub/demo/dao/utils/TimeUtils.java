@@ -12,9 +12,12 @@ public class TimeUtils {
      * 判断视频面试是否时间过期结束(默认为次日过期)
      */
     public static boolean IsExpireTime(String interview_begin_time){
-        int day=(interview_begin_time.charAt(8)-'0')*10+interview_begin_time.charAt(9)-'0';
-        int month=(interview_begin_time.charAt(5)-'0')*10+interview_begin_time.charAt(6)-'0';
+        String[] time=interview_begin_time.split(" ")[0].split("-");
+        int day=Integer.parseInt(time[1]);
+        int month=Integer.parseInt(time[2]);
         Calendar now=Calendar.getInstance();
-        return now.get(Calendar.DAY_OF_MONTH)>day||now.get(Calendar.MONTH)+1>month;
+        if(now.get(Calendar.MONTH)+1<month)return true;
+        else if(now.get(Calendar.DAY_OF_MONTH)<day&&now.get(Calendar.MONTH)+1==month)return true;
+        else return false;
     }
 }

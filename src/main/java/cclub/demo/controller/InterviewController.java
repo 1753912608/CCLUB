@@ -52,6 +52,7 @@ public class InterviewController {
                                @RequestParam(value = "resume",required = false) MultipartFile resume)
     {
         String newFileName=interview_company_name+' '+interview_candidate_name+' '+interview_candidate_position;
+        System.out.println(interview_begin_time+"======");
         String filename="",suffex="",filesrc="";
         if(interview_candidate_resume==1){
             filename=resume.getOriginalFilename();
@@ -74,8 +75,8 @@ public class InterviewController {
                 interviewService.insertCandidateResume(interview_id,filesrc);
             }
             //将视频面试信息发送到邮箱
-            mailDemoUtils.sendModifyTemplateNotice(interview_candidate_mail,list.get(2));
-            mailDemoUtils.sendModifyTemplateNotice(interview_judge_mail,list.get(3));
+//            mailDemoUtils.sendModifyTemplateNotice(interview_candidate_mail,list.get(2));
+//            mailDemoUtils.sendModifyTemplateNotice(interview_judge_mail,list.get(3));
         }catch (Exception e){
             e.printStackTrace();
             return 0;
@@ -96,7 +97,6 @@ public class InterviewController {
         HttpSession session=request.getSession();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
         List<Interview>list= interviewService.getMyCreateInterviewList(user_id);
-        System.out.println(list.get(0).getInterview_invitation_candidate_notice());
         return list;
     }
 
