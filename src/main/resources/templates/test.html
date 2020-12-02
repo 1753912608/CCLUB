@@ -1,25 +1,52 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>test</title>
-    <script src="http://vjs.zencdn.net/5.8.8/video.js"></script>
-    <link href="http://vjs.zencdn.net/5.8.8/video-js.css" rel="stylesheet">
+    <title>Demo of ACE Editor</title>
+    <!--导入js库-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
 </head>
+
 <body>
-<div>
-    <video src="" id="test" class="video-js vjs-default-skin" controls preload="auto" width="640" height="320" loop="loop" webkit-playsinline>\
-        <source src="rtmp://192.168.32.96:1935/live/home" type="rtmp/flv">
-    </video>
-</div>
-</body>
+<!--代码输入框（注意请务必设置高度，否则无法显示）-->
+<pre id="code" class="ace_editor" style="min-height:400px">
+    <textarea class="ace_text-input" style="background-color:rgb(200,200,200)">
+ #include <cstdio>
+ int main(){
+     int n,m;
+     scanf("%d %d",&n,&m);
+     printf("%d",n+m);
+     return 0;
+ }
+         </textarea></pre>
+
 <script>
-    videojs.options.flash.swf="video.swf"
-    videojs('test').ready(function () {
-        this.play();
-    })
+    //初始化对象
+    editor = ace.edit("code");
+
+    //设置风格和语言（更多风格和语言，请到github上相应目录查看）
+    theme = "clouds"
+    language = "java"
+    editor.setTheme("ace/theme/" + theme);
+    editor.session.setMode("ace/mode/" + language);
+
+    //字体大小
+    editor.setFontSize(18);
+
+    //设置只读（true时只读，用于展示代码）
+    editor.setReadOnly(false);
+
+    //自动换行,设置为off关闭
+    editor.setOption("wrap", "free")
+
+    //启用提示菜单
+    ace.require("ace/ext/language_tools");
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
 </script>
+
+</body>
 </html>

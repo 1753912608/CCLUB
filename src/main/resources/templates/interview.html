@@ -8,6 +8,8 @@
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
     <script type="text/javascript" src="js/ckplayer/ckplayer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
     <style>
         .el-a-style{
             text-decoration:none;
@@ -15,6 +17,33 @@
             color:#8b8f94;
         }
     </style>
+    <script>
+        //初始化对象
+        editor = ace.edit("code");
+
+        //设置风格和语言（更多风格和语言，请到github上相应目录查看）
+        theme = "clouds"
+        language = "java"
+        editor.setTheme("ace/theme/" + theme);
+        editor.session.setMode("ace/mode/" + language);
+
+        //字体大小
+        editor.setFontSize(18);
+
+        //设置只读（true时只读，用于展示代码）
+        editor.setReadOnly(false);
+
+        //自动换行,设置为off关闭
+        editor.setOption("wrap", "free")
+
+        //启用提示菜单
+        ace.require("ace/ext/language_tools");
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: true,
+            enableLiveAutocompletion: true
+        });
+    </script>
 </head>
 <body>
 <div id="app">
@@ -26,33 +55,60 @@
         </div>
     </div>
     <el-divider></el-divider>
-    <div style="margin-top:10px;">
+    <div>
         <div style="float:left;margin-left:150px;">
-            <div id="video" style="width:960px;height:580px"></div>
+            <div id="CodeContent" style="width:960px;height:580px;background-color:red;">
+                <div style="margin-top:-20px;">
+                    <pre id="code" class="ace_editor" style="min-height:580px">
+                        <textarea class="ace_text-input" style="background-color:rgb(200,200,200)">
+                        #include <cstdio>
+                            int main(){
+                            int n,m;
+                            scanf("%d %d",&n,&m);
+                            printf("%d",n+m);
+                            return 0;
+                        }
+                        </textarea>
+                    </pre>
+                </div>
+            </div>
         </div>
         <div style="float:left;">
             <div style="">
                 <div id="video1" style="width:280px;height:180px"></div>
             </div>
             <div style="width:280px;height:350px;background-color:rgb(240,240,240);" id="chatContent">
-
             </div>
             <div style="width:280px;height:50px;background-color:rgb(60,60,60)">
-                <div style="float:left;"><el-input v-model="input" placeholder="请输入内容" style="width:210px;padding-top:5px;"></el-input></div>
+                <div style="float:left;">
+                    <el-input v-model="input" placeholder="请输入内容" style="width:210px;padding-top:5px;">
+                    </el-input>
+                </div>
                 <div style="float:left;margin-top:5px;"><el-button type="primary">发送</el-button></div>
             </div>
         </div>
     </div>
     <div style="padding-top:600px;margin-left:160px;">
         <div style="float:left;">
-            <a href="javascript:void(0);">
-                <img src="img/candidate_info.png" alt="" width="30px" height="30px">
-            </a>
+            <el-popover
+                    placement="bottom"
+                    title=""
+                    width="200"
+                    trigger="click"
+                    :content="{{candidateInfo}}">
+                <el-tooltip class="item" effect="dark" content="候选人信息" placement="top-start" slot="reference">
+                    <a href="javascript:void(0);">
+                        <img src="img/candidate_info.png" alt="" width="30px" height="30px">
+                    </a>
+                </el-tooltip>
+            </el-popover>
         </div>
         <div style="float:left;margin-left:15px;">
-            <a href="javascript:void(0);">
-                <img src="img/edit.png" alt="" width="30px" height="30px">
-            </a>
+            <el-tooltip class="item" effect="dark" content="添加面试评价" placement="top-start">
+                <a href="javascript:void(0);">
+                    <img src="img/edit.png" alt="" width="30px" height="30px">
+                </a>
+            </el-tooltip>
         </div>
         <div style="float:left;margin-left:400px;">
             <a href="javascript:void(0);">
@@ -69,21 +125,6 @@
                 <img src="img/break.png" alt="" width="40px" height="40px">
             </a>
         </div>
-        <div style="float:left;margin-left:480px;">
-            <a href="javascript:void(0);">
-                <img src="img/code.png" alt="" width="30px" height="30px">
-            </a>
-        </div>
-        <div style="float:left;margin-left:15px;">
-            <a href="javascript:void(0);">
-                <img src="img/share.png" alt="" width="30px" height="30px">
-            </a>
-        </div>
-        <div style="float:left;margin-left:15px;">
-            <a href="javascript:void(0);">
-                <img src="img/more.png" alt="" width="30px" height="30px">
-            </a>
-        </div>
     </div>
 </div>
 <script>
@@ -91,21 +132,15 @@
         el :'#app',
         data:{
             name: 'CCLUB 视频面试',
-            input: ''
+            input: '',
+            codeContent: '',
+            candidateInfo: ''
         },
         created() {
             this.init();
         },
         methods:{
             init(){
-                var videoObject={
-                  container: '#video',
-                  variable: 'player',
-                  autoplay: true,
-                  live: true,
-                  video: 'rtmp://127.0.0.1:1935/live/home'
-                };
-                var player=new ckplayer(videoObject);
                 var vedioObject1={
                     container: '#video1',
                     variable: 'player',
