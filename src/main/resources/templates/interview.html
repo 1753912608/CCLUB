@@ -16,63 +16,39 @@
             font-size:14px;
             color:#8b8f94;
         }
+        .img:hover{
+            width:45px;
+            height:45px;
+        }
     </style>
-    <script>
-        //初始化对象
-        editor = ace.edit("code");
-
-        //设置风格和语言（更多风格和语言，请到github上相应目录查看）
-        theme = "clouds"
-        language = "java"
-        editor.setTheme("ace/theme/" + theme);
-        editor.session.setMode("ace/mode/" + language);
-
-        //字体大小
-        editor.setFontSize(18);
-
-        //设置只读（true时只读，用于展示代码）
-        editor.setReadOnly(false);
-
-        //自动换行,设置为off关闭
-        editor.setOption("wrap", "free")
-
-        //启用提示菜单
-        ace.require("ace/ext/language_tools");
-        editor.setOptions({
-            enableBasicAutocompletion: true,
-            enableSnippets: true,
-            enableLiveAutocompletion: true
-        });
-    </script>
 </head>
 <body>
+<div style="float:left;margin-left:150px;margin-top:90px;">
+    <div style="width:960px;height:580px;margin-top:-20px;">
+        <!--代码输入框（注意请务必设置高度，否则无法显示）-->
+        <pre id="code" class="ace_editor" style="min-height:580px">
+            <textarea class="ace_text-input" style="background-color:rgb(200,200,200)">
+                    #include <cstdio>
+                    int main(){
+                    int n,m;
+                    scanf("%d %d",&n,&m);
+                    printf("%d",n+m);
+                    return 0;
+                    }
+            </textarea>
+        </pre>
+    </div>
+</div>
 <div id="app">
     <div style="width:100%;height:40px;">
         <div style="padding-top:10px;">
-            <span style="font-size:24px;margin-left:30px;">{{name}}</span>
+            <span style="font-size:24px;margin-left:-1100px;">{{name}}</span>
             <span style="margin-left:1100px;"><a href="javascript:void(0);" class="el-a-style">设备检测</a></span>
             <span style="margin-left:30px;"><a href="javascript:void(0);" class="el-a-style">帮助中心</a></span>
         </div>
     </div>
     <el-divider></el-divider>
     <div>
-        <div style="float:left;margin-left:150px;">
-            <div id="CodeContent" style="width:960px;height:580px;background-color:red;">
-                <div style="margin-top:-20px;">
-                    <pre id="code" class="ace_editor" style="min-height:580px">
-                        <textarea class="ace_text-input" style="background-color:rgb(200,200,200)">
-                        #include <cstdio>
-                            int main(){
-                            int n,m;
-                            scanf("%d %d",&n,&m);
-                            printf("%d",n+m);
-                            return 0;
-                        }
-                        </textarea>
-                    </pre>
-                </div>
-            </div>
-        </div>
         <div style="float:left;">
             <div style="">
                 <div id="video1" style="width:280px;height:180px"></div>
@@ -88,59 +64,114 @@
             </div>
         </div>
     </div>
-    <div style="padding-top:600px;margin-left:160px;">
+    <div style="margin-top:630px;margin-left:160px;">
         <div style="float:left;">
-            <el-popover
-                    placement="bottom"
-                    title=""
-                    width="200"
-                    trigger="click"
-                    :content="{{candidateInfo}}">
-                <el-tooltip class="item" effect="dark" content="候选人信息" placement="top-start" slot="reference">
-                    <a href="javascript:void(0);">
-                        <img src="img/candidate_info.png" alt="" width="30px" height="30px">
-                    </a>
-                </el-tooltip>
-            </el-popover>
+            <el-tooltip class="item" effect="dark" content="候选人信息" placement="top-start" slot="reference">
+                <a href="javascript:void(0);" @click="openCandidateInfo">
+                    <img src="img/candidate_info.png" alt="" width="30px" height="30px">
+                </a>
+            </el-tooltip>
         </div>
         <div style="float:left;margin-left:15px;">
             <el-tooltip class="item" effect="dark" content="添加面试评价" placement="top-start">
-                <a href="javascript:void(0);">
+                <a href="javascript:void(0);" @click="dialogVisible_remarks_interview=true">
                     <img src="img/edit.png" alt="" width="30px" height="30px">
                 </a>
             </el-tooltip>
         </div>
         <div style="float:left;margin-left:400px;">
-            <a href="javascript:void(0);">
-                <img src="img/volume_open.png" alt="" width="40px" height="40px">
+            <a href="javascript:void(0);" @click="changeVolume">
+                <img :src="volumeImg" alt="" width="40px" height="40px" class="img">
+            </a>
+        </div>
+        <div style="float:left;margin-left:15px;">
+            <a href="javascript:void(0);" @click="changeVedio">
+                <img :src="vedioImg" alt="" width="40px" height="40px" class="img">
             </a>
         </div>
         <div style="float:left;margin-left:15px;">
             <a href="javascript:void(0);">
-                <img src="img/vedio_open.png" alt="" width="40px" height="40px">
-            </a>
-        </div>
-        <div style="float:left;margin-left:15px;">
-            <a href="javascript:void(0);">
-                <img src="img/break.png" alt="" width="40px" height="40px">
+                <img src="img/break.png" alt="" width="40px" height="40px" class="img">
             </a>
         </div>
     </div>
+    <!--备注面试-->
+    <el-dialog title="面试反馈" :visible.sync="dialogVisible_remarks_interview" width="30%" before-close="handleClose">
+        <el-form  label-width="0px">
+            <el-form-item style="margin-top:-20px;">
+                <p>结果</p>
+                <p style="font-size:13px;color:#8b8f94;margin-top:-30px;">请给出候选人的面试结果</p>
+            </el-form-item>
+            <el-form-item style="margin-top:-45px;">
+                <template>
+                    <el-radio v-model="remarks.radio" label="1">通过</el-radio>
+                    <el-radio v-model="remarks.radio" label="2">拒绝</el-radio>
+                    <el-radio v-model="remarks.radio" label="3">待定</el-radio>
+                </template>
+            </el-form-item>
+            <el-form-item style="margin-top:-25px;">
+                <p>综合评价</p>
+                <p style="font-size:13px;color:#8b8f94;margin-top:-30px;">请详细说明候选人的优势、不足及任何值得注意的方面</p>
+            </el-form-item>
+            <el-form-item style="margin-top:-30px;">
+                <el-input type="textarea" :rows="4" placeholder="请输入内容" v-model="remarks.textarea">
+                </el-input>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible_remarks_interview = false">取 消</el-button>
+            <el-button type="primary" @click="">确 定</el-button>
+        </span>
+    </el-dialog>
 </div>
+</body>
+<script>
+    //初始化对象
+    editor = ace.edit("code");
+
+    //设置风格和语言（更多风格和语言，请到github上相应目录查看）
+    theme = "clouds"
+    language = "java"
+    editor.setTheme("ace/theme/" + theme);
+    editor.session.setMode("ace/mode/" + language);
+
+    //字体大小
+    editor.setFontSize(18);
+
+    //设置只读（true时只读，用于展示代码）
+    editor.setReadOnly(false);
+
+    //自动换行,设置为off关闭
+    editor.setOption("wrap", "free")
+
+    //启用提示菜单
+    ace.require("ace/ext/language_tools");
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
+</script>
 <script>
     new Vue({
         el :'#app',
         data:{
             name: 'CCLUB 视频面试',
             input: '',
-            codeContent: '',
-            candidateInfo: ''
+            candidateInfo: '',
+            dialogVisible_remarks_interview: false,
+            remarks:{
+                radio: '',
+                textarea: ''
+            },
+            volumeImg: 'img/volume_open.png',
+            vedioImg: 'img/vedio_open.png'
         },
         created() {
             this.init();
         },
-        methods:{
-            init(){
+        methods: {
+            async init() {
                 var vedioObject1={
                     container: '#video1',
                     variable: 'player',
@@ -149,9 +180,48 @@
                     video: 'rtmp://127.0.0.1:1935/live/home1'
                 }
                 var player1=new ckplayer(vedioObject1);
+
+            },
+            openCandidateInfo(){
+                this.candidateInfo='';
+                this.getCandidateInfo('2020-12-03 10:00:00','融360','后端研发工程师','肖茗夫','18229583486','1753972608@qq.com');
+                this.$notify({
+                    title: '候选人信息',
+                    message: this.candidateInfo,
+                    duration: 0,
+                    position: 'bottom-left',
+                    dangerouslyUseHTMLString: true
+                });
+            },
+            getCandidateInfo(time,company,position,name,phone,mail){
+                this.candidateInfo+=('面试时间'+'&nbsp;&nbsp;&nbsp;'+time+'</br>');
+                this.candidateInfo+=('公司'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+company+'</br>');
+                this.candidateInfo+=('应聘职位'+'&nbsp;&nbsp;&nbsp;'+position+'</br>');
+                this.candidateInfo+=('候选人'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+name+'</br>');
+                this.candidateInfo+=('手机号'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+phone+'</br>');
+                this.candidateInfo+=('邮箱'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+mail+'</br>');
+            },
+            setInterviewRemarks(){
+
+            },
+            changeVolume(){
+                if(this.volumeImg==='img/volume_open.png'){
+                    this.volumeImg='img/volume_close.png';
+                }else{
+                    this.volumeImg='img/volume_open.png';
+                }
+            },
+            changeVedio(){
+                if(this.vedioImg==='img/vedio_open.png'){
+                    this.vedioImg='img/vedio_close.png';
+                }else{
+                    this.vedioImg='img/vedio_open.png';
+                }
+            },
+            breakInterview(){
+
             }
         }
     })
 </script>
-</body>
 </html>
