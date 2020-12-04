@@ -53,4 +53,10 @@ public class PageController {
         return "test";
     }
 
+
+    @RequestMapping("/test_createWrittenExam")
+    public String createWrittenExam(){
+        return "create_written_exam";
+    }
+
 }
