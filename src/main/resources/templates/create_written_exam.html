@@ -15,7 +15,7 @@
             height:30px;
             border-radius:50%;
             font-size:24px;
-            padding-left:10px;
+            padding-left:13px;
             padding-top:5px;
             padding-bottom:5px;
         }
@@ -26,16 +26,22 @@
             height:30px;
             font-size:24px;
             border-radius:50%;
-            padding-left:10px;
+            padding-left:13px;
             padding-top:5px;
             padding-bottom:5px;
         }
-        .el-form{
+        .el-form1{
             width:1340px;
-            height:800px;
+            height:480px;
             margin-top:15px;
             margin-left:80px;
             border: 1px solid #ececed;
+        }
+        .el-must{
+            background-color:#f6f6f6;
+            border:1px solid #f6f6f6;
+            font-size:12px;
+
         }
     </style>
 </head>
@@ -88,9 +94,109 @@
             </div>
         </div>
     </div>
-    <div class="el-form">
-
+    <div class="el-form1">
+        <div style="margin-left:20px;margin-top:20px;">
+            <span style="float:left;margin-top:10px;">考试名称</span>
+            <span style="float:left;margin-left:30px;">
+                <el-input v-model="exam_name" placeholder="(例如,2020年校招后端研发岗)" style="width:350px;"></el-input>
+            </span>
+        </div>
+        <div style="margin-top:80px;background-color:#ececed;width:1300px;height:1px;margin-left:20px;"></div>
+        <div style="margin-top:20px;margin-left:20px;">
+            <div style="float:left;margin-top:10px;">开始时间</div>
+            <div style="float:left;margin-left:30px;">
+                <div class="block" style="float:left;">
+                    <el-date-picker
+                            v-model="date.date1"
+                            type="date"
+                            placeholder="选择日期">
+                    </el-date-picker>
+                </div>
+                <div style="float:left;">
+                    <el-time-select v-model="date.date2"
+                            :picker-options="{start: '08:30',step: '00:15',end: '18:30'}"
+                            placeholder="选择时间">
+                    </el-time-select>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:80px;margin-left:20px;">
+            <span style="margin-top:10px;">考试时长</span>
+            <span style="margin-left:25px;">
+                <el-input v-model="time_length" placeholder="请输入内容" style="width:120px;"></el-input>
+            </span>
+            <span style="margin-top:10px;">分钟</span>
+        </div>
+        <div style="margin-top:20px;margin-left:20px;">
+            <span style="">考试开始</span>
+            <span style="margin-left:25px;">
+                <el-input v-model="ban_time" placeholder="请输入内容" style="width:120px;"></el-input>
+            </span>
+            <span>分钟后禁止进入</span>
+        </div>
+        <div style="margin-top:30px;background-color:#ececed;width:1300px;height:1px;margin-left:20px;"></div>
+        <div style="margin-left:20px;margin-top:30px;">
+            <div style="float:left;">防作弊设置</div>
+            <div style="float:left;margin-left:60px;">
+                <el-checkbox-group v-model="checkList">
+                    <el-checkbox label="打乱题目顺序"></el-checkbox>
+                    <el-checkbox label="打乱选项顺序"></el-checkbox>
+                    <el-checkbox label="打开摄像头"></el-checkbox>
+                    <el-checkbox label="检测页面跳出次数"></el-checkbox>
+                </el-checkbox-group>
+            </div>
+        </div>
+        <div style="margin-left:20px;margin-top:90px;">
+            <div style="float:left;">候选人登记信息</div>
+            <div style="float:left;">
+                <li v-for="(item,index) in list" :key="index" style="float:left;list-style:none;margin-left:25px;">
+                    <el-checkbox  v-model="item.checked">
+                        {{item.name}}
+                    </el-checkbox>
+                    <span class="el-must" v-if="item.isMust==='1'">
+                        <a href="javascript:void(0);" style="text-decoration:none;color:#5272ff;" @click="setField(item.name,item.isMust)">选填</a>
+                    </span>
+                    <span class="el-must" v-if="item.isMust==='2'">
+                        <a href="javascript:void(0);" style="text-decoration:none;color:#5272ff;" @click="setField(item.name,item.isMust)">必填</a>
+                    </span>
+                </li>
+                <span style="margin-left:30px;">
+                    <el-button type="primary" size="mini" @click="addShow">新增字段</el-button>
+                </span>
+            </div>
+        </div>
     </div>
+    <div style="margin-top:20px;width:1340px;height:80px;margin-left:80px;">
+        <div style="margin-left:500px;margin-top:15px;">
+            <span><el-button type="info" plain style="width:150px;" size="small">取消</el-button></span>
+            <span style="margin-left:30px;">
+                <el-button type="primary" style="width:150px;" size="small">保存</el-button>
+            </span>
+        </div>
+    </div>
+    <!--修改字段-->
+    <el-dialog title="编辑字段" :visible.sync="dialogVisible_field" width="30%" before-close="handleClose">
+        <div style="width:455px;height:1px;background-color:#ececed;margin-top:-22px;margin-left:-18px;"></div>
+        <el-form  label-width="0px">
+            <el-form-item style="margin-top:20px;">
+                <span>字段名称</span>
+                <span style="margin-left:30px;">
+                    <el-input v-model="addItem.name" placeholder="请输入内容" style="width:300px;" size="mini" :disabled="addItem.name.length===0?false:true"></el-input>
+                </span>
+            </el-form-item>
+            <el-form-item style="margin-top:20px;">
+                <span>是否必填</span>
+                <span style="margin-left:30px;">
+                    <el-radio v-model="addItem.isMust" label="1">选填</el-radio>
+                    <el-radio v-model="addItem.isMust" label="2">必填</el-radio>
+                </span>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible_field = false">取 消</el-button>
+            <el-button type="primary" @click="add">确 定</el-button>
+        </span>
+    </el-dialog>
 </div>
 <script>
     new Vue({
@@ -100,7 +206,31 @@
             userInfo:{
                 user_phone: '18229583486',
                 user_company: '茗少集团'
-            }
+            },
+            exam_name: '',
+            date:{
+                date1: '',
+                date2: ''
+            },
+            time_length: '',
+            ban_time: '',
+            checkList: [],
+            registration_information: [],
+            list: [{
+                name: '姓名',
+                isMust: '2'
+            },{
+                name: '电话号码',
+                isMust: '2'
+            },{
+                name: '邮箱',
+                isMust: '1'
+            }],
+            addItem:{
+                name: '',
+                isMust: '1'
+            },
+            dialogVisible_field: false
         },
         created(){
 
@@ -108,6 +238,20 @@
         methods:{
             signOut(){
 
+            },
+            addShow(){
+                this.addItem.name='';
+                this.addItem.isMust='';
+                this.dialogVisible_field=true;
+            },
+            setField(name,isMust){
+                this.addItem.name=name;
+                this.addItem.isMust=isMust;
+                this.dialogVisible_field=true;
+            },
+            add(){
+                this.list.push(this.addItem);
+                this.dialogVisible_field=false;
             }
         }
     })
