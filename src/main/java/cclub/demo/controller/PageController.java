@@ -59,4 +59,16 @@ public class PageController {
         return "create_written_exam";
     }
 
+
+    @RequestMapping("/test_editSubject")
+    public String editSubject(){
+        return "editSubject";
+    }
+
+
+    @RequestMapping("/test_addSubject")
+    public String addSubject(){
+        return "addSubject";
+    }
+
 }

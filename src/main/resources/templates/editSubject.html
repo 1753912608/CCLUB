@@ -7,22 +7,136 @@
     <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <style>
+        .number1{
+            color:#fff;
+            background-color:#5272ff;
+            width:30px;
+            height:30px;
+            border-radius:50%;
+            font-size:24px;
+            padding-left:13px;
+            padding-top:5px;
+            padding-bottom:5px;
+        }
+        .number2{
+            color:#5272ff;
+            background-color:#d0d9ff;
+            width:30px;
+            height:30px;
+            font-size:24px;
+            border-radius:50%;
+            padding-left:13px;
+            padding-top:5px;
+            padding-bottom:5px;
+        }
+        .el-form{
+            width:1340px;
+            height:300px;
+            border:1px solid #ececed;
+            margin-left:50px;
+            margin-top:10px;
+        }
+    </style>
 </head>
 <body>
 <div id="app">
-
+    <div style="margin-left:30px;margin-top:15px;font-size:24px;height:28px;">
+        <div style="float:left;">{{name}}</div>
+        <div style="float:left;margin-left:1100px;">
+            <a href="javascript:void(0);" style="text-decoration:none;color:rgb(60,60,60);font-size:14px;">视频面试</a>
+        </div>
+        <div style="float:left;margin-left:30px;">
+            <el-dropdown placement="bottom-start">
+                <span class="el-dropdown-link">{{userInfo.user_company}}
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item style="background-color:#f6f8ff;">{{userInfo.user_phone}}</el-dropdown-item>
+                    <el-dropdown-item disabled style="font-size:12px;">当前公司:</el-dropdown-item>
+                    <el-dropdown-item style="font-size:12px;">&nbsp;&nbsp;&nbsp;{{userInfo.user_company}}</el-dropdown-item>
+                    <el-dropdown-item >个人中心</el-dropdown-item>
+                    <el-dropdown-item divided>
+                        <a href="javascript:void(0);" @click="signOut" style="text-decoration:none;color:rgb(30,30,30);">
+                            退出登录
+                        </a>
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+    </div>
+    <el-divider></el-divider>
+    <div style="margin-left:50px;margin-top:30px;">
+        <span>
+            <a href="javascript:void(0);" @click="" style="color:#3e444c;text-decoration:none;"><- 返回</a>
+        </span>
+        <span style="margin-left:15px;color:#ececed;">|</span>
+        <span style="margin-left:15px;color:#3e444c;">编辑题目</span>
+    </div>
+    <div style="margin-top:30px;width:1340px;height:103px;background-color:#FBFBFF;margin-left:50px;">
+        <div style="margin-left:250px;padding-top:15px;float:left;">
+            <div class="number1">1</div>
+            <div style="color:#2b313a;font-size:12px;margin-top:15px;margin-left:-15px;">设置考试规则</div>
+        </div>
+        <div style="float:left;margin-left:350px;padding-top:15px;">
+            <div class="number1">2</div>
+            <div style="color:#8b8f94;font-size:12px;margin-top:15px;margin-left:-5px;">编辑题目</div>
+        </div>
+        <div style="float:left;margin-left:350px;padding-top:15px;">
+            <div class="number2">3</div>
+            <div style="color:#8b8f94;font-size:12px;margin-top:15px;margin-left:10px;">完成</div>
+        </div>
+    </div>
+    <div class="el-form">
+        <div style="width:1320px;margin-left:10px;margin-top:10px;background-color:#f2f5ff;height:60px;">
+            <div style="margin-left:40px;padding-top:20px;">
+                <span>试卷总分: 0分</span>
+                <span style="margin-left:20px;">试卷题数: 0题</span>
+            </div>
+        </div>
+        <div style="width:1320px;margin-left:10px;background-color:#e9f8f5;height:215px;">
+            <div style="margin-left:640px;padding-top:40px;">
+                <img src="img/exam_no_question.png" alt="" width="50px" height="50px">
+            </div>
+            <div style="margin-top:15px;margin-left:610px;">
+                暂时还没有题目
+            </div>
+            <div style="margin-left:560px;margin-top:20px;">
+                <span>
+                    <el-button type="primary" size="small" style="width:100px;">从题库中选择</el-button>
+                </span>
+                <span style="margin-left:1px;">
+                    <el-button type="primary" size="small" style="width:100px;">+ 录入新题</el-button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div style="margin-left:550px;margin-top:35px;">
+        <span>
+            <el-button type="primary" plain style="width:150px;" size="small">上一步</el-button>
+        </span>
+        <span style="margin-left:30px;">
+            <el-button type="primary" style="width:150px;" size="small">完成编辑,下一步</el-button>
+        </span>
+    </div>
 </div>
 <script>
     new Vue({
         el: '#app',
         data:{
-            name: 'CCLUB 在线笔试'
+            name: 'CCLUB 在线笔试',
+            userInfo:{
+                user_phone: '18229583486',
+                user_company: '茗少集团'
+            }
         },
         created(){
 
         },
         methods:{
+            signOut(){
 
+            }
         }
     })
 </script>
