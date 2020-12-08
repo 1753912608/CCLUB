@@ -14,7 +14,7 @@
         }
         .el-form{
             width:1340px;
-            height:800px;
+            height:970px;
             border:1px solid #d8dadb;
             margin-top:20px;
             margin-left:90px;
@@ -57,32 +57,184 @@
             </div>
             <div style="float:left;margin-left:50px;margin-top:5px;">
                 <span class="el-radio_button">
-                    <a href="javascript:void(0);" @click="" style="color:#fff;text-decoration:none;">单选题</a>
+                    <a href="javascript:void(0);" @click="switchFirst" style="color:#fff;text-decoration:none;">单选题</a>
                 </span>
                 <span class="el-question_button" style="margin-left:-5px;">
-                    <a href="javascript:void(0);" @click="" style="color:#000;text-decoration:none;">多选题</a>
+                    <a href="javascript:void(0);" @click="switchSecond" style="color:#000;text-decoration:none;">多选题</a>
                 </span>
                 <span class="el-question_button" style="margin-left:-5px;">
-                    <a href="javascript:void(0);" @click="" style="color:#000;text-decoration:none;">判断题</a>
+                    <a href="javascript:void(0);" @click="switchThird" style="color:#000;text-decoration:none;">判断题</a>
                 </span>
                 <span class="el-question_button" style="margin-left:-5px;">
-                    <a href="javascript:void(0);" @click="" style="color:#000;text-decoration:none;">填空题</a>
+                    <a href="javascript:void(0);" @click="switchFourth" style="color:#000;text-decoration:none;">填空题</a>
                 </span>
                 <span class="el-question_button" style="margin-left:-5px;border-radius:0 6px 6px 0;">
-                    <a href="javascript:void(0);" @click="" style="color:#000;text-decoration:none;">编程题</a>
+                    <a href="javascript:void(0);" @click="switchFifth" style="color:#000;text-decoration:none;">编程题</a>
                 </span>
             </div>
         </div>
         <div style="width:1340px;height:1px;background-color:#d8dadb;margin-top:56px;"></div>
-        <div></div>
+        <div style="margin-left:130px;margin-top:20px;">
+            <div style="font-size:12px;float:left;">题目</div>
+            <div style="float:left;margin-left:50px;">
+               <div style="width:742px;height:30px;background-color:#eff2ff;"></div>
+               <div>
+                   <el-input
+                           type="textarea"
+                           :rows="4"
+                           placeholder="请输入内容"
+                           v-model="subject_name">
+                   </el-input>
+               </div>
+            </div>
+        </div>
+        <div style="width:1210px;height:1px;background-color:#d8dadb;margin-top:155px;margin-left:130px;"></div>
+        <div>
+            <div style="margin-left:130px;margin-top:20px;">
+                <div style="font-size:12px;float:left;">选项</div>
+                <div style="float:left;margin-left:50px;">
+                    <div style="width:742px;height:30px;background-color:#eff2ff;"></div>
+                    <div>
+                        <el-input
+                                type="textarea"
+                                :rows="4"
+                                placeholder="请输入内容"
+                                v-model="question_A">
+                        </el-input>
+                    </div>
+                </div>
+                <div style="float:left;margin-left:15px;">
+                    <el-checkbox-group v-model="checkedQuestions" @change="" v-if="activeName==='second'">
+                        <el-checkbox  label="1" >正确答案</el-checkbox>
+                    </el-checkbox-group>
+                    <el-radio-group v-model="correct">
+                        <el-radio :label="1">正确答案</el-radio>
+                    </el-radio-group>
+                </div>
+            </div>
+            <div style="margin-left:130px;padding-top:135px;">
+                <div style="float:left;margin-left:75px;">
+                    <div style="width:742px;height:30px;background-color:#eff2ff;"></div>
+                    <div>
+                        <el-input
+                                type="textarea"
+                                :rows="4"
+                                placeholder="请输入内容"
+                                v-model="question_A">
+                        </el-input>
+                    </div>
+                </div>
+                <div style="float:left;margin-left:15px;">
+                    <el-checkbox-group v-model="checkedQuestions" @change="" v-if="activeName==='second'">
+                        <el-checkbox  label="2" >正确答案</el-checkbox>
+                    </el-checkbox-group>
+                    <el-radio-group v-model="correct">
+                        <el-radio :label="2">正确答案</el-radio>
+                    </el-radio-group>
+                </div>
+                <div style="float:left;margin-left:15px;">
+                    <a href="javascript:void(0);" @click="" style="color:red;text-decoration:none;">
+                        <i class="el-icon-delete" style="color:red;"></i>
+                        删除
+                    </a>
+                </div>
+            </div>
+            <div style="margin-left:130px;padding-top:135px;">
+                <div style="float:left;margin-left:75px;">
+                    <div style="width:742px;height:30px;background-color:#eff2ff;"></div>
+                    <div>
+                        <el-input
+                                type="textarea"
+                                :rows="4"
+                                placeholder="请输入内容"
+                                v-model="question_A">
+                        </el-input>
+                    </div>
+                </div>
+                <div style="float:left;margin-left:15px;">
+                    <el-checkbox-group v-model="checkedQuestions" @change="" v-if="activeName==='second'">
+                        <el-checkbox  label="3" >正确答案</el-checkbox>
+                    </el-checkbox-group>
+                    <el-radio-group v-model="correct">
+                        <el-radio :label="3">正确答案</el-radio>
+                    </el-radio-group>
+                </div>
+                <div style="float:left;margin-left:15px;">
+                    <a href="javascript:void(0);" @click="" style="color:red;text-decoration:none;">
+                        <i class="el-icon-delete" style="color:red;"></i>
+                        删除
+                    </a>
+                </div>
+            </div>
+            <div style="margin-left:130px;padding-top:135px;">
+                <div style="float:left;margin-left:75px;">
+                    <div style="width:742px;height:30px;background-color:#eff2ff;"></div>
+                    <div>
+                        <el-input
+                                type="textarea"
+                                :rows="4"
+                                placeholder="请输入内容"
+                                v-model="question_A">
+                        </el-input>
+                    </div>
+                </div>
+                <div style="float:left;margin-left:15px;">
+                    <el-checkbox-group v-model="checkedQuestions" @change="" v-if="activeName==='second'">
+                        <el-checkbox  label="4" >正确答案</el-checkbox>
+                    </el-checkbox-group>
+                    <el-radio-group v-model="correct">
+                        <el-radio :label="4">正确答案</el-radio>
+                    </el-radio-group>
+                </div>
+                <div style="float:left;margin-left:15px;">
+                    <a href="javascript:void(0);" @click="" style="color:red;text-decoration:none;">
+                        <i class="el-icon-delete" style="color:red;"></i>
+                        删除
+                    </a>
+                </div>
+            </div>
+            <div style="margin-left:200px;padding-top:165px;font-size:12px;">
+                <a href="javascript:void(0);" @click="" style="color:#5272ff;text-decoration:none;">
+                    <i class="el-icon-circle-plus"></i>
+                    增加选项
+                </a>
+            </div>
+            <div style="width:1210px;height:1px;background-color:#d8dadb;margin-top:30px;margin-left:130px;"></div>
+            <div style="margin-left:130px;margin-top:30px;font-size:12px;">
+                <span style="float:left;">难度</span>
+                <span style="float:left;margin-left:40px;"><el-rate v-model="question_color"></el-rate></span>
+                <span style="float:left;margin-left:50px;">默认分值</span>
+                <span style="float:left;margin-left:30px;margin-top:-5px;">
+                    <el-input v-model="question_score" style="width:80px;" size="small"></el-input>&nbsp;分
+                </span>
+                <span style="float:left;margin-left:50px;">备注</span>
+                <span style="float:left;margin-left:30px;margin-top:-5px;">
+                    <el-input v-model="question_remarks" style="width:160px;" size="small"></el-input>
+                </span>
+            </div>
+        </div>
     </div>
-    <div></div>
+    <div style="margin-left:600px;margin-top:30px;height:70px;">
+        <span>
+            <el-button type="primary" plain style="width:120px;" size="small">继续添加下一题</el-button>
+        </span>
+        <span style="margin-left:5px;">
+            <el-button type="primary" style="width:120px;" size="small">完成</el-button>
+        </span>
+    </div>
 </div>
 <script>
     new Vue({
         el: '#app',
         data:{
-            activeName: 'first'
+            activeName: 'first',
+            subject_name: '',
+            question_A: '',
+            correct: '',
+            question_color: '',
+            question_score: '',
+            question_remarks: '',
+            checkedQuestions: []
         },
         created(){
 
@@ -90,7 +242,23 @@
         methods:{
             handleClick(tab, event) {
                 console.log(tab, event);
+            },
+            switchFirst(){
+                this.activeName='first';
+            },
+            switchSecond(){
+                this.activeName='second';
+            },
+            switchThird(){
+                this.activeName='third';
+            },
+            switchFourth(){
+                this.activeName='fourth';
+            },
+            switchFifth(){
+                this.activeName='fifth';
             }
+
         }
     })
 </script>

@@ -1,52 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Demo of ACE Editor</title>
+    <title>test</title>
     <!--导入js库-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
 </head>
 
 <body>
-<!--代码输入框（注意请务必设置高度，否则无法显示）-->
-<pre id="code" class="ace_editor" style="min-height:400px">
-    <textarea class="ace_text-input" style="background-color:rgb(200,200,200)">
- #include <cstdio>
- int main(){
-     int n,m;
-     scanf("%d %d",&n,&m);
-     printf("%d",n+m);
-     return 0;
- }
-         </textarea></pre>
+<div id="app">
 
+</div>
 <script>
-    //初始化对象
-    editor = ace.edit("code");
+    new Vue({
+        el: '#app',
+        data:{
 
-    //设置风格和语言（更多风格和语言，请到github上相应目录查看）
-    theme = "clouds"
-    language = "java"
-    editor.setTheme("ace/theme/" + theme);
-    editor.session.setMode("ace/mode/" + language);
+        },
+        created(){
 
-    //字体大小
-    editor.setFontSize(18);
+        },
+        methods:{
 
-    //设置只读（true时只读，用于展示代码）
-    editor.setReadOnly(false);
-
-    //自动换行,设置为off关闭
-    editor.setOption("wrap", "free")
-
-    //启用提示菜单
-    ace.require("ace/ext/language_tools");
-    editor.setOptions({
-        enableBasicAutocompletion: true,
-        enableSnippets: true,
-        enableLiveAutocompletion: true
-    });
+        }
+    })
 </script>
-
 </body>
 </html>
