@@ -71,4 +71,10 @@ public class PageController {
         return "addSubject";
     }
 
+
+    @RequestMapping("/Test1")
+    public String test1(){
+        return "test1";
+    }
+
 }
