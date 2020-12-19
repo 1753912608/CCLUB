@@ -1,13 +1,11 @@
 package cclub.demo.impl.websocket;
 
-import cclub.demo.dao.chat;
-import cclub.demo.dao.chatMessage;
-import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Component;
 import javax.websocket.*;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.util.Iterator;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -15,11 +13,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @ServerEndpoint(value = "/test/one") 前端通过此URI和后端交互，建立连接
  */
-@ServerEndpoint(value = "/test/one")
+@ServerEndpoint(value = "/test/one/{interview_id}")
 @Component
 public class OneWebSocket {
 
-    private static CopyOnWriteArraySet<chatMessage>webSocketSet=new CopyOnWriteArraySet<>();
+
+    private static ConcurrentHashMap<String, ArrayList<Session>>webSocketMap=new ConcurrentHashMap<>();
 
     /**
      * 记录当前在线连接数
@@ -30,8 +29,16 @@ public class OneWebSocket {
      * 连接建立成功调用的方法
      */
     @OnOpen
-    public void onOpen(Session session) {
+    public void onOpen(@PathParam("interview_id")String interview_id,Session session) {
+        ArrayList<Session>sessionArrayList=new ArrayList<>();
+        sessionArrayList.add(session);
         onlineCount.incrementAndGet(); // 在线数加1
+        if(webSocketMap.get(interview_id)==null){
+            webSocketMap.put(interview_id,sessionArrayList);
+        }else{
+            sessionArrayList.addAll(webSocketMap.get(interview_id));
+            webSocketMap.put(interview_id,sessionArrayList);
+        }
         //log.info("有新连接加入：{}，当前在线人数为：{}", session.getId(), onlineCount.get());
     }
 
@@ -54,11 +61,10 @@ public class OneWebSocket {
        // log.info("服务端收到客户端[{}]的消息:{}", session.getId(), chatMessage);
         System.out.println(session.getId()+"   "+message);
         //chat chat= JSON.parseObject(message, cclub.demo.dao.chat.class);
-        webSocketSet.add(new chatMessage("1",session));
-        for(chatMessage chatMessage:webSocketSet){
-            if(chatMessage.getInterview_id().equals("1")){
-                this.sendMessage(message,chatMessage.getSession());
-            }
+        String interview_id="CCLUB906826320247";
+        ArrayList<Session>sessionArrayList=webSocketMap.get(interview_id);
+        for(Session session1:sessionArrayList){
+            this.sendMessage(message,session1);
         }
     }
 
