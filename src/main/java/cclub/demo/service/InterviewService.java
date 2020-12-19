@@ -139,4 +139,6 @@ public interface InterviewService {
      * 根据用户点击过的视频面试接入码得到该视频面试的信息
      */
     Interview getOneInterviewInfo(String interview_code);
+
+
 }

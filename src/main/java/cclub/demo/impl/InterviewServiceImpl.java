@@ -132,7 +132,13 @@ public class InterviewServiceImpl implements InterviewService {
 
     @Override
     public Interview getOneInterviewInfo(String interview_code) {
-        return interviewMapper.getOneInterviewInfo(interview_code);
+        Interview interview=interviewMapper.getOneInterviewInfo(interview_code);
+        if(interview.getInterview_candidate_code().equals(interview_code)){
+            interview.setInterview_id("candidate");
+        }else{
+            interview.setInterview_id("judge");
+        }
+        return interview;
     }
 
 

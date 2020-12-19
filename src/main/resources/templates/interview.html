@@ -20,6 +20,33 @@
             width:45px;
             height:45px;
         }
+        .message{
+            background-color: white;
+            border-bottom-color: white;
+            /*为了给after伪元素自动继承*/
+            color: cornflowerblue;
+            font-size: 12px;
+            line-height: 18px;
+            padding: 5px 12px 5px 12px;
+            box-sizing: border-box;
+            border-radius: 6px;
+            position: relative;
+            word-break: break-all;
+        }
+        /** 通过对小正方形旋转45度解决 **/
+        .message::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -5px;
+            width: 10px;
+            height: 10px;
+            margin-top: -10px;
+            background: inherit;
+            /*自动继承父元素的背景*/
+            transform: rotate(45deg);
+        }
+
     </style>
 </head>
 <body>
@@ -48,13 +75,24 @@
                 <div id="video1" style="width:280px;height:180px"></div>
             </div>
             <div style="width:280px;height:350px;background-color:rgb(240,240,240);" id="chatContent">
-                <div class="panel-body" style="height: 400px; overflow:scroll;margin-top:5px;">
+                <div class="panel-body" style="overflow:scroll;width:280px;height:350px;">
                     <div style="border: 1px  #000000; width: 90%; margin: 0 auto;">
-                        <div style="">
-                            <div><img src="img/headChat.png" alt="" width="30px" height="30px"></div>
-                            <div>
-                                <div></div>
-                                <div></div>
+                        <div  style="padding-top:5px;" v-if="chatContent.length>0">
+                            <div style="float:left;">
+                                <div style="font-size:12px;color:rgb(100,100,100)">候选人</div>
+                                <div><img src="img/headChat.png" alt="" width="30px" height="30px"></div>
+                            </div>
+                            <div class="message" style="width:160px;float:left;margin-left:15px;margin-top:5px;">
+                                {{chatContent[0].content}}
+                            </div>
+                        </div>
+                        <div v-for="(item,index) in chatContent" :style="{'padding-top':length[index-1]+'px'}" v-if="index > 0">
+                            <div style="float:left;">
+                                <div style="font-size:12px;color:rgb(100,100,100)">候选人</div>
+                                <div><img src="img/headChat.png" alt="" width="30px" height="30px"></div>
+                            </div>
+                            <div class="message" style="width:160px;float:left;margin-left:15px;margin-top:5px;">
+                                {{item.content}}
                             </div>
                         </div>
                     </div>
@@ -65,20 +103,20 @@
                     <el-input v-model="input" placeholder="请输入内容" style="width:210px;padding-top:5px;">
                     </el-input>
                 </div>
-                <div style="float:left;margin-top:5px;"><el-button type="primary">发送</el-button></div>
+                <div style="float:left;margin-top:5px;"><el-button type="primary" @click="sendChatContent">发送</el-button></div>
             </div>
         </div>
     </div>
     <div style="margin-top:630px;margin-left:160px;">
         <div style="float:left;">
-            <el-tooltip class="item" effect="dark" content="候选人信息" placement="top-start" slot="reference">
+            <el-tooltip class="item" effect="dark" content="候选人信息" placement="top-start" slot="reference" v-if="interviewInfo.interview_id==='judge'">
                 <a href="javascript:void(0);" @click="openCandidateInfo">
                     <img src="img/candidate_info.png" alt="" width="30px" height="30px">
                 </a>
             </el-tooltip>
         </div>
         <div style="float:left;margin-left:15px;">
-            <el-tooltip class="item" effect="dark" content="添加面试评价" placement="top-start">
+            <el-tooltip class="item" effect="dark" content="添加面试评价" placement="top-start" v-if="interviewInfo.interview_id==='judge'">
                 <a href="javascript:void(0);" @click="dialogVisible_remarks_interview=true">
                     <img src="img/edit.png" alt="" width="30px" height="30px">
                 </a>
@@ -163,17 +201,20 @@
         data:{
             name: 'CCLUB 视频面试',
             input: '',
-            candidateInfo: '',
+            interviewInfo: {},
             dialogVisible_remarks_interview: false,
             remarks:{
                 radio: '',
                 textarea: ''
             },
             volumeImg: 'img/volume_open.png',
-            vedioImg: 'img/vedio_open.png'
+            vedioImg: 'img/vedio_open.png',
+            chatContent:[],
+            length:[]
         },
         created() {
             this.init();
+            this.getOneInterviewInfo();
         },
         methods: {
             async init() {
@@ -189,7 +230,7 @@
             },
             openCandidateInfo(){
                 this.candidateInfo='';
-                this.getCandidateInfo('2020-12-03 10:00:00','融360','后端研发工程师','肖茗夫','18229583486','1753972608@qq.com');
+                this.getCandidateInfo();
                 this.$notify({
                     title: '候选人信息',
                     message: this.candidateInfo,
@@ -198,13 +239,13 @@
                     dangerouslyUseHTMLString: true
                 });
             },
-            getCandidateInfo(time,company,position,name,phone,mail){
-                this.candidateInfo+=('面试时间'+'&nbsp;&nbsp;&nbsp;'+time+'</br>');
-                this.candidateInfo+=('公司'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+company+'</br>');
-                this.candidateInfo+=('应聘职位'+'&nbsp;&nbsp;&nbsp;'+position+'</br>');
-                this.candidateInfo+=('候选人'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+name+'</br>');
-                this.candidateInfo+=('手机号'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+phone+'</br>');
-                this.candidateInfo+=('邮箱'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+mail+'</br>');
+            getCandidateInfo(){
+                this.candidateInfo+=('面试时间'+'&nbsp;&nbsp;&nbsp;'+this.interviewInfo.interview_begin_time+'</br>');
+                this.candidateInfo+=('公司'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+this.interviewInfo.interview_company_name+'</br>');
+                this.candidateInfo+=('应聘职位'+'&nbsp;&nbsp;&nbsp;'+this.interviewInfo.interview_candidate_position+'</br>');
+                this.candidateInfo+=('候选人'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+this.interviewInfo.interview_candidate_name+'</br>');
+                this.candidateInfo+=('手机号'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+this.interviewInfo.interview_candidate_phone+'</br>');
+                this.candidateInfo+=('邮箱'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+this.interviewInfo.interview_candidate_mail+'</br>');
             },
             setInterviewRemarks(){
 
@@ -225,6 +266,23 @@
             },
             breakInterview(){
 
+            },
+            sendChatContent(){
+                let obj=new Object();
+                obj.content=this.input;
+                obj.sendPerson=this.interviewInfo.interview_id;
+                this.chatContent.push(obj);
+                this.input='';
+                if(this.chatContent.length>1){
+                    console.log(this.chatContent[this.length.length].content.length);
+                    this.length.push((this.chatContent[this.length.length].content.length/15)*10+50)
+                }
+                console.log(this.length);
+            },
+            async getOneInterviewInfo(){
+                let result=await axios.get('/getOneInterviewInfo');
+                this.interviewInfo=result.data;
+                console.log(this.interviewInfo);
             }
         }
     })
