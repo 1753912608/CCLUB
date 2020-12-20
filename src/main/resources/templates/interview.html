@@ -7,7 +7,7 @@
     <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
-    <script type="text/javascript" src="js/ckplayer/ckplayer.js"></script>
+    <script type="text/javascript" src="../js/ckplayer/ckplayer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
     <style>
@@ -24,7 +24,6 @@
             background-color: white;
             border-bottom-color: white;
             /*为了给after伪元素自动继承*/
-            color: cornflowerblue;
             font-size: 12px;
             line-height: 18px;
             padding: 5px 12px 5px 12px;
@@ -54,7 +53,7 @@
     <div style="width:960px;height:580px;margin-top:-20px;">
         <!--代码输入框（注意请务必设置高度，否则无法显示）-->
         <pre id="code" class="ace_editor" style="min-height:580px">
-            <textarea class="ace_text-input" style="background-color:rgb(200,200,200)">
+            <textarea class="ace_text-input" style="background-color:rgb(200,200,200)" id="codeText">
 //在下方编辑代码
             </textarea>
         </pre>
@@ -79,20 +78,22 @@
                     <div style="border: 1px  #000000; width: 90%; margin: 0 auto;">
                         <div  style="padding-top:5px;" v-if="chatContent.length>0">
                             <div style="float:left;">
-                                <div style="font-size:12px;color:rgb(100,100,100)">候选人</div>
-                                <div><img src="img/headChat.png" alt="" width="30px" height="30px"></div>
+                                <div style="font-size:12px;color:rgb(100,100,100)" v-if="chatContent[0].from_user==='candidate'">候选人</div>
+                                <div style="font-size:12px;color:rgb(100,100,100)" v-if="chatContent[0].from_user==='judge'">面试官</div>
+                                <div><img src="../img/headChat.png" alt="" width="30px" height="30px"></div>
                             </div>
-                            <div class="message" style="width:160px;float:left;margin-left:15px;margin-top:5px;">
-                                {{chatContent[0].content}}
+                            <div class="message" style="width:160px;float:left;margin-left:15px;margin-top:5px;" :style="{'color':(chatContent[0].from_user==='judge' ? 'red':'cornflowerblue')}">
+                                {{chatContent[0].chat_content}}
                             </div>
                         </div>
                         <div v-for="(item,index) in chatContent" :style="{'padding-top':length[index-1]+'px'}" v-if="index > 0">
                             <div style="float:left;">
-                                <div style="font-size:12px;color:rgb(100,100,100)">候选人</div>
-                                <div><img src="img/headChat.png" alt="" width="30px" height="30px"></div>
+                                <div style="font-size:12px;color:rgb(100,100,100)" v-if="chatContent[index].from_user==='candidate'">候选人</div>
+                                <div style="font-size:12px;color:rgb(100,100,100)" v-if="chatContent[index].from_user==='judge'">面试官</div>
+                                <div><img src="../img/headChat.png" alt="" width="30px" height="30px"></div>
                             </div>
-                            <div class="message" style="width:160px;float:left;margin-left:15px;margin-top:5px;">
-                                {{item.content}}
+                            <div class="message" style="width:160px;float:left;margin-left:15px;margin-top:5px;" :style="{'color':(chatContent[index].from_user==='judge' ? 'red':'cornflowerblue')}">
+                                {{item.chat_content}}
                             </div>
                         </div>
                     </div>
@@ -111,14 +112,14 @@
         <div style="float:left;">
             <el-tooltip class="item" effect="dark" content="候选人信息" placement="top-start" slot="reference" v-if="interviewInfo.interview_create_user_id==='judge'">
                 <a href="javascript:void(0);" @click="openCandidateInfo">
-                    <img src="img/candidate_info.png" alt="" width="30px" height="30px">
+                    <img src="../img/candidate_info.png" alt="" width="30px" height="30px">
                 </a>
             </el-tooltip>
         </div>
         <div style="float:left;margin-left:15px;">
             <el-tooltip class="item" effect="dark" content="添加面试评价" placement="top-start" v-if="interviewInfo.interview_create_user_id==='judge'">
                 <a href="javascript:void(0);" @click="dialogVisible_remarks_interview=true">
-                    <img src="img/edit.png" alt="" width="30px" height="30px">
+                    <img src="../img/edit.png" alt="" width="30px" height="30px">
                 </a>
             </el-tooltip>
         </div>
@@ -134,7 +135,7 @@
         </div>
         <div style="float:left;margin-left:15px;">
             <a href="javascript:void(0);">
-                <img src="img/break.png" alt="" width="40px" height="40px" class="img">
+                <img src="../img/break.png" alt="" width="40px" height="40px" class="img">
             </a>
         </div>
     </div>
@@ -207,11 +208,17 @@
                 radio: '',
                 textarea: ''
             },
-            volumeImg: 'img/volume_open.png',
-            vedioImg: 'img/vedio_open.png',
+            volumeImg: '../img/volume_open.png',
+            vedioImg: '../img/vedio_open.png',
             chatContent:[],
             length:[],
-            websocket: null
+            websocket: null,
+            chat:{
+                interview_id: '',
+                type: '',
+                chat_content: '',
+                from_user: ''
+            }
         },
         created() {
             this.init();
@@ -227,7 +234,6 @@
                     video: 'rtmp://127.0.0.1:1935/live/home1'
                 }
                 var player1=new ckplayer(vedioObject1);
-
             },
             openCandidateInfo(){
                 this.candidateInfo='';
@@ -252,34 +258,24 @@
 
             },
             changeVolume(){
-                if(this.volumeImg==='img/volume_open.png'){
-                    this.volumeImg='img/volume_close.png';
+                if(this.volumeImg==='../img/volume_open.png'){
+                    this.volumeImg='../img/volume_close.png';
                 }else{
-                    this.volumeImg='img/volume_open.png';
+                    this.volumeImg='../img/volume_open.png';
                 }
             },
             changeVedio(){
-                if(this.vedioImg==='img/vedio_open.png'){
-                    this.vedioImg='img/vedio_close.png';
+                if(this.vedioImg==='../img/vedio_open.png'){
+                    this.vedioImg='../img/vedio_close.png';
                 }else{
-                    this.vedioImg='img/vedio_open.png';
+                    this.vedioImg='../img/vedio_open.png';
                 }
             },
             breakInterview(){
 
             },
             sendChatContent(){
-                let obj=new Object();
-                obj.content=this.input;
-                obj.sendPerson=this.interviewInfo.interview_id;
-                this.chatContent.push(obj);
-                this.websocketSend();
-                this.input='';
-                if(this.chatContent.length>1){
-                    console.log(this.chatContent[this.length.length].content.length);
-                    this.length.push((this.chatContent[this.length.length].content.length/15)*10+50)
-                }
-                console.log(this.length);
+                this.websocketSendChat();
             },
             async getOneInterviewInfo(){
                 let result=await axios.get('/getOneInterviewInfo');
@@ -287,66 +283,34 @@
                 console.log(this.interviewInfo);
                 this.websocket=new WebSocket("ws://localhost:8080/test/one/"+this.interviewInfo.interview_id);
                 this.websocket.onmessage=this.getMessage;
+                this.chat.interview_id=this.interviewInfo.interview_id;
+                this.chat.from_user=this.interviewInfo.interview_create_user_id;
             },
             getMessage(msg){
-
+                let obj=new Object();
+                let json=JSON.parse(msg.data);
+                obj.chat_content=json.chat_content;
+                obj.from_user=json.from_user;
+                obj.type=json.type;
+                this.chatContent.push(obj);
+                this.input='';
+                if(this.chatContent.length>1){
+                    console.log(this.chatContent[this.length.length].chat_content.length);
+                    this.length.push((this.chatContent[this.length.length].chat_content.length/15)*10+50)
+                }
             },
-            websocketSend(){
-                this.websocket.send(this.input);
+            websocketSendChat(){
+                this.chat.chat_content=this.input;
+                this.chat.from_user=this.interviewInfo.interview_create_user_id
+                this.chat.type='chat';
+                this.websocket.send(JSON.stringify(this.chat));
             },
+            websocketSendCode(){
+                this.chat.chat_content='';
+                this.chat.type='code';
+                this.websocket.send(JSON.stringify(this.chat));
+            }
         }
     })
-</script>
-<script type="text/javascript">
-    // var websocket = null;
-    //
-    // //判断当前浏览器是否支持WebSocket, 主要此处要更换为自己的地址
-    // if ('WebSocket' in window) {
-    //     websocket = new WebSocket("ws://localhost:8080/test/one/1");
-    // } else {
-    //     alert('Not support websocket')
-    // }
-    //
-    // //连接发生错误的回调方法
-    // websocket.onerror = function() {
-    //     setMessageInnerHTML("error");
-    // };
-    //
-    // //连接成功建立的回调方法
-    // websocket.onopen = function(event) {
-    //     //setMessageInnerHTML("open");
-    // }
-    //
-    //接收到消息的回调方法
-    // websocket.onmessage = function(event) {
-    //     console.log(event.data)
-    //    // setMessageInnerHTML(event.data);
-    // }
-    //
-    // //连接关闭的回调方法
-    // websocket.onclose = function() {
-    //     setMessageInnerHTML("close");
-    // }
-    //
-    // //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
-    // window.onbeforeunload = function() {
-    //     websocket.close();
-    // }
-    //
-    // //将消息显示在网页上
-    // function setMessageInnerHTML(innerHTML) {
-    //     document.getElementById('message').innerHTML += innerHTML + '<br/>';
-    // }
-    //
-    // //关闭连接
-    // function closeWebSocket() {
-    //     websocket.close();
-    // }
-    //
-    // //发送消息
-    // function send() {
-    //     var message = document.getElementById('text').value;
-    //     websocket.send(message);
-    // }
 </script>
 </html>

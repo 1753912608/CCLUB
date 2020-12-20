@@ -1,5 +1,7 @@
 package cclub.demo.impl.websocket;
 
+import cclub.demo.dao.chat;
+import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
@@ -60,8 +62,8 @@ public class OneWebSocket {
     public void onMessage(String message, Session session) {
        // log.info("服务端收到客户端[{}]的消息:{}", session.getId(), chatMessage);
         System.out.println(session.getId()+"   "+message);
-        //chat chat= JSON.parseObject(message, cclub.demo.dao.chat.class);
-        String interview_id="CCLUB906826320247";
+        chat chat= JSON.parseObject(message,chat.class);
+        String interview_id=chat.getInterview_id();
         ArrayList<Session>sessionArrayList=webSocketMap.get(interview_id);
         for(Session session1:sessionArrayList){
             this.sendMessage(message,session1);
