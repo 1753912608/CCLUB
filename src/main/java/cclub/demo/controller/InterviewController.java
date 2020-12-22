@@ -245,30 +245,27 @@ public class InterviewController {
     /**
      *
      * @param interview_code
-     * @param request
-     * 将用户面试码存储在session中
-     */
-    @ResponseBody
-    @RequestMapping("/saveInterviewCode")
-    public void saveInterviewCode(String interview_code,HttpServletRequest request){
-        HttpSession session=request.getSession();
-        session.setAttribute(SessionInfo.Session_Interview_code,interview_code);
-    }
-
-
-
-
-    /**
-     *
-     * @param request
      * @return
      * 根据用户点击过的视频面试接入码得到该视频面试的信息
      */
     @ResponseBody
     @RequestMapping("/getOneInterviewInfo")
-    public Interview getOneInterviewInfo(HttpServletRequest request){
-        HttpSession session=request.getSession();
-        String interview_code=(String)session.getAttribute(SessionInfo.Session_Interview_code);
+    public Interview getOneInterviewInfo(String interview_code){
         return interviewService.getOneInterviewInfo(interview_code);
+    }
+
+
+
+    /**
+     *
+     * @param interview_id
+     * @return
+     * 获取当前id的视频面试评价
+     */
+    @ResponseBody
+    @RequestMapping("/getOneInterviewRemarks")
+    public remarks getOneInterviewRemarks(String interview_id)
+    {
+        return interviewService.getOneInterviewRemarks(interview_id);
     }
 }

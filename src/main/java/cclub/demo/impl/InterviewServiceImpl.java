@@ -158,4 +158,9 @@ public class InterviewServiceImpl implements InterviewService {
         }
         return list;
     }
+
+    @Override
+    public remarks getOneInterviewRemarks(String interview_id) {
+        return interviewMapper.getOneInterviewRemarks(interview_id);
+    }
 }

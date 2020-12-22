@@ -141,4 +141,12 @@ public interface InterviewService {
     Interview getOneInterviewInfo(String interview_code);
 
 
+
+    /**
+     *
+     * @param interview_id
+     * @return
+     * 获取当前id的视频面试评价
+     */
+    remarks getOneInterviewRemarks(String interview_id);
 }

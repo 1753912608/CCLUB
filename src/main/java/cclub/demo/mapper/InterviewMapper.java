@@ -141,4 +141,16 @@ public interface InterviewMapper {
      */
     @Select("select * from interview where interview_candidate_code=#{interview_code} or interview_judge_code=#{interview_code}")
     Interview getOneInterviewInfo(String interview_code);
+
+
+
+
+    /**
+     *
+     * @param interview_id
+     * @return
+     * 根据id获取当前视频面试的评价
+     */
+    @Select("select * from remarks where remarks_interview_id=#{interview_id}")
+    remarks getOneInterviewRemarks(String interview_id);
 }

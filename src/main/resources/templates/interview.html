@@ -138,6 +138,11 @@
                 <img src="../img/break.png" alt="" width="40px" height="40px" class="img">
             </a>
         </div>
+        <div style="float:left;margin-left:370px;" v-if="interviewInfo.interview_create_user_id==='candidate'">
+            <a href="javascript:void(0);" @click="websocketSendCode">
+                <i class="el-icon-refresh" style="font-size:30px;" title="同步代码给面试官"></i>
+            </a>
+        </div>
     </div>
     <!--备注面试-->
     <el-dialog title="面试反馈" :visible.sync="dialogVisible_remarks_interview" width="30%" before-close="handleClose">
@@ -164,7 +169,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible_remarks_interview = false">取 消</el-button>
-            <el-button type="primary" @click="">确 定</el-button>
+            <el-button type="primary" @click="setInterviewRemarks">确 定</el-button>
         </span>
     </el-dialog>
 </div>
@@ -223,6 +228,7 @@
         created() {
             this.init();
             this.getOneInterviewInfo();
+            this.getOneInterviewRemarks();
         },
         methods: {
             async init() {
@@ -254,8 +260,21 @@
                 this.candidateInfo+=('手机号'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+this.interviewInfo.interview_candidate_phone+'</br>');
                 this.candidateInfo+=('邮箱'+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+this.interviewInfo.interview_candidate_mail+'</br>');
             },
-            setInterviewRemarks(){
-
+            async setInterviewRemarks(){
+                let result=await axios.get('/setInterviewRemarks?interview_id='+this.interviewInfo.interview_id+'&state='+this.remarks.radio+'&content='+this.remarks.textarea);
+                if(result.data===1){
+                    this.$message({
+                        type: 'success',
+                        message: '备注候选人面试信息成功'
+                    });
+                }else{
+                    this.$message({
+                        type: 'error',
+                        message: '备注候选人面试信息失败'
+                    });
+                }
+                this.dialogVisible_remarks_interview=false;
+                this.getMyCreateInterviewRemarksList();
             },
             changeVolume(){
                 if(this.volumeImg==='../img/volume_open.png'){
@@ -278,25 +297,33 @@
                 this.websocketSendChat();
             },
             async getOneInterviewInfo(){
-                let result=await axios.get('/getOneInterviewInfo');
+                let location=window.location.href.split("/");
+                let interview_code=location[location.length-1];
+                let result=await axios.get('/getOneInterviewInfo?interview_code='+interview_code);
                 this.interviewInfo=result.data;
                 console.log(this.interviewInfo);
                 this.websocket=new WebSocket("ws://localhost:8080/test/one/"+this.interviewInfo.interview_id);
                 this.websocket.onmessage=this.getMessage;
                 this.chat.interview_id=this.interviewInfo.interview_id;
                 this.chat.from_user=this.interviewInfo.interview_create_user_id;
+
             },
             getMessage(msg){
+                editor2 = ace.edit("code");
                 let obj=new Object();
                 let json=JSON.parse(msg.data);
                 obj.chat_content=json.chat_content;
                 obj.from_user=json.from_user;
                 obj.type=json.type;
-                this.chatContent.push(obj);
-                this.input='';
-                if(this.chatContent.length>1){
-                    console.log(this.chatContent[this.length.length].chat_content.length);
-                    this.length.push((this.chatContent[this.length.length].chat_content.length/15)*10+50)
+                if(obj.type==='code'){
+                    editor2.setValue(obj.chat_content);
+                }else{
+                    this.chatContent.push(obj);
+                    this.input='';
+                    if(this.chatContent.length>1){
+                        console.log(this.chatContent[this.length.length].chat_content.length);
+                        this.length.push((this.chatContent[this.length.length].chat_content.length/15)*10+50)
+                    }
                 }
             },
             websocketSendChat(){
@@ -306,9 +333,24 @@
                 this.websocket.send(JSON.stringify(this.chat));
             },
             websocketSendCode(){
-                this.chat.chat_content='';
+                this.$message({
+                    message: '成功将代码同步给面试官',
+                    type: 'success'
+                });
+                editor1 = ace.edit("code");
+                this.chat.chat_content=editor1.getValue();
                 this.chat.type='code';
+                this.chat.from_user=this.interviewInfo.interview_create_user_id;
                 this.websocket.send(JSON.stringify(this.chat));
+            },
+            async getOneInterviewRemarks(){
+                ///console.log(this.interviewInfo.interview_id)；
+                let result=await axios.get('/getOneInterviewRemarks?interview_id='+this.interviewInfo.interview_id);
+                //if(result.data.length>0){
+                console.log(result.data);
+                    this.remarks.radio=result.data.remarks_state;
+                    this.remarks.textarea=result.data.remarks_content;
+               // }
             }
         }
     })
