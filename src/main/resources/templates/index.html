@@ -100,8 +100,13 @@
                                     </el-table-column>
                                     <el-table-column prop="" label="回放" width="160">
                                         <template slot-scope="scope">
-                                            <p><a href="javascript:void(0);" class="el-font-color_link">查看回放</a></p>
-                                            <p style="font-size:13px;color:rgb(139, 143, 148);">时长:1分28秒</p>
+                                            <div v-if="scope.row.interview_room_state==='33'">
+                                                <p><a href="javascript:void(0);" class="el-font-color_link">查看回放</a></p>
+                                                <p style="font-size:13px;color:rgb(139, 143, 148);">时长:1分28秒</p>
+                                            </div>
+                                            <div v-if="scope.row.interview_room_state!='33'">
+                                                <p style="font-size:13px;color:rgb(139, 143, 148);">------------</p>
+                                            </div>
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="" label="状态" width="140">
@@ -373,7 +378,8 @@
                 resume: 'none',
                 interview_id: ''
             },
-            recordingList:[]
+            recordingList:[],
+            websocket: null
         },
         created(){
             this.nowTime=new Date();
@@ -542,6 +548,8 @@
                 this.userInfo.user_phone=result.data.user_id;
                 console.log(result.data.user_company);
                 this.userInfo.user_company=result.data.user_company;
+                this.websocket=new WebSocket("ws://localhost:8080/test/one/ming");
+                this.websocket.onmessage=this.getMessage;
             },
             async signOut(){
                 await axios.get('/signOut');
@@ -656,8 +664,13 @@
                    window.location.href="/test_interview_end/"+code;
                }
                else{
+                   axios.get('/setInterviewStateByCode?code='+code);
                    window.location.href="/test_interview/"+code;
                }
+            },
+            getMessage(msg){
+                console.log("有用户连接");
+                this.getMyCreateInterviewList();
             }
         }
     })

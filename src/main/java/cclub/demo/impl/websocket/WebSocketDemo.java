@@ -54,7 +54,7 @@ public class WebSocketDemo {
         String message = String.format("[%s,%s]",nickname,"离开了聊天室链接");
         broadcast(message);
     }
-    //完成群发
+    //完成面试消息
     private void broadcast(String info){
         for(WebSocketDemo w:webSocketSet){
             try {
@@ -79,6 +79,11 @@ public class WebSocketDemo {
             return null;
         }
         return message;
+    }
+
+    //当有面试官/候选人进入面试房间后更换当前视频面试的状态
+    private void brocastToInterviewList(){
+
     }
 }
 

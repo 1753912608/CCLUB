@@ -163,4 +163,11 @@ public class InterviewServiceImpl implements InterviewService {
     public remarks getOneInterviewRemarks(String interview_id) {
         return interviewMapper.getOneInterviewRemarks(interview_id);
     }
+
+    @Override
+    public void setInterviewStateByCode(String code) {
+        Interview interview=interviewMapper.getOneInterviewInfo(code);
+        String interview_code=interview.getInterview_candidate_code().equals(code)?"01":"10";
+        interviewMapper.endInterviewState(interview.getInterview_id(),interview_code);
+    }
 }

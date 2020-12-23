@@ -13,11 +13,12 @@ public class TimeUtils {
      */
     public static boolean IsExpireTime(String interview_begin_time){
         String[] time=interview_begin_time.split(" ")[0].split("-");
-        int day=Integer.parseInt(time[1]);
-        int month=Integer.parseInt(time[2]);
+        int day=Integer.parseInt(time[2]);
+        int month=Integer.parseInt(time[1]);
         Calendar now=Calendar.getInstance();
-        if(now.get(Calendar.MONTH)+1<month)return true;
-        else if(now.get(Calendar.DAY_OF_MONTH)<day&&now.get(Calendar.MONTH)+1==month)return true;
+        int now_month=now.get(Calendar.MONTH)+1,now_day=now.get(Calendar.DAY_OF_MONTH);
+        if(now_month<month)return true;
+        else if(day<now_day&&now_month==month)return true;
         else return false;
     }
 }

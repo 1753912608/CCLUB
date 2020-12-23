@@ -153,4 +153,5 @@ public interface InterviewMapper {
      */
     @Select("select * from remarks where remarks_interview_id=#{interview_id}")
     remarks getOneInterviewRemarks(String interview_id);
+
 }

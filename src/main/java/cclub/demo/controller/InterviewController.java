@@ -268,4 +268,17 @@ public class InterviewController {
     {
         return interviewService.getOneInterviewRemarks(interview_id);
     }
+
+
+
+    /**
+     *
+     * @param code
+     * 根据视频面试的接入码(面试官/候选人)
+     */
+    @ResponseBody
+    @RequestMapping("/setInterviewStateByCode")
+    public void setInterviewStateByCode(String code){
+        interviewService.setInterviewStateByCode(code);
+    }
 }

@@ -1,13 +1,21 @@
 package cclub.demo.impl.websocket;
 
+import cclub.demo.dao.Interview;
 import cclub.demo.dao.chat;
+import cclub.demo.impl.InterviewServiceImpl;
+import cclub.demo.mapper.InterviewMapper;
+import cclub.demo.service.InterviewService;
 import com.alibaba.fastjson.JSON;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -22,24 +30,34 @@ public class OneWebSocket {
 
     private static ConcurrentHashMap<String, ArrayList<Session>>webSocketMap=new ConcurrentHashMap<>();
 
+
+    private static CopyOnWriteArraySet<Session>webSocketSet=new CopyOnWriteArraySet<>();
+
     /**
      * 记录当前在线连接数
      */
     private static AtomicInteger onlineCount = new AtomicInteger(0);
 
+
     /**
      * 连接建立成功调用的方法
      */
     @OnOpen
-    public void onOpen(@PathParam("interview_id")String interview_id,Session session) {
-        ArrayList<Session>sessionArrayList=new ArrayList<>();
-        sessionArrayList.add(session);
-        onlineCount.incrementAndGet(); // 在线数加1
-        if(webSocketMap.get(interview_id)==null){
-            webSocketMap.put(interview_id,sessionArrayList);
+    public void onOpen(@PathParam("interview_id")String interview_id,
+                       Session session) {
+        if(interview_id.equals("ming")){
+            webSocketSet.add(session);
         }else{
-            sessionArrayList.addAll(webSocketMap.get(interview_id));
-            webSocketMap.put(interview_id,sessionArrayList);
+            ArrayList<Session>sessionArrayList=new ArrayList<>();
+            sessionArrayList.add(session);
+            onlineCount.incrementAndGet(); // 在线数加1
+            if(webSocketMap.get(interview_id)==null){
+                webSocketMap.put(interview_id,sessionArrayList);
+            }else{
+                sessionArrayList.addAll(webSocketMap.get(interview_id));
+                webSocketMap.put(interview_id,sessionArrayList);
+            }
+            brocast();
         }
         //log.info("有新连接加入：{}，当前在线人数为：{}", session.getId(), onlineCount.get());
     }
@@ -49,6 +67,7 @@ public class OneWebSocket {
      */
     @OnClose
     public void onClose(Session session) {
+
         onlineCount.decrementAndGet(); // 在线数减1
         //log.info("有一连接关闭：{}，当前在线人数为：{}", session.getId(), onlineCount.get());
     }
@@ -87,4 +106,19 @@ public class OneWebSocket {
             //log.error("服务端发送消息给客户端失败：{}", e);
         }
     }
+
+    /**
+     * 当有面试官/候选人(进入或者退出)面试房间后更新当前面试的状态
+     */
+    private void brocast(){
+        for(Session session:webSocketSet){
+            try {
+                session.getBasicRemote().sendText("ming");
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

@@ -317,13 +317,11 @@
                 let interview_code=location[location.length-1];
                 let result=await axios.get('/getOneInterviewInfo?interview_code='+interview_code);
                 this.interviewInfo=result.data;
-                console.log(this.interviewInfo);
                 this.websocket=new WebSocket("ws://localhost:8080/test/one/"+this.interviewInfo.interview_id);
                 this.websocket.onmessage=this.getMessage;
                 this.chat.interview_id=this.interviewInfo.interview_id;
                 this.chat.from_user=this.interviewInfo.interview_create_user_id;
                 this.getOneInterviewRemarks();
-
             },
             getMessage(msg){
                 editor2 = ace.edit("code");
@@ -334,7 +332,7 @@
                 obj.type=json.type;
                 if(obj.type==='code'){
                     editor2.setValue(obj.chat_content);
-                }else{
+                }else if(obj.type==='chat'){
                     this.chatContent.push(obj);
                     this.input='';
                     if(this.chatContent.length>1){

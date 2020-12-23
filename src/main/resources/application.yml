@@ -16,5 +16,5 @@ spring:
       shutdown-timeout: 0
 
 mybatis:
-  type-aliases-package: main.cclub.demo.dao
+  type-aliases-package: main.cclub.demo
   mapper-locations: classpath:mapper/*.xml
