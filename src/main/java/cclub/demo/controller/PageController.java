@@ -42,7 +42,7 @@ public class PageController {
     }
 
 
-    @RequestMapping("/test_interview_end")
+    @RequestMapping("/test_interview_end/{interview_id}")
     public String test_interview_end(){
         return "interview_end";
     }

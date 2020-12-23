@@ -134,7 +134,7 @@
             </a>
         </div>
         <div style="float:left;margin-left:15px;">
-            <a href="javascript:void(0);">
+            <a href="javascript:void(0);" @click="breakInterview">
                 <img src="../img/break.png" alt="" width="40px" height="40px" class="img">
             </a>
         </div>
@@ -228,7 +228,6 @@
         created() {
             this.init();
             this.getOneInterviewInfo();
-            this.getOneInterviewRemarks();
         },
         methods: {
             async init() {
@@ -291,7 +290,24 @@
                 }
             },
             breakInterview(){
-
+                let location=window.location.href.split("/");
+                this.$confirm('是否确认结束当前面试?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '结束面试成功!'
+                    });
+                    axios.get('/end_Interview_State?interview_id='+this.interviewInfo.interview_id+'&interview_state='+'33');
+                    window.location.href="/test_interview_end/"+location[location.length-1];
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消结束当前面试'
+                    });
+                });
             },
             sendChatContent(){
                 this.websocketSendChat();
@@ -306,6 +322,7 @@
                 this.websocket.onmessage=this.getMessage;
                 this.chat.interview_id=this.interviewInfo.interview_id;
                 this.chat.from_user=this.interviewInfo.interview_create_user_id;
+                this.getOneInterviewRemarks();
 
             },
             getMessage(msg){
@@ -344,13 +361,10 @@
                 this.websocket.send(JSON.stringify(this.chat));
             },
             async getOneInterviewRemarks(){
-                ///console.log(this.interviewInfo.interview_id)；
+                console.log(this.interviewInfo.interview_id);
                 let result=await axios.get('/getOneInterviewRemarks?interview_id='+this.interviewInfo.interview_id);
-                //if(result.data.length>0){
-                console.log(result.data);
-                    this.remarks.radio=result.data.remarks_state;
-                    this.remarks.textarea=result.data.remarks_content;
-               // }
+                this.remarks.radio=result.data.remarks_state;
+                this.remarks.textarea=result.data.remarks_content;
             }
         }
     })

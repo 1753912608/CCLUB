@@ -64,6 +64,9 @@
                 </div>
             </div>
         </div>
+        <div style="margin-top:30px;margin-left:650px;">
+            <el-button type="primary" plain size="small" style="width:200px;" @click="home">返回首页</el-button>
+        </div>
     </div>
 </div>
 </body>
@@ -79,8 +82,13 @@
         },
         methods:{
             async getInterviewInfo(){
-                let result=await axios.get('/getOneInterviewInfo');
+                let location=window.location.href.split("/");
+                let interview_id=location[location.length-1];
+                let result=await axios.get('/getOneInterviewInfo?interview_code='+interview_id);
                 this.interviewInfo=result.data;
+            },
+            home(){
+                window.location.href="/ming"
             }
         }
     })
