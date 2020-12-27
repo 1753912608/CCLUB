@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CClub在线笔试</title>
+    <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        *{
+            padding: 0 0px;
+            margin: 0 0px;
+        }
+        .el-header{
+            margin-top:80px;
+            margin-left:30px;
+            border: 1px solid rgb(235,235,235);
+            width:1430px;
+            height:70px;
+        }
+        .el-radio_button{
+            background-color:#5272ff;
+            border:1px solid #ececed;
+            font-size:12px;
+            width:67px;
+            height:32px;
+            padding:8px 13px 8px 13px;
+        }
+        .el-question_button{
+            background-color:#fff;
+            border:1px solid #ececed;
+            font-size:12px;
+            width:67px;
+            height:32px;
+            padding:8px 13px 8px 13px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div style="margin-left:30px;margin-top:15px;font-size:24px;height:30px;">
+        <div style="float:left;">{{name}}</div>
+        <div style="float:left;margin-left:1080px;">
+            <a href="javascript:void(0);" @click="interview" style="text-decoration:none;color:rgb(30,30,30);font-size:16px;">在线面试</a>
+        </div>
+        <div style="float:left;margin-left:30px;">
+            <el-dropdown placement="bottom-start">
+                <span class="el-dropdown-link">{{userInfo.user_company}}
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item style="background-color:#f6f8ff;">{{userInfo.user_phone}}</el-dropdown-item>
+                    <el-dropdown-item disabled style="font-size:12px;">当前公司:</el-dropdown-item>
+                    <el-dropdown-item style="font-size:12px;">&nbsp;&nbsp;&nbsp;{{userInfo.user_company}}</el-dropdown-item>
+                    <el-dropdown-item >个人中心</el-dropdown-item>
+                    <el-dropdown-item divided>
+                        <a href="javascript:void(0);" @click="signOut" style="text-decoration:none;color:rgb(30,30,30);">
+                            退出登录
+                        </a>
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+    </div>
+    <el-divider></el-divider>
+    <div style="margin-left:30px;margin-top:30px;">
+        <div style="float:left;">在线笔试(2)</div>
+        <div style="float:left;margin-left:1140px;">
+            <el-button type="primary" style="width:60px;" size="small">题库</el-button>
+        </div>
+        <div style="float:left;margin-left:25px;">
+            <el-button type="primary" style="width:120px;" size="small">新建在线笔试</el-button>
+        </div>
+    </div>
+    <div class="el-header">
+        <div style="margin-left:20px;padding-top:20px;float:left;">
+            <el-input v-model="input" placeholder="请输入内容" style="width:200px;" size="small"></el-input>
+        </div>
+        <div style="float:left;margin-left:10px;margin-top:20px;">
+            <el-button type="info" size="small">搜索</el-button>
+        </div>
+        <div style="float:left;margin-left:20px;margin-top:25px;">
+            <span :class="first?'el-radio_button':'el-question_button'" style="border:1px solid #ececed;border-radius:6px 0 0 6px;">
+                <a href="javascript:void(0);" @click="switchFirst" :style="{'color':first?'#fff':'#000'}" style="text-decoration:none;">全部</a>
+            </span>
+            <span :class="second?'el-radio_button':'el-question_button'" style="margin-left:-5px;">
+                <a href="javascript:void(0);" @click="switchSecond" :style="{'color':second?'#fff':'#000'}" style="text-decoration:none;">未开始</a>
+            </span>
+            <span :class="third?'el-radio_button':'el-question_button'" style="margin-left:-5px;">
+                <a href="javascript:void(0);" @click="switchThird" :style="{'color':third?'#fff':'#000'}" style="text-decoration:none;">进行中</a>
+            </span>
+            <span :class="fourth?'el-radio_button':'el-question_button'" style="margin-left:-5px;">
+                <a href="javascript:void(0);" @click="switchFourth" :style="{'color':fourth?'#fff':'#000'}" style="text-decoration:none;">已结束</a>
+            </span>
+        </div>
+        <div style="float:left;margin-top:-25px;margin-left:1340px;font-size:13px;color:rgb(139, 143, 148);">2个结果</div>
+    </div>
+    <div style="margin-left:30px;width:1430px">
+        <template>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="date" label="考试名称" width="180">
+                </el-table-column>
+                <el-table-column prop="name" label="考试时间" width="180">
+                </el-table-column>
+                <el-table-column prop="address" label="状态">
+                </el-table-column>
+                <el-table-column prop="subject_number" label="题目数量">
+                </el-table-column>
+                <el-table-column prop="candidate_number" label="候选人">
+                </el-table-column>
+                <el-table-column prop="" label="操作">
+                </el-table-column>
+            </el-table>
+        </template>
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data:{
+            name: 'CCLUB 在线笔试',
+            userInfo:{
+                user_company: '茗少集团',
+                user_phone: '18229583486'
+            },
+            input: '',
+            first: true,
+            second: false,
+            third: false,
+            fourth: false,
+            tableData: [{
+                date: '2016-05-02',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1518 弄',
+                subject_number: '1',
+                candidate_number: '1',
+
+            }]
+        },
+        created(){
+
+        },
+        methods:{
+            interview(){
+                window.location.href="/ming";
+            },
+            signOut() {
+
+            },
+            switchFirst(){
+                this.second=this.third=this.fourth=this.fifth=!(this.first=true);
+            },
+            switchSecond(){
+                this.first=this.third=this.fourth=this.fifth=!(this.second=true);
+            },
+            switchThird(){
+                this.first=this.second=this.fourth=this.fifth=!(this.third=true);
+            },
+            switchFourth(){
+                this.first=this.second=this.third=this.fifth=!(this.fourth=true);
+            }
+        }
+    })
+</script>
+</html>

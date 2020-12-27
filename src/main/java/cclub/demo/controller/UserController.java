@@ -2,6 +2,7 @@ package cclub.demo.controller;
 
 import cclub.demo.dao.SessionInfo;
 import cclub.demo.dao.User;
+import cclub.demo.impl.aliyunServiceImpl.aliyunUtils;
 import cclub.demo.impl.redisUtils.RedisServiceImpl;
 import cclub.demo.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class UserController {
         int result=1;
         try{
             System.out.println(phone+"的验证码为:"+code);
-            //aliyunUtils.sendCode(phone,code);
+            aliyunUtils.sendCode(phone,code);
             redisService.savePhoneCode(rand_uuid,code);
         }catch (Exception e){
             result=0;

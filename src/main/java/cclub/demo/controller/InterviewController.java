@@ -75,8 +75,8 @@ public class InterviewController {
                 interviewService.insertCandidateResume(interview_id,filesrc);
             }
             //将视频面试信息发送到邮箱
-//            mailDemoUtils.sendModifyTemplateNotice(interview_candidate_mail,list.get(2));
-//            mailDemoUtils.sendModifyTemplateNotice(interview_judge_mail,list.get(3));
+            mailDemoUtils.sendModifyTemplateNotice(interview_candidate_mail,list.get(2));
+            mailDemoUtils.sendModifyTemplateNotice(interview_judge_mail,list.get(3));
         }catch (Exception e){
             e.printStackTrace();
             return 0;

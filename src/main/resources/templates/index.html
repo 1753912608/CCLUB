@@ -13,7 +13,10 @@
 <div id="app">
     <div style="margin-left:30px;margin-top:15px;font-size:24px;">
         <div style="float:left;">{{name}}</div>
-        <div style="float:left;margin-left:1150px;">
+        <div style="float:left;margin-left:1080px;">
+            <a href="javascript:void(0);" @click="exam" style="text-decoration:none;color:rgb(30,30,30);font-size:16px;">在线笔试</a>
+        </div>
+        <div style="float:left;margin-left:30px;">
             <el-dropdown placement="bottom-start">
                 <span class="el-dropdown-link">{{userInfo.user_company}}
                     <i class="el-icon-arrow-down el-icon--right"></i>
@@ -297,7 +300,6 @@
                     <el-tab-pane label="我参与的面试" name="second">我参与的面试</el-tab-pane>
                     <el-tab-pane label="公司全部面试" name="third">公司全部面试</el-tab-pane>
                     <el-tab-pane label="空中宣讲" name="fourth">空中宣讲</el-tab-pane>
-                    <el-tab-pane label="在线笔试" name="fifth">在线笔试</el-tab-pane>
                 </el-tabs>
             </template>
         </div>
@@ -671,6 +673,9 @@
             getMessage(msg){
                 console.log("有用户连接");
                 this.getMyCreateInterviewList();
+            },
+            exam(){
+                window.location.href="/test_exam";
             }
         }
     })

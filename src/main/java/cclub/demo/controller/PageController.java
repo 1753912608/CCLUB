@@ -83,4 +83,10 @@ public class PageController {
         return "test2";
     }
 
+
+    @RequestMapping("/test_exam")
+    public String eaxm(){
+        return "exam";
+    }
+
 }
