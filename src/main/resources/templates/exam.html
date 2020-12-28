@@ -67,7 +67,7 @@
     <div style="margin-left:30px;margin-top:30px;">
         <div style="float:left;">在线笔试(2)</div>
         <div style="float:left;margin-left:1140px;">
-            <el-button type="primary" style="width:60px;" size="small">题库</el-button>
+            <el-button type="primary" style="width:60px;" size="small" @click="subject">题库</el-button>
         </div>
         <div style="float:left;margin-left:25px;">
             <el-button type="primary" style="width:120px;" size="small">新建在线笔试</el-button>
@@ -98,18 +98,36 @@
     </div>
     <div style="margin-left:30px;width:1430px">
         <template>
-            <el-table :data="tableData" border style="width: 100%">
+            <el-table :data="tableData" style="width: 100%">
                 <el-table-column prop="date" label="考试名称" width="180">
                 </el-table-column>
                 <el-table-column prop="name" label="考试时间" width="180">
                 </el-table-column>
-                <el-table-column prop="address" label="状态">
+                <el-table-column prop="address" label="状态" width="300">
                 </el-table-column>
-                <el-table-column prop="subject_number" label="题目数量">
+                <el-table-column prop="subject_number" label="题目数量" width="300">
                 </el-table-column>
-                <el-table-column prop="candidate_number" label="候选人">
+                <el-table-column prop="candidate_number" label="候选人" width="240">
                 </el-table-column>
                 <el-table-column prop="" label="操作">
+                    <span style="font-size:12px;">
+                        <a href="javascript:void(0);" @click="" style="text-decoration:none;">设置考试规则</a>
+                    </span>
+                    <span style="font-size:12px;margin-left:15px;">
+                        <a href="javascript:void(0);" @click="" style="text-decoration:none;">编辑题目</a>
+                    </span>
+                    <span style="font-size:12px;margin-left:15px;">
+                        <a href="javascript:void(0);" @click="" style="text-decoration:none;">考试链接</a>
+                    </span>
+                    <span style="font-size:12px;">
+                        <a href="javascript:void(0);" @click="" style="text-decoration:none;">添加候选人</a>
+                    </span>
+                    <span style="font-size:12px;margin-left:25px;">
+                        <a href="javascript:void(0);" @click="" style="text-decoration:none;">候选人列表</a>
+                    </span>
+                    <span style="font-size:12px;margin-left:15px;">
+                        <a href="javascript:void(0);" @click="" style="text-decoration:none;">更多</a>
+                    </span>
                 </el-table-column>
             </el-table>
         </template>
@@ -160,6 +178,9 @@
             },
             switchFourth(){
                 this.first=this.second=this.third=this.fifth=!(this.fourth=true);
+            },
+            subject(){
+                window.location.href="/test_subject";
             }
         }
     })

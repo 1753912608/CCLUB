@@ -89,4 +89,10 @@ public class PageController {
         return "exam";
     }
 
+
+    @RequestMapping("/test_subject")
+    public String subject(){
+        return "subject";
+    }
+
 }

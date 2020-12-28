@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CCLUB笔试题库</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <style>
+        .el-header{
+            margin-top:80px;
+            margin-left:60px;
+            border: 1px solid rgb(235,235,235);
+            width:1390px;
+            height:70px;
+            font-size:13px;
+        }
+        .el-subject-content{
+            margin-left:60px;
+            border: 1px solid rgb(235,235,235);
+            width:1390px;
+            font-size:13px;
+        }
+        .el-subject-remarks{
+            width:1280px;
+            height:40px;
+            background-color:#eff2ff;
+            margin-left:80px;
+            margin-top:10px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div style="margin-left:30px;margin-top:15px;font-size:24px;height:30px;">
+        <div style="float:left;">{{name}}</div>
+        <div style="float:left;margin-left:1080px;">
+            <a href="javascript:void(0);" @click="interview" style="text-decoration:none;color:rgb(30,30,30);font-size:16px;">在线面试</a>
+        </div>
+        <div style="float:left;margin-left:30px;">
+            <el-dropdown placement="bottom-start">
+                <span class="el-dropdown-link">{{userInfo.user_company}}
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item style="background-color:#f6f8ff;">{{userInfo.user_phone}}</el-dropdown-item>
+                    <el-dropdown-item disabled style="font-size:12px;">当前公司:</el-dropdown-item>
+                    <el-dropdown-item style="font-size:12px;">&nbsp;&nbsp;&nbsp;{{userInfo.user_company}}</el-dropdown-item>
+                    <el-dropdown-item >个人中心</el-dropdown-item>
+                    <el-dropdown-item divided>
+                        <a href="javascript:void(0);" @click="signOut" style="text-decoration:none;color:rgb(30,30,30);">
+                            退出登录
+                        </a>
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+    </div>
+    <el-divider></el-divider>
+    <div style="margin-top:40px;margin-left:60px;">
+        <div style="float:left;">
+            <a href="javascript:void(0);" @click="home"><img src="img/back.png" alt="" width="13px" height="13px"></a>
+        </div>
+        <div style="float:left;margin-left:10px;font-size:18px;margin-top:-3px;">题库</div>
+        <div style="float:left;margin-left:1250px;"><el-button type="primary" size="small">添加试题</el-button></div>
+    </div>
+    <div class="el-header">
+        <div style="margin-top:20px;">
+            <span>题目类型</span>
+            <span style="margin-left:5px;">
+                <template>
+                    <el-select v-model="options_value" placeholder="请选择" style="width:200px;" size="small">
+                        <el-option v-for="item in subject_options" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
+                </template>
+            </span>
+            <span style="margin-left:5px;">难度</span>
+            <span>
+                <template>
+                    <el-select v-model="difficulty_value" placeholder="请选择" style="width:200px;" size="small">
+                        <el-option v-for="item in subject_difficulty" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
+                </template>
+            </span>
+            <span style="margin-left:5px;">题干关键词</span>
+            <span style="margin-left:5px;">
+                <el-input v-model="subject_key" placeholder="题干关键字" style="width:200px;" size="small"></el-input>
+            </span>
+            <span style="margin-left:5px;">备注</span>
+            <span style="margin-left:5px;">
+                <el-input v-model="subject_remarks" placeholder="备注" style="width:200px;" size="small"></el-input>
+            </span>
+            <span style="margin-left:10px;">
+                 <el-button type="info" style="width:60px;" size="small">搜索</el-button>
+            </span>
+            <span style="margin-left:190px;">1个结果</span>
+        </div>
+    </div>
+    <div class="el-subject-content">
+        <div style="margin-left:15px;margin-top:15px;margin-bottom:10px;">
+            <div>
+                <span>[单选题]</span>
+                <span style="margin-left:30px;">什么语言不是面向对象的</span>
+                <span style="color:#8b8f94;margin-left:1060px;">试题编号:1</span>
+            </div>
+            <div>
+                <div style="margin-left:80px;margin-top:15px;"><el-radio disabled v-model="radio" label="java">java</el-radio></div>
+                <div style="margin-left:80px;margin-top:10px;"><el-radio disabled v-model="radio" label="c++">c++</el-radio></div>
+                <div style="margin-left:80px;margin-top:10px;"><el-radio disabled v-model="radio" label="python">python</el-radio></div>
+                <div style="margin-left:80px;margin-top:10px;"><el-radio disabled v-model="radio" label="c语言">c语言</el-radio></div>
+            </div>
+            <div class="el-subject-remarks">
+                <div style="padding-top:10px;">
+                    <span style="margin-left:900px;">备注:</span>
+                    <span style="margin-left:5px;">无</span>
+                    <span style="margin-left:10px;">|</span>
+                    <span style="margin-left:10px;">默认分值1分</span>
+                    <span style="margin-left:10px;">｜</span>
+                    <span style="margin-left:10px;">难度</span>
+                    <span>3</span>
+                    <span style="margin-left:20px;">
+                        <a href="javascript:void(0);" style="text-decoration:none;">
+                            <i class="el-icon-edit-outline" style="font-size:13px;"></i>
+                            编辑
+                        </a>
+                    </span>
+                    <span style="margin-left:10px;">
+                        <a href="javascript:void(0);" style="text-decoration:none;color:red;">
+                            <i class="el-icon-delete" style="font-size:13px;"></i>
+                            删除
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div></div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data:{
+            name: 'CCLUB 在线笔试',
+            userInfo:{
+                user_phone: '18229583486',
+                user_company: '茗少集团'
+            },
+            subject_options:['全部','单选题','多选题','填空题','判断题','编程题'],
+            options_value: '',
+            subject_difficulty:['全部','1','2','3','4','5'],
+            difficulty_value: '',
+            subject_key: '',
+            subject_remarks: '',
+            radio: 'c语言'
+        },
+        created() {
+
+        },
+        methods:{
+            interview(){
+                window.location.href="/ming"
+            },
+            signOut(){
+
+            },
+            home(){
+                window.location.href="/ming";
+            }
+        }
+    })
+</script>
+</html>
