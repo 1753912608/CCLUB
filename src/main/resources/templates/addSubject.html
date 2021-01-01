@@ -14,7 +14,6 @@
         }
         .el-form{
             width:1340px;
-            height:970px;
             border:1px solid #d8dadb;
             margin-top:20px;
             margin-left:90px;
@@ -49,7 +48,7 @@
             <span style="margin-left:15px;">添加题目</span>
         </div>
     </div>
-    <div class="el-form">
+    <div class="el-form" :style="{'height':(first||second)?'970px':'480px'}">
         <div style="margin-top:15px;">
             <div style="float:left;font-size:12px;margin-left:130px;margin-top:10px;">
                 题型
@@ -88,7 +87,7 @@
             </div>
         </div>
         <div style="width:1210px;height:1px;background-color:#d8dadb;margin-top:155px;margin-left:130px;"></div>
-        <div>
+        <div v-if="first||second">
             <div style="margin-left:130px;margin-top:20px;">
                 <div style="font-size:12px;float:left;">选项</div>
                 <div style="float:left;margin-left:50px;">
@@ -212,6 +211,66 @@
                 </span>
             </div>
         </div>
+        <div v-if="third">
+            <div style="margin-left:130px;margin-top:20px;">
+                <span style="font-size:12px;">选项</span>
+                <span style="margin-left:45px;">
+                    <el-input v-model="panduan_input1" style="width:745px;" size="small"></el-input>
+                </span>
+                <span style="margin-left:15px;">
+                    <el-radio v-model="panduan_radio" label="1">正确答案</el-radio>
+                </span>
+            </div>
+            <div style="margin-left:160px;margin-top:20px;">
+                <span style="margin-left:45px;">
+                    <el-input v-model="panduan_input2" style="width:745px;" size="small"></el-input>
+                </span>
+                <span style="margin-left:15px;">
+                    <el-radio v-model="panduan_radio" label="2">正确答案</el-radio>
+                </span>
+            </div>
+            <div style="width:1210px;height:1px;background-color:#d8dadb;margin-top:35px;margin-left:130px;"></div>
+            <div style="margin-left:130px;margin-top:30px;font-size:12px;">
+                <span style="float:left;">难度</span>
+                <span style="float:left;margin-left:40px;"><el-rate v-model="question_color"></el-rate></span>
+                <span style="float:left;margin-left:50px;">默认分值</span>
+                <span style="float:left;margin-left:30px;margin-top:-5px;">
+                    <el-input v-model="question_score" style="width:80px;" size="small"></el-input>&nbsp;分
+                </span>
+                <span style="float:left;margin-left:50px;">备注</span>
+                <span style="float:left;margin-left:30px;margin-top:-5px;">
+                    <el-input v-model="question_remarks" style="width:160px;" size="small"></el-input>
+                </span>
+            </div>
+        </div>
+        <div v-if="fourth">
+            <div style="margin-left:130px;margin-top:20px;font-size:12px;">
+                <span>答案</span>
+                <span style="margin-left:40px;">如果有多个空需要填写,则通过逗号进行分隔</span>
+            </div>
+            <div style="margin-left:200px;margin-top:20px;">
+                <el-input
+                        type="textarea"
+                        :rows="3"
+                        placeholder="请按规则输入填空题答案"
+                        v-model="completion_subject"
+                style="width:750px;">
+                </el-input>
+            </div>
+            <div style="width:1210px;height:1px;background-color:#d8dadb;margin-top:35px;margin-left:130px;"></div>
+            <div style="margin-left:130px;margin-top:30px;font-size:12px;">
+                <span style="float:left;">难度</span>
+                <span style="float:left;margin-left:40px;"><el-rate v-model="question_color"></el-rate></span>
+                <span style="float:left;margin-left:50px;">默认分值</span>
+                <span style="float:left;margin-left:30px;margin-top:-5px;">
+                    <el-input v-model="question_score" style="width:80px;" size="small"></el-input>&nbsp;分
+                </span>
+                <span style="float:left;margin-left:50px;">备注</span>
+                <span style="float:left;margin-left:30px;margin-top:-5px;">
+                    <el-input v-model="question_remarks" style="width:160px;" size="small"></el-input>
+                </span>
+            </div>
+        </div>
     </div>
     <div style="margin-left:600px;margin-top:30px;height:70px;">
         <span>
@@ -237,7 +296,11 @@
             question_color: '',
             question_score: '',
             question_remarks: '',
-            checkedQuestions: []
+            checkedQuestions: [],
+            panduan_input1: '是',
+            panduan_input2: '否',
+            panduan_radio: '1',
+            completion_subject: ''
         },
         created(){
 
