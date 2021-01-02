@@ -1,8 +1,10 @@
-package cclub.demo.dao;
+package cclub.demo.dao.utils;
 
 import java.util.Random;
 
 public class Rand {
+
+    private enum suffex{cclub,choice,completion,judge}
     /**
      *
      * @return
@@ -24,7 +26,7 @@ public class Rand {
      *生成视频面试id
      */
     public static String getInterviewId(){
-        StringBuffer buffer=new StringBuffer("CCLUB");
+        StringBuffer buffer=new StringBuffer(suffex.valueOf("cclub").toString());
         Random rand=new Random();
         for(int i=0;i<12;i++){
             buffer.append(rand.nextInt(10));
@@ -45,5 +47,16 @@ public class Rand {
             buffer.append(rand.nextInt(10));
         }
         return buffer.toString();
+    }
+
+
+    /**
+     *
+     * @param type_name
+     * @return
+     * 根据传入的题目参数类型生成该题目的id
+     */
+    public static String getQuestionId(String type_name){
+        return "";
     }
 }

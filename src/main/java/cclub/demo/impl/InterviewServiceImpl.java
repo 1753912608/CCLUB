@@ -2,7 +2,7 @@ package cclub.demo.impl;
 
 import cclub.demo.dao.Interview;
 import cclub.demo.dao.NoticeTemplate;
-import cclub.demo.dao.Rand;
+import cclub.demo.dao.utils.Rand;
 import cclub.demo.dao.remarks;
 import cclub.demo.dao.utils.TimeUtils;
 import cclub.demo.mapper.InterviewMapper;

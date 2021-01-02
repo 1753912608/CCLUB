@@ -1,6 +1,7 @@
 package cclub.demo.controller;
 
 import cclub.demo.dao.*;
+import cclub.demo.dao.utils.Rand;
 import cclub.demo.impl.InterviewServiceImpl;
 import cclub.demo.impl.mailServiceImpl.mailDemoUtils;
 import cclub.demo.impl.redisUtils.RedisServiceImpl;
@@ -75,8 +76,8 @@ public class InterviewController {
                 interviewService.insertCandidateResume(interview_id,filesrc);
             }
             //将视频面试信息发送到邮箱
-            mailDemoUtils.sendModifyTemplateNotice(interview_candidate_mail,list.get(2));
-            mailDemoUtils.sendModifyTemplateNotice(interview_judge_mail,list.get(3));
+           //mailDemoUtils.sendModifyTemplateNotice(interview_candidate_mail,list.get(2));
+           //mailDemoUtils.sendModifyTemplateNotice(interview_judge_mail,list.get(3));
         }catch (Exception e){
             e.printStackTrace();
             return 0;

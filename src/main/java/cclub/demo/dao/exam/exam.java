@@ -2,6 +2,7 @@ package cclub.demo.dao.exam;
 
 public class exam {
     private String exam_id;
+    private String exam_name;
     private String exam_created_user_id;
     private String exam_start_time;
     private int exam_noEntry_time;
@@ -13,11 +14,12 @@ public class exam {
     private String exam_user_info;
     private int exam_state;
 
-    public exam(String exam_id, String exam_created_user_id, String exam_start_time,
-                int exam_noEntry_time, int exam_longTime, int exam_Upset_question,
-                int exam_Upset_answer, int exam_jumpOut_number, int exam_recording,
-                String exam_user_info, int exam_state) {
+    public exam(String exam_id, String exam_name, String exam_created_user_id,
+                String exam_start_time, int exam_noEntry_time, int exam_longTime,
+                int exam_Upset_question, int exam_Upset_answer, int exam_jumpOut_number,
+                int exam_recording, String exam_user_info, int exam_state) {
         this.exam_id = exam_id;
+        this.exam_name = exam_name;
         this.exam_created_user_id = exam_created_user_id;
         this.exam_start_time = exam_start_time;
         this.exam_noEntry_time = exam_noEntry_time;
@@ -116,5 +118,13 @@ public class exam {
 
     public int getExam_state() {
         return exam_state;
+    }
+
+    public void setExam_name(String exam_name) {
+        this.exam_name = exam_name;
+    }
+
+    public String getExam_name() {
+        return exam_name;
     }
 }

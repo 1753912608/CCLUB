@@ -170,7 +170,7 @@
         <div style="margin-left:500px;margin-top:15px;">
             <span><el-button type="info" plain style="width:150px;" size="small">取消</el-button></span>
             <span style="margin-left:30px;">
-                <el-button type="primary" style="width:150px;" size="small">保存</el-button>
+                <el-button type="primary" style="width:150px;" size="small" @click="editSubject">保存</el-button>
             </span>
         </div>
     </div>
@@ -181,7 +181,7 @@
             <el-form-item style="margin-top:20px;">
                 <span>字段名称</span>
                 <span style="margin-left:30px;">
-                    <el-input v-model="addItem.name" placeholder="请输入内容" style="width:300px;" size="mini" :disabled="addItem.name.length===0?false:true"></el-input>
+                    <el-input v-model="addItem.name" placeholder="请输入内容" style="width:300px;" size="mini"></el-input>
                 </span>
             </el-form-item>
             <el-form-item style="margin-top:20px;">
@@ -252,6 +252,13 @@
             add(){
                 this.list.push(this.addItem);
                 this.dialogVisible_field=false;
+            },
+            editSubject(){
+                window.location.href="/test_editSubject";
+            },
+            createExam(){
+                let params=new FormData();
+
             }
         }
     })
