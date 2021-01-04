@@ -65,7 +65,7 @@
     </div>
     <el-divider></el-divider>
     <div style="margin-left:30px;margin-top:30px;">
-        <div style="float:left;">在线笔试(2)</div>
+        <div style="float:left;">在线笔试({{tableData.length}})</div>
         <div style="float:left;margin-left:1140px;">
             <el-button type="primary" style="width:60px;" size="small" @click="subject">题库</el-button>
         </div>
@@ -78,7 +78,7 @@
             <el-input v-model="input" placeholder="请输入内容" style="width:200px;" size="small"></el-input>
         </div>
         <div style="float:left;margin-left:10px;margin-top:20px;">
-            <el-button type="info" size="small">搜索</el-button>
+            <el-button type="info" size="small" @click="searchByExamName">搜索</el-button>
         </div>
         <div style="float:left;margin-left:20px;margin-top:25px;">
             <span :class="first?'el-radio_button':'el-question_button'" style="border:1px solid #ececed;border-radius:6px 0 0 6px;">
@@ -94,40 +94,47 @@
                 <a href="javascript:void(0);" @click="switchFourth" :style="{'color':fourth?'#fff':'#000'}" style="text-decoration:none;">已结束</a>
             </span>
         </div>
-        <div style="float:left;margin-top:-25px;margin-left:1340px;font-size:13px;color:rgb(139, 143, 148);">2个结果</div>
+        <div style="float:left;margin-top:-25px;margin-left:1340px;font-size:13px;color:rgb(139, 143, 148);">{{tempExam.length}}个结果</div>
     </div>
     <div style="margin-left:30px;width:1430px">
         <template>
-            <el-table :data="tableData" style="width: 100%">
-                <el-table-column prop="date" label="考试名称" width="180">
+            <el-table :data="tempExam" style="width: 100%">
+                <el-table-column prop="exam_name" label="考试名称" width="180">
                 </el-table-column>
-                <el-table-column prop="name" label="考试时间" width="180">
+                <el-table-column prop="exam_start_time" label="考试时间" width="180">
                 </el-table-column>
-                <el-table-column prop="address" label="状态" width="300">
+                <el-table-column prop="" label="状态" width="300">
+                    <template scope="scope">
+                        <span v-if="scope.row.exam_state===0" style="color:red;">未开始</span>
+                        <span v-if="scope.row.exam_state===1" style="color:red;">进行中</span>
+                        <span v-if="scope.row.exam_state===2" style="color:red;">已结束</span>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="subject_number" label="题目数量" width="300">
                 </el-table-column>
                 <el-table-column prop="candidate_number" label="候选人" width="240">
                 </el-table-column>
                 <el-table-column prop="" label="操作">
-                    <span style="font-size:12px;">
-                        <a href="javascript:void(0);" @click="" style="text-decoration:none;">设置考试规则</a>
-                    </span>
-                    <span style="font-size:12px;margin-left:15px;">
-                        <a href="javascript:void(0);" @click="" style="text-decoration:none;">编辑题目</a>
-                    </span>
-                    <span style="font-size:12px;margin-left:15px;">
-                        <a href="javascript:void(0);" @click="" style="text-decoration:none;">考试链接</a>
-                    </span>
-                    <span style="font-size:12px;">
-                        <a href="javascript:void(0);" @click="" style="text-decoration:none;">添加候选人</a>
-                    </span>
-                    <span style="font-size:12px;margin-left:25px;">
-                        <a href="javascript:void(0);" @click="" style="text-decoration:none;">候选人列表</a>
-                    </span>
-                    <span style="font-size:12px;margin-left:15px;">
-                        <a href="javascript:void(0);" @click="" style="text-decoration:none;">更多</a>
-                    </span>
+                    <template scope="scope">
+                        <span style="font-size:12px;" v-if="scope.row.exam_state===0">
+                            <a href="javascript:void(0);" @click="" style="text-decoration:none;">设置考试规则</a>
+                        </span>
+                        <span style="font-size:12px;margin-left:15px;" v-if="scope.row.exam_state===0">
+                            <a href="javascript:void(0);" @click="" style="text-decoration:none;">编辑题目</a>
+                        </span>
+                        <span style="font-size:12px;margin-left:15px;">
+                            <a href="javascript:void(0);" @click="" style="text-decoration:none;">考试链接</a>
+                        </span>
+                        <span style="font-size:12px;" v-if="scope.row.exam_state===0">
+                            <a href="javascript:void(0);" @click="" style="text-decoration:none;">添加候选人</a>
+                        </span>
+                        <span style="font-size:12px;margin-left:25px;">
+                            <a href="javascript:void(0);" @click="" style="text-decoration:none;">候选人列表</a>
+                        </span>
+                        <span style="font-size:12px;margin-left:15px;">
+                            <a href="javascript:void(0);" @click="" style="text-decoration:none;">更多</a>
+                        </span>
+                    </template>
                 </el-table-column>
             </el-table>
         </template>
@@ -148,17 +155,13 @@
             second: false,
             third: false,
             fourth: false,
-            tableData: [{
-                date: '2016-05-02',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄',
-                subject_number: '1',
-                candidate_number: '1',
-
-            }]
+            tableData: [],
+            exam_question:[],
+            exam_user: [],
+            tempExam: []
         },
         created(){
-
+            this.getMyCreatedExam();
         },
         methods:{
             interview(){
@@ -169,21 +172,61 @@
             },
             switchFirst(){
                 this.second=this.third=this.fourth=this.fifth=!(this.first=true);
+                let temp=this.tempExam;
+                this.tempExam=[];
+                for(let i=0;i<temp.length;i++){
+                    this.tempExam[i]=temp[i];
+                }
             },
             switchSecond(){
                 this.first=this.third=this.fourth=this.fifth=!(this.second=true);
+                let temp=this.tempExam;
+                this.tempExam=[];
+                for(let i=0;i<temp.length;i++){
+                    if(temp.exam_state===0){
+                        this.tempExam[i]=temp[i];
+                    }
+                }
             },
             switchThird(){
                 this.first=this.second=this.fourth=this.fifth=!(this.third=true);
+                let temp=this.tempExam;
+                this.tempExam=[];
+                for(let i=0;i<temp.length;i++){
+                    if(temp.exam_state===1){
+                        this.tempExam[i]=temp[i];
+                    }
+                }
             },
             switchFourth(){
                 this.first=this.second=this.third=this.fifth=!(this.fourth=true);
+                let temp=this.tempExam;
+                this.tempExam=[];
+                for(let i=0;i<temp.length;i++){
+                    if(temp.exam_state===2){
+                        this.tempExam[i]=temp[i];
+                    }
+                }
             },
             subject(){
-                window.location.href="/test_subject";
+                window.location.href="/test_subject/all";
             },
             addSubject(){
                 window.location.href="/test_createWrittenExam";
+            },
+            async getMyCreatedExam(){
+                let result=await axios.get('/getMyCreatedExam');
+                this.tableData=result.data;
+                this.tempExam=result.data;
+                console.log(this.tableData);
+            },
+            searchByExamName(){
+                this.tempExam=[];
+                for(let i=0;i<this.tableData.length;i++){
+                    if(this.tableData[i].exam_name.indexOf(this.input)!=-1){
+                        this.tempExam[i]=this.tableData[i];
+                    }
+                }
             }
         }
     })

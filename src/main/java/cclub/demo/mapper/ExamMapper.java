@@ -17,7 +17,7 @@ public interface ExamMapper {
      * @return
      * 新建笔试
      */
-    @Insert("insert into exam values(#{exam_id},#{exam_name},#{exam_created_user_id}," +
+    @Insert("insert into exam values(#{exam_id},#{exam_name},#{exam_created_user_id},#{exam_start_time}," +
             "#{exam_noEntry_time},#{exam_longTime},#{exam_Upset_question}," +
             "#{exam_Upset_answer},#{exam_jumpOut_number},#{exam_recording}," +
             "#{exam_user_info},#{exam_state})")

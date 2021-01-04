@@ -38,7 +38,7 @@ public class ExamController {
      */
     @ResponseBody
     @RequestMapping("/createExam")
-    public int createExam(String exam_name,
+    public String createExam(String exam_name,
                           String exam_start_time,
                           int exam_longTime,
                           int exam_noEntry_time,
@@ -50,11 +50,12 @@ public class ExamController {
                           HttpServletRequest request)
     {
         HttpSession session=request.getSession();
+        String exam_id=Rand.getInterviewId();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
-        exam exam=new exam(Rand.getInterviewId(),exam_name,user_id,exam_start_time,
+        exam exam=new exam(exam_id,exam_name,user_id,exam_start_time,
                 exam_noEntry_time,exam_longTime,exam_Upset_question,exam_Upset_answer,
                 exam_jumpOut_number,exam_recording,exam_user_info,0);
-        return examService.createExam(exam);
+        return examService.createExam(exam)==1?exam_id:"";
     }
 
 
@@ -65,6 +66,8 @@ public class ExamController {
      * @return
      * 获取当前用户创建的所有笔试
      */
+    @ResponseBody
+    @RequestMapping("/getMyCreatedExam")
     public List<exam>getMyCreatedExam(HttpServletRequest request){
         HttpSession session=request.getSession();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);

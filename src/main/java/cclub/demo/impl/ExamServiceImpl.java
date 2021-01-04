@@ -18,6 +18,7 @@ public class ExamServiceImpl implements ExamService {
     public int createExam(exam exam) {
         try{
             examMapper.createExam(exam);
+            return 1;
         }catch (Exception e){
             e.printStackTrace();
         }

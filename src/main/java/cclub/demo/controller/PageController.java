@@ -60,13 +60,13 @@ public class PageController {
     }
 
 
-    @RequestMapping("/test_editSubject")
+    @RequestMapping("/test_editSubject/{exam_id}")
     public String editSubject(){
         return "editSubject";
     }
 
 
-    @RequestMapping("/test_addSubject")
+    @RequestMapping("/test_addSubject/{exam_id}")
     public String addSubject(){
         return "addSubject";
     }
@@ -90,7 +90,7 @@ public class PageController {
     }
 
 
-    @RequestMapping("/test_subject")
+    @RequestMapping("/test_subject/{exam_id}")
     public String subject(){
         return "subject";
     }

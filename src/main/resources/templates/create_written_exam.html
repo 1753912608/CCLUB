@@ -139,10 +139,10 @@
             <div style="float:left;">防作弊设置</div>
             <div style="float:left;margin-left:60px;">
                 <el-checkbox-group v-model="checkList">
-                    <el-checkbox label="打乱题目顺序"></el-checkbox>
-                    <el-checkbox label="打乱选项顺序"></el-checkbox>
-                    <el-checkbox label="打开摄像头"></el-checkbox>
-                    <el-checkbox label="检测页面跳出次数"></el-checkbox>
+                    <el-checkbox label="1">打乱题目顺序</el-checkbox>
+                    <el-checkbox label="2">打乱选项顺序</el-checkbox>
+                    <el-checkbox label="3">打开摄像头</el-checkbox>
+                    <el-checkbox label="4">检测页面跳出次数</el-checkbox>
                 </el-checkbox-group>
             </div>
         </div>
@@ -170,7 +170,7 @@
         <div style="margin-left:500px;margin-top:15px;">
             <span><el-button type="info" plain style="width:150px;" size="small">取消</el-button></span>
             <span style="margin-left:30px;">
-                <el-button type="primary" style="width:150px;" size="small" @click="editSubject">保存</el-button>
+                <el-button type="primary" style="width:150px;" size="small" @click="createExam">保存</el-button>
             </span>
         </div>
     </div>
@@ -250,15 +250,49 @@
                 this.dialogVisible_field=true;
             },
             add(){
-                this.list.push(this.addItem);
-                this.dialogVisible_field=false;
+                let obj=new Object();
+                obj.name=this.addItem.name;
+                obj.isMust=this.addItem.isMust;
+                if(obj.name.length===0||obj.isMust.length===0){
+                    this.$message({
+                        message: '请填好所有必选项',
+                        type: 'warning'
+                    });
+                }else{
+                    this.list.push(obj);
+                    this.dialogVisible_field=false;
+                }
             },
             editSubject(){
                 window.location.href="/test_editSubject";
             },
-            createExam(){
+            async createExam(){
                 let params=new FormData();
-
+                let date1=this.date.date1;
+                let date2=this.date.date2;
+                let date=date1.getFullYear()+"-"+(parseInt(date1.getMonth())+1)+"-"+date1.getDate()+" "+date2;
+                params.append("exam_name",this.exam_name);
+                params.append("exam_start_time",date);
+                params.append("exam_longTime",this.time_length);
+                params.append("exam_noEntry_time",this.ban_time);
+                params.append("exam_Upset_question",this.checkList.indexOf('1')!=-1?1:0);
+                params.append("exam_Upset_answer",this.checkList.indexOf('2')!=-1?1:0);
+                params.append("exam_jumpOut_number",this.checkList.indexOf('3')!=-1?1:0);
+                params.append("exam_recording",this.checkList.indexOf('4')!=-1?1:0);
+                params.append("exam_user_info",JSON.stringify(this.list));
+                let result=await axios({
+                    method: 'post',
+                    url: '/createExam',
+                    data: params,
+                });
+                if(result.data.length>0){
+                    window.location.href="/test_editSubject/"+result.data;
+                }else{
+                    this.$message({
+                        type: 'info',
+                        message: '新建笔试失败'
+                    });
+                }
             }
         }
     })
