@@ -13,11 +13,14 @@ public class exam {
     private int exam_recording;
     private String exam_user_info;
     private int exam_state;
+    private int exam_question_number;
+    private int exam_user_number;
 
     public exam(String exam_id, String exam_name, String exam_created_user_id,
                 String exam_start_time, int exam_noEntry_time, int exam_longTime,
                 int exam_Upset_question, int exam_Upset_answer, int exam_jumpOut_number,
-                int exam_recording, String exam_user_info, int exam_state) {
+                int exam_recording, String exam_user_info, int exam_state,
+                int exam_question_number,int exam_user_number) {
         this.exam_id = exam_id;
         this.exam_name = exam_name;
         this.exam_created_user_id = exam_created_user_id;
@@ -30,6 +33,8 @@ public class exam {
         this.exam_recording = exam_recording;
         this.exam_user_info = exam_user_info;
         this.exam_state = exam_state;
+        this.exam_question_number=exam_question_number;
+        this.exam_user_number=exam_user_number;
     }
 
     public void setExam_id(String exam_id) {
@@ -126,5 +131,21 @@ public class exam {
 
     public String getExam_name() {
         return exam_name;
+    }
+
+    public void setExam_question_number(int exam_question_number) {
+        this.exam_question_number = exam_question_number;
+    }
+
+    public void setExam_user_number(int exam_user_number) {
+        this.exam_user_number = exam_user_number;
+    }
+
+    public int getExam_question_number() {
+        return exam_question_number;
+    }
+
+    public int getExam_user_number() {
+        return exam_user_number;
     }
 }

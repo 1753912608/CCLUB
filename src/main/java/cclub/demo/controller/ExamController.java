@@ -54,7 +54,7 @@ public class ExamController {
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
         exam exam=new exam(exam_id,exam_name,user_id,exam_start_time,
                 exam_noEntry_time,exam_longTime,exam_Upset_question,exam_Upset_answer,
-                exam_jumpOut_number,exam_recording,exam_user_info,0);
+                exam_jumpOut_number,exam_recording,exam_user_info,0,0,0);
         return examService.createExam(exam)==1?exam_id:"";
     }
 
@@ -72,5 +72,18 @@ public class ExamController {
         HttpSession session=request.getSession();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
         return examService.getMyCreatedExamList(user_id);
+    }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * 根据笔试id删除对应的笔试
+     */
+    @ResponseBody
+    @RequestMapping("/deleteExamById")
+    public int deleteExamById(String exam_id){
+        return examService.deleteExamById(exam_id);
     }
 }

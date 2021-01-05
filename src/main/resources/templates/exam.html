@@ -110,9 +110,12 @@
                         <span v-if="scope.row.exam_state===2" style="color:red;">已结束</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="subject_number" label="题目数量" width="300">
+                <el-table-column prop="exam_question_number" label="题目数量" width="300">
                 </el-table-column>
-                <el-table-column prop="candidate_number" label="候选人" width="240">
+                <el-table-column prop="" label="候选人" width="240">
+                    <template scope="scope">
+                        <el-tag>{{scope.row.exam_user_number}}</el-tag>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="" label="操作">
                     <template scope="scope">
@@ -132,7 +135,19 @@
                             <a href="javascript:void(0);" @click="" style="text-decoration:none;">候选人列表</a>
                         </span>
                         <span style="font-size:12px;margin-left:15px;">
-                            <a href="javascript:void(0);" @click="" style="text-decoration:none;">更多</a>
+                            <el-dropdown placement="bottom-start" size="small">
+                                <span class="el-dropdown-link">
+                                    <a href="javascript:void(0);" style="font-size:12px;text-decoration:none;">更多</a>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item>
+                                        <a href="javascript:void(0);" @click="exportCandidate(scope.row.exam_id)" style="text-decoration:none;color:rgb(60,60,60)">导出候选人</a>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <a href="javascript:void(0);" @click="delExamOpen(scope.row.exam_id)" style="text-decoration:none;color:rgb(60,60,60)">删除</a>
+                                    </el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
                         </span>
                     </template>
                 </el-table-column>
@@ -172,39 +187,35 @@
             },
             switchFirst(){
                 this.second=this.third=this.fourth=this.fifth=!(this.first=true);
-                let temp=this.tempExam;
                 this.tempExam=[];
-                for(let i=0;i<temp.length;i++){
-                    this.tempExam[i]=temp[i];
+                for(let i=0;i<this.tableData.length;i++){
+                    this.tempExam[i]=this.tableData[i];
                 }
             },
             switchSecond(){
                 this.first=this.third=this.fourth=this.fifth=!(this.second=true);
-                let temp=this.tempExam;
                 this.tempExam=[];
-                for(let i=0;i<temp.length;i++){
-                    if(temp.exam_state===0){
-                        this.tempExam[i]=temp[i];
+                for(let i=0;i<this.tableData.length;i++){
+                    if(this.tableData[i].exam_state===0){
+                        this.tempExam[i]=this.tableData[i];
                     }
                 }
             },
             switchThird(){
                 this.first=this.second=this.fourth=this.fifth=!(this.third=true);
-                let temp=this.tempExam;
                 this.tempExam=[];
-                for(let i=0;i<temp.length;i++){
-                    if(temp.exam_state===1){
-                        this.tempExam[i]=temp[i];
+                for(let i=0;i<this.tableData.length;i++){
+                    if(this.tableData[i].exam_state===1){
+                        this.tempExam[i]=this.tableData[i];
                     }
                 }
             },
             switchFourth(){
                 this.first=this.second=this.third=this.fifth=!(this.fourth=true);
-                let temp=this.tempExam;
                 this.tempExam=[];
-                for(let i=0;i<temp.length;i++){
-                    if(temp.exam_state===2){
-                        this.tempExam[i]=temp[i];
+                for(let i=0;i<this.tableData.length;i++){
+                    if(this.tableData[i].exam_state===2){
+                        this.tempExam[i]=this.tableData[i];
                     }
                 }
             },
@@ -227,6 +238,39 @@
                         this.tempExam[i]=this.tableData[i];
                     }
                 }
+            },
+            async delExamOpen(exam_id){
+                this.$confirm('此操作将永久删除该笔试记录, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.deleteExam(exam_id);
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+            },
+            exportCandidate(exam_id){
+
+            },
+            async deleteExam(exam_id){
+                let result=await axios.get('/deleteExamById?exam_id='+exam_id);
+                if(result.data===1){
+                    this.$message({
+                        type: 'success',
+                        message: '删除视频面试成功!'
+                    });
+                }else{
+                    this.$message({
+                        type: 'info',
+                        message: '删除视频面试失败'
+                    });
+                }
+                this.getMyCreatedExam();
             }
         }
     })
