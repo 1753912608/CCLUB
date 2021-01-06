@@ -75,7 +75,7 @@
     <div style="margin-left:80px;margin-top:30px;">
         <div>
             <span><a href="javascript:void(0);">
-                <img src="img/back.png" alt="" width="14px" height="14px"></a>
+                <img src="../img/back.png" alt="" width="14px" height="14px"></a>
             </span>
             <span>新建在线笔试</span>
         </div>
@@ -230,10 +230,11 @@
                 name: '',
                 isMust: '1'
             },
-            dialogVisible_field: false
+            dialogVisible_field: false,
+            exam:{}
         },
         created(){
-
+            this.getExamInfo();
         },
         methods:{
             signOut(){
@@ -280,18 +281,41 @@
                 params.append("exam_jumpOut_number",this.checkList.indexOf('3')!=-1?1:0);
                 params.append("exam_recording",this.checkList.indexOf('4')!=-1?1:0);
                 params.append("exam_user_info",JSON.stringify(this.list));
+                params.append("exam_id",this.exam.exam_id!=undefined?this.exam.exam_id:"");
                 let result=await axios({
                     method: 'post',
                     url: '/createExam',
                     data: params,
                 });
-                if(result.data.length>0){
-                    window.location.href="/test_editSubject/"+result.data;
+                if(this.exam.exam_id!=undefined){
+                    window.location.href="/test_exam";
                 }else{
-                    this.$message({
-                        type: 'info',
-                        message: '新建笔试失败'
-                    });
+                    if(result.data.length>0){
+                        window.location.href="/test_editSubject/"+result.data;
+                    }else{
+                        this.$message({
+                            type: 'info',
+                            message: '新建笔试失败'
+                        });
+                    }
+                }
+            },
+            async getExamInfo(){
+                let url=window.location.href.split("/");
+                if(url[url.length-1]!='all'){
+                    let result=await axios.get('/getOneExamInfo?exam_id='+url[url.length-1]);
+                    console.log(result.data);
+                    this.exam=result.data;
+                    this.exam_name=result.data.exam_name;
+                    this.time_length=result.data.exam_longTime;
+                    this.ban_time=result.data.exam_noEntry_time;
+                    this.date.date1=result.data.exam_start_time.split(" ")[0];
+                    this.date.date2=result.data.exam_start_time.split(" ")[1];
+                    if(result.data.exam_Upset_question===1)this.checkList.push('1');
+                    if(result.data.exam_Upset_answer===1)this.checkList.push('2');
+                    if(result.data.exam_recording===1)this.checkList.push('3');
+                    if(result.data.exam_jumpOut_number===1)this.checkList.push('4');
+                    this.list=JSON.parse(result.data.exam_user_info);
                 }
             }
         }

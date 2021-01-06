@@ -47,10 +47,11 @@ public class ExamController {
                           int exam_jumpOut_number,
                           int exam_recording,
                           String exam_user_info,
+                          String exam_id,
                           HttpServletRequest request)
     {
         HttpSession session=request.getSession();
-        String exam_id=Rand.getInterviewId();
+        if(exam_id.isEmpty())exam_id=Rand.getInterviewId();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
         exam exam=new exam(exam_id,exam_name,user_id,exam_start_time,
                 exam_noEntry_time,exam_longTime,exam_Upset_question,exam_Upset_answer,
@@ -85,5 +86,19 @@ public class ExamController {
     @RequestMapping("/deleteExamById")
     public int deleteExamById(String exam_id){
         return examService.deleteExamById(exam_id);
+    }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 根据笔试id获取对应的笔试
+     */
+    @ResponseBody
+    @RequestMapping("/getOneExamInfo")
+    public exam getOneExamInfo(String exam_id){
+        return examService.getOneExamInfo(exam_id);
     }
 }

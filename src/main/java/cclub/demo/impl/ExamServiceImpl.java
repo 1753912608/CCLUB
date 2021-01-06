@@ -48,4 +48,9 @@ public class ExamServiceImpl implements ExamService {
         }
         return 1;
     }
+
+    @Override
+    public exam getOneExamInfo(String exam_id) {
+        return examMapper.getOneExamInfo(exam_id);
+    }
 }

@@ -1,7 +1,6 @@
 package cclub.demo.service;
 
 import cclub.demo.dao.exam.exam;
-import cclub.demo.dao.exam.exam_question;
 
 import java.util.List;
 
@@ -44,5 +43,15 @@ public interface ExamService {
      * 根据笔试id删除对应的笔试
      */
     int deleteExamById(String exam_id);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 根据笔试id获取对应的笔试
+     */
+    exam getOneExamInfo(String exam_id);
 
 }

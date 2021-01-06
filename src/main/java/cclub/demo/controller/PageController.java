@@ -54,7 +54,7 @@ public class PageController {
     }
 
 
-    @RequestMapping("/test_createWrittenExam")
+    @RequestMapping("/test_createWrittenExam/{exam_id}")
     public String createWrittenExam(){
         return "create_written_exam";
     }
@@ -93,6 +93,12 @@ public class PageController {
     @RequestMapping("/test_subject/{exam_id}")
     public String subject(){
         return "subject";
+    }
+
+
+    @RequestMapping("/test_examing/{exam_id}")
+    public String examing(){
+        return "examing";
     }
 
 }

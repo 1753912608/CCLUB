@@ -70,7 +70,7 @@
             <el-button type="primary" style="width:60px;" size="small" @click="subject">题库</el-button>
         </div>
         <div style="float:left;margin-left:25px;">
-            <el-button type="primary" style="width:120px;" size="small" @click="addSubject">新建在线笔试</el-button>
+            <el-button type="primary" style="width:120px;" size="small" @click="addSubject('all')">新建在线笔试</el-button>
         </div>
     </div>
     <div class="el-header">
@@ -120,13 +120,13 @@
                 <el-table-column prop="" label="操作">
                     <template scope="scope">
                         <span style="font-size:12px;" v-if="scope.row.exam_state===0">
-                            <a href="javascript:void(0);" @click="" style="text-decoration:none;">设置考试规则</a>
+                            <a href="javascript:void(0);" @click="addSubject(scope.row.exam_id)" style="text-decoration:none;">设置考试规则</a>
                         </span>
                         <span style="font-size:12px;margin-left:15px;" v-if="scope.row.exam_state===0">
                             <a href="javascript:void(0);" @click="" style="text-decoration:none;">编辑题目</a>
                         </span>
                         <span style="font-size:12px;margin-left:15px;">
-                            <a href="javascript:void(0);" @click="" style="text-decoration:none;">考试链接</a>
+                            <a href="javascript:void(0);" @click="copyExamOpen(scope.row.exam_id)" style="text-decoration:none;">考试链接</a>
                         </span>
                         <span style="font-size:12px;" v-if="scope.row.exam_state===0">
                             <a href="javascript:void(0);" @click="" style="text-decoration:none;">添加候选人</a>
@@ -154,6 +154,18 @@
             </el-table>
         </template>
     </div>
+    <!--复制笔试链接-->
+    <el-dialog title="查看考试地址" :visible.sync="dialogVisible_copy_exam" width="30%" before-close="handleClose" >
+        <div style="width:100%;height:1px;background-color:rgb(230,230,230);margin-top:-25px;"></div>
+        <div style="font-size:13px;margin-top:10px;">请复制考试地址，发送给候选人</div>
+        <div style="margin-top:15px;">
+            <span><el-input v-model="exam_address" readonly="readonly" style="width:330px;" size="mini"></el-input></span>
+            <span><el-button type="primary" style="width:80px;" size="mini">复制链接</el-button></span>
+        </div>
+        <div style="margin-top:35px;margin-left:130px;">
+            <el-button type="info" @click="dialogVisible_copy_exam = false" style="width:150px;" size="small">取 消</el-button>
+        </div>
+    </el-dialog>
 </div>
 </body>
 <script>
@@ -173,7 +185,9 @@
             tableData: [],
             exam_question:[],
             exam_user: [],
-            tempExam: []
+            tempExam: [],
+            dialogVisible_copy_exam: false,
+            exam_address: '127.0.0.1:8080/test_examing/'
         },
         created(){
             this.getMyCreatedExam();
@@ -222,8 +236,8 @@
             subject(){
                 window.location.href="/test_subject/all";
             },
-            addSubject(){
-                window.location.href="/test_createWrittenExam";
+            addSubject(exam_id){
+                window.location.href="/test_createWrittenExam/"+exam_id;
             },
             async getMyCreatedExam(){
                 let result=await axios.get('/getMyCreatedExam');
@@ -239,7 +253,7 @@
                     }
                 }
             },
-            async delExamOpen(exam_id){
+            delExamOpen(exam_id){
                 this.$confirm('此操作将永久删除该笔试记录, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -252,7 +266,6 @@
                         message: '已取消删除'
                     });
                 });
-
             },
             exportCandidate(exam_id){
 
@@ -271,6 +284,10 @@
                     });
                 }
                 this.getMyCreatedExam();
+            },
+            copyExamOpen(exam_id){
+                this.exam_address+=exam_id;
+                this.dialogVisible_copy_exam=true;
             }
         }
     })

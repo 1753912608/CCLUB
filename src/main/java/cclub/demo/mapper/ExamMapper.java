@@ -2,10 +2,7 @@ package cclub.demo.mapper;
 
 import cclub.demo.dao.exam.exam;
 import cclub.demo.dao.exam.exam_question;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -19,10 +16,14 @@ public interface ExamMapper {
      * @return
      * 新建笔试
      */
-    @Insert("insert into exam values(#{exam_id},#{exam_name},#{exam_created_user_id},#{exam_start_time}," +
-            "#{exam_noEntry_time},#{exam_longTime},#{exam_Upset_question}," +
-            "#{exam_Upset_answer},#{exam_jumpOut_number},#{exam_recording}," +
-            "#{exam_user_info},#{exam_state},#{exam_question_number},#{exam_user_number})")
+    @Update("update exam set exam_name=#{exam_name}," +
+            "exam_created_user_id=#{exam_created_user_id}," +
+            "exam_start_time=#{exam_start_time},exam_noEntry_time=#{exam_noEntry_time}," +
+            "exam_longTime=#{exam_longTime},exam_Upset_question=#{exam_Upset_question}," +
+            "exam_Upset_answer=#{exam_Upset_answer},exam_jumpOut_number=#{exam_jumpOut_number}," +
+            "exam_recording=#{exam_recording},exam_user_info=#{exam_user_info}," +
+            "exam_state=#{exam_state},exam_question_number=#{exam_question_number}," +
+            "exam_user_number=#{exam_user_number} where exam_id=#{exam_id}")
     void createExam(exam exam);
 
 
@@ -46,4 +47,13 @@ public interface ExamMapper {
     @Delete("delete from exam where exam_id=#{exam_id}")
     void deleteExamById(String exam_id);
 
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 根据笔试id获取对应的笔试
+     */
+    @Select("select * from exam where exam_id=#{exam_id}")
+     exam getOneExamInfo(String exam_id);
 }
