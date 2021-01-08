@@ -17,6 +17,16 @@ public interface ExamService {
     int createExam(exam exam);
 
 
+
+    /**
+     *
+     * @param exam
+     * @return
+     * 修改笔试
+     */
+    int updateExam(exam exam);
+
+
     /**
      *
      * @param user_id

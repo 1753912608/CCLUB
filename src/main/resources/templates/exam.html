@@ -129,10 +129,10 @@
                             <a href="javascript:void(0);" @click="copyExamOpen(scope.row.exam_id)" style="text-decoration:none;">考试链接</a>
                         </span>
                         <span style="font-size:12px;" v-if="scope.row.exam_state===0">
-                            <a href="javascript:void(0);" @click="" style="text-decoration:none;">添加候选人</a>
+                            <a href="javascript:void(0);" @click="add_exam_candidate(scope.row.exam_id)" style="text-decoration:none;">添加候选人</a>
                         </span>
                         <span style="font-size:12px;margin-left:25px;">
-                            <a href="javascript:void(0);" @click="" style="text-decoration:none;">候选人列表</a>
+                            <a href="javascript:void(0);" @click="exam_candidate_list(scope.row.exam_id)" style="text-decoration:none;">候选人列表</a>
                         </span>
                         <span style="font-size:12px;margin-left:15px;">
                             <el-dropdown placement="bottom-start" size="small">
@@ -288,6 +288,12 @@
             copyExamOpen(exam_id){
                 this.exam_address+=exam_id;
                 this.dialogVisible_copy_exam=true;
+            },
+            add_exam_candidate(exam_id){
+                window.location.href="/test_add_exam_candidate/"+exam_id;
+            },
+            exam_candidate_list(exam_id){
+                window.location.href="/test_exam_candidate_list/"+exam_id;
             }
         }
     })

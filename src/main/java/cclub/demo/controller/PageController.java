@@ -101,4 +101,16 @@ public class PageController {
         return "examing";
     }
 
+
+    @RequestMapping("/test_add_exam_candidate/{exam_id}")
+    public String add_exam_candidate(){
+        return "add_exam_candidate";
+    }
+
+
+    @RequestMapping("/test_exam_candidate_list/{exam_id}")
+    public String exam_candidate_list(){
+        return "exam_candidate_list";
+    }
+
 }

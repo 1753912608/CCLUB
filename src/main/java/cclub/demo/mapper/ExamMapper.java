@@ -10,11 +10,25 @@ import java.util.List;
 @Mapper
 public interface ExamMapper {
 
+
+    /**
+     *
+     * @param exam
+     * 修改笔试
+     */
+    @Insert("insert into exam values(#{exam_id},#{exam_name},#{exam_created_user_id}," +
+            "#{exam_start_time},#{exam_noEntry_time},#{exam_longTime}," +
+            "#{exam_Upset_question},#{exam_Upset_answer},#{exam_jumpOut_number}," +
+            "#{exam_recording},#{exam_user_info},#{exam_state},#{exam_question_number}," +
+            "#{exam_user_number})")
+    void createExam(exam exam);
+
+
     /**
      *
      * @param exam
      * @return
-     * 新建笔试
+     * 修改笔试
      */
     @Update("update exam set exam_name=#{exam_name}," +
             "exam_created_user_id=#{exam_created_user_id}," +
@@ -24,7 +38,7 @@ public interface ExamMapper {
             "exam_recording=#{exam_recording},exam_user_info=#{exam_user_info}," +
             "exam_state=#{exam_state},exam_question_number=#{exam_question_number}," +
             "exam_user_number=#{exam_user_number} where exam_id=#{exam_id}")
-    void createExam(exam exam);
+    void updateExam(exam exam);
 
 
 

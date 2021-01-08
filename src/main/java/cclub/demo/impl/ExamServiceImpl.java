@@ -29,6 +29,17 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
+    public int updateExam(exam exam) {
+        try{
+            examMapper.updateExam(exam);
+            return 1;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
     public List<exam> getMyCreatedExamList(String user_id) {
         return examMapper.getMyCreatedExam(user_id);
     }

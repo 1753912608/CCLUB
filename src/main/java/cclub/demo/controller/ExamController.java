@@ -51,12 +51,18 @@ public class ExamController {
                           HttpServletRequest request)
     {
         HttpSession session=request.getSession();
-        if(exam_id.isEmpty())exam_id=Rand.getInterviewId();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
-        exam exam=new exam(exam_id,exam_name,user_id,exam_start_time,
+        exam exam=new exam("",exam_name,user_id,exam_start_time,
                 exam_noEntry_time,exam_longTime,exam_Upset_question,exam_Upset_answer,
                 exam_jumpOut_number,exam_recording,exam_user_info,0,0,0);
-        return examService.createExam(exam)==1?exam_id:"";
+        if(exam_id.isEmpty()){
+            exam.setExam_id(Rand.getInterviewId());
+            return examService.createExam(exam)==1?exam.getExam_id():"";
+        }else{
+            exam.setExam_id(exam_id);
+            examService.updateExam(exam);
+        }
+        return "";
     }
 
 

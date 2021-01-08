@@ -271,7 +271,12 @@
                 let params=new FormData();
                 let date1=this.date.date1;
                 let date2=this.date.date2;
-                let date=date1.getFullYear()+"-"+(parseInt(date1.getMonth())+1)+"-"+date1.getDate()+" "+date2;
+                let date=null;
+                if(date1.length<=10){
+                    date=date1+" "+date2;
+                }else{
+                    date=date1.getFullYear()+"-"+(parseInt(date1.getMonth())+1)+"-"+date1.getDate()+" "+date2;
+                }
                 params.append("exam_name",this.exam_name);
                 params.append("exam_start_time",date);
                 params.append("exam_longTime",this.time_length);

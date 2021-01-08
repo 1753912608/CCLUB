@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CCLUB在线笔试</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <style>
+        .el-border{
+            width:1340px;
+            height:60px;
+            border: 1px solid rgb(230,230,230);
+            margin-left:80px;
+            margin-top:10px;
+        }
+        .el-border1{
+            width:1340px;
+            height:220px;
+            border: 1px solid rgb(230,230,230);
+            margin-left:80px;
+            font-size:13px;
+        }
+        .el-border2{
+            width:1340px;
+            height:60px;
+            border: 1px solid rgb(230,230,230);
+            margin-left:80px;
+            font-size:13px;
+        }
+        .el-border3{
+            width:1340px;
+            height:270px;
+            border:1px solid rgb(230,230,230);
+            margin-left:80px;
+            font-size:13px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div style="margin-left:30px;margin-top:15px;font-size:24px;height:28px;">
+        <div style="float:left;">{{name}}</div>
+        <div style="float:left;margin-left:1100px;">
+            <a href="javascript:void(0);" style="text-decoration:none;color:rgb(60,60,60);font-size:14px;" @click="interview">视频面试</a>
+        </div>
+        <div style="float:left;margin-left:30px;">
+            <el-dropdown placement="bottom-start">
+                <span class="el-dropdown-link">{{userInfo.user_company}}
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item style="background-color:#f6f8ff;">{{userInfo.user_phone}}</el-dropdown-item>
+                    <el-dropdown-item disabled style="font-size:12px;">当前公司:</el-dropdown-item>
+                    <el-dropdown-item style="font-size:12px;">&nbsp;&nbsp;&nbsp;{{userInfo.user_company}}</el-dropdown-item>
+                    <el-dropdown-item >个人中心</el-dropdown-item>
+                    <el-dropdown-item divided>
+                        <a href="javascript:void(0);" @click="signOut" style="text-decoration:none;color:rgb(30,30,30);">
+                            退出登录
+                        </a>
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+    </div>
+    <el-divider></el-divider>
+    <div style="margin-left:80px;margin-top:25px;">
+        <span><a href="javascript:void(0);" style="text-decoration:none;color:rgb(20,20,20)"><i class="el-icon-back"></i> 返回</a></span>
+        <span style="margin-left:15px;color:rgb(240,240,240)">|</span>
+        <span style="margin-left:15px;">添加候选人</span>
+        <span style="margin-left:20px;color:rgb(150,150,150);">后端研发</span>
+    </div>
+    <div class="el-border">
+        <div style="margin-left:15px;margin-top:20px;font-size:13px;">
+            <span>添加候选人</span>
+            <span style="margin-left:30px;"><el-radio v-model="radio" label="1" @change="changeUploadType">添加一位</el-radio></span>
+            <span style="margin-left:30px;"><el-radio v-model="radio" label="2" @change="changeUploadType">批量添加</el-radio></span>
+        </div>
+    </div>
+    <div class="el-border1" v-if="isAddOne">
+        <div style="margin-left:15px;margin-top:30px;">
+            <span>姓名</span>
+            <span style="margin-left:70px;">
+                <el-input v-model="candidate.name" placeholder="请输入内容" style="width:300px;" size="small"></el-input>
+            </span>
+            <span style="margin-left:20px;color:red;">必填，候选人不可更改</span>
+        </div>
+        <div style="margin-left:15px;margin-top:30px;">
+            <span>手机</span>
+            <span style="margin-left:70px;">
+                <el-input v-model="candidate.phone" placeholder="请输入内容" style="width:300px;" size="small"></el-input>
+            </span>
+            <span style="margin-left:20px;color:red;">必填，候选人不可更改</span>
+        </div>
+        <div style="margin-left:15px;margin-top:30px;">
+            <span>邮箱</span>
+            <span style="margin-left:70px;">
+                <el-input v-model="candidate.mail" placeholder="请输入内容" style="width:300px;" size="small"></el-input>
+            </span>
+        </div>
+    </div>
+    <div v-if="isAddOne===false" class="el-border3">
+        <div style="margin-left:20px;margin-top:20px;">上传文件</div>
+        <div style="margin-left:450px;margin-top:-20px;">
+            <el-upload
+                    class="upload-demo"
+                    drag
+                    action="https://jsonplaceholder.typicode.com/posts/">
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
+            </el-upload>
+        </div>
+        <div style="margin-left:450px;margin-top:20px;">
+            <a href="javascript:void(0)" style="text-decoration:none;">下载批量添加候选人模板</a>
+        </div>
+    </div>
+    <div class="el-border2">
+        <div style="margin-left:15px;margin-top:20px;">
+            <span>通知</span>
+            <span style="margin-left:70px;"><el-checkbox v-model="checked">发送短信和邮件通知候选人</el-checkbox></span>
+        </div>
+    </div>
+    <div style="margin-left:650px;margin-top:20px;">
+        <el-button type="primary" style="width:120px" size="small">提交</el-button>
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data:{
+            name: 'CCLUB 在线笔试',
+            userInfo:{
+                user_phone: '18229583486',
+                user_company: '茗少集团'
+            },
+            radio: '1',
+            candidate:{
+                name: '',
+                phone: '',
+                mail: ''
+            },
+            checked: true,
+            isAddOne: true
+        },
+        created(){
+
+        },
+        methods:{
+            signOut(){
+
+            },
+            interview(){
+                window.location.href="/ming";
+            },
+            changeUploadType(){
+                this.isAddOne=(this.radio==='1');
+            }
+        }
+    })
+</script>
+</html>
