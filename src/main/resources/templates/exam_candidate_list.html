@@ -2,28 +2,188 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CCLUB在线笔试</title>
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <title>CClub在线笔试</title>
     <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        .el-border{
+            width:1430px;
+            height:60px;
+            border: 1px solid rgb(230,230,230);
+            margin-left:40px;
+            margin-top:20px;
+        }
+        .el-radio_button{
+            background-color:#5272ff;
+            border:1px solid #ececed;
+            font-size:12px;
+            width:67px;
+            height:32px;
+            padding:8px 13px 8px 13px;
+        }
+        .el-question_button{
+            background-color:#fff;
+            border:1px solid #ececed;
+            font-size:12px;
+            width:67px;
+            height:32px;
+            padding:8px 13px 8px 13px;
+        }
+    </style>
 </head>
 <body>
 <div id="app">
-    {{name}}
+    <div style="margin-left:30px;margin-top:15px;font-size:24px;height:28px;">
+        <div style="float:left;">{{name}}</div>
+        <div style="float:left;margin-left:1100px;">
+            <a href="javascript:void(0);" style="text-decoration:none;color:rgb(60,60,60);font-size:14px;">视频面试</a>
+        </div>
+        <div style="float:left;margin-left:30px;">
+            <el-dropdown placement="bottom-start">
+                <span class="el-dropdown-link">{{userInfo.user_company}}
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item style="background-color:#f6f8ff;">{{userInfo.user_phone}}</el-dropdown-item>
+                    <el-dropdown-item disabled style="font-size:12px;">当前公司:</el-dropdown-item>
+                    <el-dropdown-item style="font-size:12px;">&nbsp;&nbsp;&nbsp;{{userInfo.user_company}}</el-dropdown-item>
+                    <el-dropdown-item >个人中心</el-dropdown-item>
+                    <el-dropdown-item divided>
+                        <a href="javascript:void(0);" @click="signOut" style="text-decoration:none;color:rgb(30,30,30);">
+                            退出登录
+                        </a>
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+    </div>
+    <el-divider></el-divider>
+    <div style="margin-left:40px;margin-top:50px;">
+        <span>
+            <a href="javascript:void(0);" @click="">
+                <img src="../img/back.png" alt="" width="14px" height="14px">
+            </a>
+        </span>
+        <span>后端研发</span>
+        <span>/</span>
+        <span>候选人列表</span>
+        <span style="margin-left:15px;font-size:12px;color:#8b8f94;">
+            共1人 1人参加笔试
+        </span>
+        <span style="margin-left:870px;">
+            <el-dropdown>
+                <el-button type="primary" size="small" style="width:150px;">
+                    批量通知候选人<i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item style="font-size:12px;">通知未发送的候选人</el-dropdown-item>
+                <el-dropdown-item style="font-size:12px;">通知全部候选人</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </span>
+        <span style="margin-left:10px;">
+            <el-button type="primary" size="small">添加候选人</el-button>
+        </span>
+    </div>
+    <div class="el-border">
+        <div style="margin-left:30px;margin-top:15px;">
+            <div style="float:left;">
+                <el-input v-model="input" placeholder="请输入内容" style="width:200px;" size="small"></el-input>
+            </div>
+            <div style="margin-left:5px;float:left;">
+                <el-button type="info" style="width:60px;" size="small">搜索</el-button>
+            </div>
+            <div style="margin-left:20px;margin-top:5px;float:left;">
+                <span :class="first?'el-radio_button':'el-question_button'" style="border:1px solid #ececed;border-radius:6px 0 0 6px;">
+                    <a href="javascript:void(0);" @click="switchFirst" :style="{'color':first?'#fff':'#000'}" style="text-decoration:none;">全部</a>
+                </span>
+                <span :class="second?'el-radio_button':'el-question_button'" style="margin-left:-5px;">
+                    <a href="javascript:void(0);" @click="switchSecond" :style="{'color':second?'#fff':'#000'}" style="text-decoration:none;">未通知</a>
+                </span>
+                <span :class="third?'el-radio_button':'el-question_button'" style="margin-left:-5px;">
+                    <a href="javascript:void(0);" @click="switchThird" :style="{'color':third?'#fff':'#000'}" style="text-decoration:none;">已通知</a>
+                </span>
+            </div>
+            <div style="float:left;margin-left:1060px;font-size:12px;color:rgb(139, 143, 148);margin-top:-15px;">0个结果</div>
+        </div>
+    </div>
+    <div style="margin-left:40px;width:1430px;">
+        <template>
+            <el-table :data="tableData" style="width: 100%">
+                <el-table-column prop="name" label="姓名" width="160">
+                </el-table-column>
+                <el-table-column prop="phone" label="手机" width="200">
+                </el-table-column>
+                <el-table-column prop="mail" label="邮箱" width="200">
+                </el-table-column>
+                <el-table-column prop="state" label="状态" width="200">
+                    <template scope="scope">
+                        <span v-if="scope.row.state==='0'" style="color:red;">未进入笔试</span>
+                        <span v-if="scope.row.state==='1'" style="color:rgb(200,200,200)">已进入笔试</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="notice" label="状态" width="200">
+                    <template scope="scope">
+                        <span v-if="scope.row.notice==='0'">已通知</span>
+                        <span v-if="scope.row.notice==='1'">未通知</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="score" label="分数" width="200" sortable>
+                    <template scope="scope">
+                        <span style="color:red;">{{scope.row.score}}</span>
+                        <span>/100</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="" label="操作" width="270">
+                    <span><el-button type="danger" size="small">删除</el-button></span>
+                    <span style="margin-left:15px;"><el-button type="success" size="small">通知候选人</el-button></span>
+                </el-table-column>
+            </el-table>
+        </template>
+    </div>
+    <div></div>
 </div>
 </body>
 <script>
     new Vue({
         el: '#app',
         data:{
-            name: '候选人列表'
+            name: 'CCLUB 在线笔试',
+            userInfo:{
+                user_phone: '18229583486',
+                user_company: '茗少集团'
+            },
+            tableData: [{
+                name: '肖茗夫',
+                phone: '18229583486',
+                mail: '1753972608@qq.com',
+                state: '0',
+                score: 100,
+                notice: '0'
+            }],
+            input: '',
+            first: true,
+            second: false,
+            third: false
         },
         created(){
 
         },
         methods:{
+            signOut(){
 
+            },
+            switchFirst(){
+                this.second=this.third=!(this.first=true);
+            },
+            switchSecond(){
+                this.first=this.third=!(this.second=true);
+            },
+            switchThird(){
+                this.first=this.second=!(this.third=true);
+            }
         }
     })
 </script>
