@@ -2,6 +2,7 @@ package cclub.demo.mapper;
 
 import cclub.demo.dao.exam.exam;
 import cclub.demo.dao.exam.exam_question;
+import cclub.demo.dao.exam.exam_user;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -70,4 +71,15 @@ public interface ExamMapper {
      */
     @Select("select * from exam where exam_id=#{exam_id}")
      exam getOneExamInfo(String exam_id);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 根据笔试id获取参加笔试的所有候选人信息
+     */
+    @Select("select * from exam_user where exam_id=#{exam_id}")
+    List<exam_user>getExamUserListById(String exam_id);
 }

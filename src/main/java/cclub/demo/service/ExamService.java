@@ -1,8 +1,10 @@
 package cclub.demo.service;
 
 import cclub.demo.dao.exam.exam;
+import cclub.demo.dao.exam.exam_user;
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface ExamService {
@@ -64,4 +66,23 @@ public interface ExamService {
      */
     exam getOneExamInfo(String exam_id);
 
+
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 根据笔试id获取参加笔试的所有候选人信息
+     */
+    List<exam_user>getExamUserListById(String exam_id);
+
+
+
+    /**
+     *
+     * @param list
+     * @return
+     * 生成Excel数据
+     */
+    List<Map<String,Object>>createExcelRecord(List<exam_user>list);
 }

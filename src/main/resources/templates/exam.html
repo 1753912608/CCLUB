@@ -141,7 +141,7 @@
                                 </span>
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item>
-                                        <a href="javascript:void(0);" @click="exportCandidate(scope.row.exam_id)" style="text-decoration:none;color:rgb(60,60,60)">导出候选人</a>
+                                        <a href="javascript:void(0);" @click="exportCandidate(scope.row.exam_id,scope.row.exam_name)" style="text-decoration:none;color:rgb(60,60,60)">导出候选人</a>
                                     </el-dropdown-item>
                                     <el-dropdown-item>
                                         <a href="javascript:void(0);" @click="delExamOpen(scope.row.exam_id)" style="text-decoration:none;color:rgb(60,60,60)">删除</a>
@@ -267,8 +267,20 @@
                     });
                 });
             },
-            exportCandidate(exam_id){
-
+            exportCandidate(exam_id,exam_name){
+                this.$confirm('此操作将导出该笔试的候选人信息, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let url="/exportExamUserSheet?exam_id="+exam_id+"&exam_name="+exam_name;
+                    window.open(url);
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             },
             async deleteExam(exam_id){
                 let result=await axios.get('/deleteExamById?exam_id='+exam_id);

@@ -2,16 +2,23 @@ package cclub.demo.controller;
 
 import cclub.demo.dao.SessionInfo;
 import cclub.demo.dao.exam.exam;
+import cclub.demo.dao.exam.exam_user;
 import cclub.demo.dao.utils.Rand;
 import cclub.demo.impl.ExamServiceImpl;
+import cclub.demo.impl.ExcelImpl.ExcelUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ExamController {
@@ -106,5 +113,58 @@ public class ExamController {
     @RequestMapping("/getOneExamInfo")
     public exam getOneExamInfo(String exam_id){
         return examService.getOneExamInfo(exam_id);
+    }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param exam_name
+     * @return
+     * 将指定的笔试导出候选人信息
+     */
+    @ResponseBody
+    @RequestMapping("/exportExamUserSheet")
+    public void exportExamUserSheet(String exam_id,
+                                   String exam_name,
+                                   HttpServletResponse res)
+    throws IOException{
+        List<exam_user>list=examService.getExamUserListById(exam_id);
+        List<Map<String,Object>>mapList=new ArrayList<>();
+        String[] keys={"access_code","exam_id","candidate_name","candidate_phone","candidate_mail","exam_notice","exam_user_score","exam_user_state"};
+        String[] colums={"笔试接入码","笔试id","候选人姓名","候选人电话","候选人邮箱","是否被通知","候选人分数","候选人是否进入笔试"};
+        mapList=examService.createExcelRecord(list);
+        ByteArrayOutputStream os=new ByteArrayOutputStream();
+        try {
+            ExcelUtils.createWorkBook(mapList,keys,colums).write(os);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        byte[] content=os.toByteArray();
+        InputStream is=new ByteArrayInputStream(content);
+        // 设置response参数，可以打开下载页面
+        res.reset();
+        res.setContentType("application/vnd.ms-excel;charset=utf-8");
+        res.setHeader("Content-Disposition", "attachment;filename="+ new String((exam_name + "-"+exam_id+".xls").getBytes(), "iso-8859-1"));
+        ServletOutputStream out = res.getOutputStream();
+        BufferedInputStream bis=null;
+        BufferedOutputStream bos=null;
+        try {
+            bis = new BufferedInputStream(is);
+            bos=new BufferedOutputStream(out);
+            byte[] buff = new byte[2048];
+            int bytesRead;
+            while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+                bos.write(buff, 0, bytesRead);
+            }
+        } catch (final IOException e) {
+            throw e;
+        } finally {
+            if (bis != null)
+                bis.close();
+            if (bos != null)
+                bos.close();
+        }
     }
 }

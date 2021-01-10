@@ -5,13 +5,14 @@ public class exam_user {
     private String exam_id;
     private String candidate_phone;
     private String candidate_name;
-    private String exam_notice;
+    private String candidate_mail;
+    private int exam_notice;
     private int exam_user_score;
     private int exam_user_state;
 
     public exam_user(String access_code, String exam_id, String candidate_phone,
-                     String candidate_name, String exam_notice, int exam_user_score,
-                     int exam_user_state) {
+                     String candidate_name, int exam_notice, int exam_user_score,
+                     int exam_user_state,String candidate_mail) {
         this.access_code = access_code;
         this.exam_id = exam_id;
         this.candidate_phone = candidate_phone;
@@ -19,6 +20,7 @@ public class exam_user {
         this.exam_notice = exam_notice;
         this.exam_user_score = exam_user_score;
         this.exam_user_state = exam_user_state;
+        this.candidate_mail=candidate_mail;
     }
 
     public void setAccess_code(String access_code) {
@@ -37,7 +39,7 @@ public class exam_user {
         this.candidate_name = candidate_name;
     }
 
-    public void setExam_notice(String exam_notice) {
+    public void setExam_notice(int exam_notice) {
         this.exam_notice = exam_notice;
     }
 
@@ -65,7 +67,7 @@ public class exam_user {
         return candidate_name;
     }
 
-    public String getExam_notice() {
+    public int getExam_notice() {
         return exam_notice;
     }
 
@@ -75,5 +77,13 @@ public class exam_user {
 
     public int getExam_user_state() {
         return exam_user_state;
+    }
+
+    public void setCandidate_mail(String candidate_mail) {
+        this.candidate_mail = candidate_mail;
+    }
+
+    public String getCandidate_mail() {
+        return candidate_mail;
     }
 }
