@@ -7,11 +7,13 @@ import cclub.demo.mapper.ExamMapper;
 import cclub.demo.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 @Service
 public class ExamServiceImpl implements ExamService {
@@ -91,4 +93,19 @@ public class ExamServiceImpl implements ExamService {
         }
         return mapList;
     }
+
+    @Transactional
+    @Override
+    public int addExamCandidate(exam_user exam_user) {
+        try{
+            examMapper.addExamCandidate(exam_user);
+            examMapper.updateExamCandidateNumber(exam_user.getExam_id(),1);
+            return 1;
+        }catch(Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 }

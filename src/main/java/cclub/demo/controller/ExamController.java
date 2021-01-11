@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -167,4 +168,46 @@ public class ExamController {
                 bos.close();
         }
     }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param candidate_name
+     * @param candidate_phone
+     * @param candidate_mail
+     * @param exam_notice
+     * 单个添加候选人
+     */
+    @ResponseBody
+    @RequestMapping("/addExamCandidate")
+    public int addExamCandidate(String exam_id,
+                                 String candidate_name,
+                                 String candidate_phone,
+                                 String candidate_mail,
+                                 int exam_notice)
+    {
+        int result= examService.addExamCandidate(new exam_user(Rand.getInterviewCode(),exam_id,candidate_phone,candidate_name,exam_notice,-1,0,candidate_mail));
+        if(result==1){
+            //发送笔试邀请到候选人邮箱
+        }
+        return result;
+    }
+
+
+    /**
+     *
+     * @param file
+     * @return
+     * 批量添加候选人的时候提交候选人Excel
+     */
+    @ResponseBody
+    @RequestMapping("/uploadCandidateExcel")
+    public int uploadCandidateExcel(MultipartFile file)
+    {
+
+        return 1;
+    }
+
 }

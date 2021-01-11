@@ -86,4 +86,18 @@ public class exam_user {
     public String getCandidate_mail() {
         return candidate_mail;
     }
+
+    @Override
+    public String toString() {
+        return "exam_user{" +
+                "access_code='" + access_code + '\'' +
+                ", exam_id='" + exam_id + '\'' +
+                ", candidate_phone='" + candidate_phone + '\'' +
+                ", candidate_name='" + candidate_name + '\'' +
+                ", candidate_mail='" + candidate_mail + '\'' +
+                ", exam_notice=" + exam_notice +
+                ", exam_user_score=" + exam_user_score +
+                ", exam_user_state=" + exam_user_state +
+                '}';
+    }
 }

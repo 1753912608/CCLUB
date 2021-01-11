@@ -69,7 +69,7 @@
         <span><a href="javascript:void(0);" style="text-decoration:none;color:rgb(20,20,20)"><i class="el-icon-back"></i> 返回</a></span>
         <span style="margin-left:15px;color:rgb(240,240,240)">|</span>
         <span style="margin-left:15px;">添加候选人</span>
-        <span style="margin-left:20px;color:rgb(150,150,150);">后端研发</span>
+        <span style="margin-left:20px;color:rgb(150,150,150);">{{exam.exam_name}}</span>
     </div>
     <div class="el-border">
         <div style="margin-left:15px;margin-top:20px;font-size:13px;">
@@ -98,6 +98,7 @@
             <span style="margin-left:70px;">
                 <el-input v-model="candidate.mail" placeholder="请输入内容" style="width:300px;" size="small"></el-input>
             </span>
+            <span style="margin-left:20px;color:red;">必填，候选人不可更改</span>
         </div>
     </div>
     <div v-if="isAddOne===false" class="el-border3">
@@ -106,7 +107,8 @@
             <el-upload
                     class="upload-demo"
                     drag
-                    action="https://jsonplaceholder.typicode.com/posts/">
+                    action="/uploadCandidateExcel"
+                    accept=".xlsx,.xls">
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
@@ -123,7 +125,7 @@
         </div>
     </div>
     <div style="margin-left:650px;margin-top:20px;">
-        <el-button type="primary" style="width:120px" size="small">提交</el-button>
+        <el-button type="primary" style="width:120px" size="small" @click="addOneCandidate">提交</el-button>
     </div>
 </div>
 </body>
@@ -143,10 +145,12 @@
                 mail: ''
             },
             checked: true,
-            isAddOne: true
+            isAddOne: true,
+            exam:{},
+
         },
         created(){
-
+            this.getExamInfo();
         },
         methods:{
             signOut(){
@@ -157,6 +161,36 @@
             },
             changeUploadType(){
                 this.isAddOne=(this.radio==='1');
+            },
+            async getExamInfo(){
+                let url=window.location.href.split("/");
+                let result=await axios.get('/getOneExamInfo?exam_id='+url[url.length-1]);
+                this.exam=result.data;
+            },
+            async addOneCandidate(){
+                if(this.candidate.name===''||this.candidate.phone===''||this.candidate.mail===''){
+                    this.$message({
+                        type: 'warning',
+                        message: '请填写候选人信息必填项'
+                    });
+                }else{
+                    let params=new FormData();
+                    params.append("exam_id",this.exam.exam_id);
+                    params.append("candidate_name",this.candidate.name);
+                    params.append("candidate_phone",this.candidate.phone);
+                    params.append("candidate_mail",this.candidate.mail);
+                    params.append("exam_notice",this.radio==='1'?1:0);
+                    let result=await axios({
+                        method: 'post',
+                        url: '/addExamCandidate',
+                        data: params,
+                    });
+                    if(result.data===1){
+                        window.location.href="/test_exam";
+                    }else{
+                        this.$message.error('系统繁忙,请稍候');
+                    }
+                }
             }
         }
     })

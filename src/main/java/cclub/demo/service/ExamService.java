@@ -85,4 +85,17 @@ public interface ExamService {
      * 生成Excel数据
      */
     List<Map<String,Object>>createExcelRecord(List<exam_user>list);
+
+
+
+    /**
+     *
+     * @param exam_user
+     * @return
+     * 添加笔试候选人
+     */
+    int addExamCandidate(exam_user exam_user);
+
+
+
 }

@@ -82,4 +82,28 @@ public interface ExamMapper {
      */
     @Select("select * from exam_user where exam_id=#{exam_id}")
     List<exam_user>getExamUserListById(String exam_id);
+
+
+
+    /**
+     *
+     * @param exam_user
+     * @return
+     * 添加笔试候选人
+     */
+    @Insert("insert into exam_user values(#{access_code},#{exam_id}," +
+            "#{candidate_name},#{candidate_phone},#{candidate_mail}," +
+            "#{exam_notice},#{exam_user_score},#{exam_user_state})")
+    void addExamCandidate(exam_user exam_user);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param exam_candidate_number
+     * 对应的笔试新增候选人的数量字段
+     */
+    @Update("update exam set exam_user_number=#{exam_candidate_number} where exam_id=#{exam_id}")
+    void updateExamCandidateNumber(String exam_id,int exam_candidate_number);
 }
