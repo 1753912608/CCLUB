@@ -6,12 +6,14 @@ import cclub.demo.dao.exam.exam_user;
 import cclub.demo.dao.utils.Rand;
 import cclub.demo.impl.ExamServiceImpl;
 import cclub.demo.impl.ExcelImpl.ExcelUtils;
+import cclub.demo.impl.ThreadPoolImpl.ThreadPoolUtils;
+import cclub.demo.impl.redisUtils.RedisServiceImpl;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +29,11 @@ public class ExamController {
     @Autowired
     private ExamServiceImpl examService;
 
+    @Autowired
+    private RedisServiceImpl redisService;
+
+    @Autowired
+    private ThreadPoolUtils threadPoolUtils;
 
 
     /**
@@ -199,14 +206,56 @@ public class ExamController {
     /**
      *
      * @param file
+     * @param request
      * @return
      * 批量添加候选人的时候提交候选人Excel
      */
     @ResponseBody
     @RequestMapping("/uploadCandidateExcel")
-    public int uploadCandidateExcel(MultipartFile file)
+    public int uploadCandidateExcel(MultipartFile file,
+                                    HttpServletRequest request)
+    throws Exception
     {
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String fileSrc="file/"+file.getOriginalFilename();
+        FileUtils.copyInputStreamToFile(file.getInputStream(),new File("src/main/resources/static/"+fileSrc));
+        if(!ExcelUtils.analysisCandidateExcel(fileSrc))return -1;
+        else{
+            List<List<String>>list=ExcelUtils.handleCandidateExcel(fileSrc);
+            redisService.setCandidateExcel(list,user_id);
+        }
+        try{
+            FileUtils.forceDeleteOnExit(new File("src/main/resources/static/"+fileSrc));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 1;
+    }
 
+
+
+    /**
+     *
+     * @param exam_id
+     * @param exam_notice
+     * @param request
+     * @return
+     * 批量添加候选人
+     */
+    @ResponseBody
+    @RequestMapping("/addCandidateByExcel")
+    public int addCandidateByExcel(String exam_id,
+                                   int exam_notice,
+                                   HttpServletRequest request)
+    {
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        List<List<String>>list=redisService.getCandidateExcel(user_id);
+        if(list==null)return 0;
+        else{
+            threadPoolUtils.handleExcelTask(list,exam_id,exam_notice);
+        }
         return 1;
     }
 

@@ -1,5 +1,6 @@
 package cclub.demo.impl.mailServiceImpl;
 import cclub.demo.config.mailConfig;
+import cclub.demo.dao.exam.exam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,11 @@ public class mailDemoUtils {
                 + "<div style='width:950px;font-family:arial;'>"+content+"<br/>感谢您的使用。<br/>茗少集团科技有限公司</div>"
                 +"</div>");
         send(user,password,host,from,to,sb);
+    }
+
+
+    public void sendExamTemplateNotice(String to, String name, exam exam){
+
     }
 
     private void send(String user,String password,String host,String from,String to,StringBuffer sb) {

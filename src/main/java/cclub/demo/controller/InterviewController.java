@@ -53,7 +53,6 @@ public class InterviewController {
                                @RequestParam(value = "resume",required = false) MultipartFile resume)
     {
         String newFileName=interview_company_name+' '+interview_candidate_name+' '+interview_candidate_position;
-        System.out.println(interview_begin_time+"======");
         String filename="",suffex="",filesrc="";
         if(interview_candidate_resume==1){
             filename=resume.getOriginalFilename();
