@@ -7,11 +7,13 @@ import cclub.demo.dao.utils.Rand;
 import cclub.demo.impl.ExamServiceImpl;
 import cclub.demo.impl.ExcelImpl.ExcelUtils;
 import cclub.demo.impl.ThreadPoolImpl.ThreadPoolUtils;
+import cclub.demo.impl.mailServiceImpl.mailDemoUtils;
 import cclub.demo.impl.redisUtils.RedisServiceImpl;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
@@ -34,6 +36,9 @@ public class ExamController {
 
     @Autowired
     private ThreadPoolUtils threadPoolUtils;
+
+    @Autowired
+    private mailDemoUtils mailDemoUtils;
 
 
     /**
@@ -177,14 +182,17 @@ public class ExamController {
     }
 
 
-
     /**
      *
      * @param exam_id
      * @param candidate_name
      * @param candidate_phone
      * @param candidate_mail
+     * @param exam_start_time
+     * @param exam_noEntry_time
+     * @param exam_longTime
      * @param exam_notice
+     * @return
      * 单个添加候选人
      */
     @ResponseBody
@@ -193,11 +201,16 @@ public class ExamController {
                                  String candidate_name,
                                  String candidate_phone,
                                  String candidate_mail,
+                                 String exam_start_time,
+                                 int exam_noEntry_time,
+                                 int exam_longTime,
+                                 String exam_name,
                                  int exam_notice)
     {
         int result= examService.addExamCandidate(new exam_user(Rand.getInterviewCode(),exam_id,candidate_phone,candidate_name,exam_notice,-1,0,candidate_mail));
         if(result==1){
             //发送笔试邀请到候选人邮箱
+            mailDemoUtils.sendExamTemplateNotice(candidate_mail,exam_name,exam_start_time,exam_noEntry_time,exam_longTime,candidate_name);
         }
         return result;
     }
@@ -234,19 +247,26 @@ public class ExamController {
     }
 
 
-
     /**
      *
-     * @param exam_id
      * @param exam_notice
+     * @param exam_id
+     * @param exam_name
+     * @param exam_start_time
+     * @param exam_noEntry_time
+     * @param exam_longTime
      * @param request
      * @return
      * 批量添加候选人
      */
     @ResponseBody
     @RequestMapping("/addCandidateByExcel")
-    public int addCandidateByExcel(String exam_id,
-                                   int exam_notice,
+    public int addCandidateByExcel(int exam_notice,
+                                   String exam_id,
+                                   String exam_name,
+                                   String exam_start_time,
+                                   int exam_noEntry_time,
+                                   int exam_longTime,
                                    HttpServletRequest request)
     {
         HttpSession session=request.getSession();
@@ -254,7 +274,7 @@ public class ExamController {
         List<List<String>>list=redisService.getCandidateExcel(user_id);
         if(list==null)return 0;
         else{
-            threadPoolUtils.handleExcelTask(list,exam_id,exam_notice);
+            threadPoolUtils.handleExcelTask(list,exam_id,exam_notice,exam_name,exam_start_time,exam_noEntry_time,exam_longTime);
         }
         return 1;
     }

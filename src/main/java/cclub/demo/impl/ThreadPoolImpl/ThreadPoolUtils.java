@@ -27,7 +27,7 @@ public class ThreadPoolUtils {
          pool=Executors.newFixedThreadPool(initPoolSize);
      }
 
-     public int handleExcelTask(List<List<String>>list,String exam_id,int exam_notice){
+     public int handleExcelTask(List<List<String>>list,String exam_id,int exam_notice,String exam_name,String exam_start_time,int exam_noEntry_time,int exam_longTime){
          List<String>nameList=list.get(0);
          List<String>phoneList=list.get(1);
          List<String>mailList=list.get(2);
@@ -41,7 +41,7 @@ public class ThreadPoolUtils {
                      examService.addExamCandidate(new exam_user(Rand.getInterviewCode(),exam_id,phoneList.get(index),nameList.get(index),exam_notice,-1,0,mailList.get(index)));
                      if(exam_notice==1){
                          //发送邮件到候选人邮箱
-
+                         mailDemoUtils.sendExamTemplateNotice(mailList.get(index),exam_name,exam_start_time,exam_noEntry_time,exam_longTime,nameList.get(index));
                      }
                  }
              });

@@ -125,7 +125,7 @@
         </div>
     </div>
     <div style="margin-left:650px;margin-top:20px;">
-        <el-button type="primary" style="width:120px" size="small" @click="addOneCandidate">提交</el-button>
+        <el-button type="primary" style="width:120px" size="small" @click="addCandidate">提交</el-button>
     </div>
 </div>
 </body>
@@ -167,6 +167,13 @@
                 let result=await axios.get('/getOneExamInfo?exam_id='+url[url.length-1]);
                 this.exam=result.data;
             },
+            addCandidate(){
+                if(this.radio==='1'){
+                    this.addOneCandidate();
+                }else{
+                    this.addCandidateByExcel();
+                }
+            },
             async addOneCandidate(){
                 if(this.candidate.name===''||this.candidate.phone===''||this.candidate.mail===''){
                     this.$message({
@@ -180,6 +187,10 @@
                     params.append("candidate_phone",this.candidate.phone);
                     params.append("candidate_mail",this.candidate.mail);
                     params.append("exam_notice",this.radio==='1'?1:0);
+                    params.append("exam_start_time",this.exam.exam_start_time);
+                    params.append("exam_noEntry_time",this.exam.exam_noEntry_time);
+                    params.append("exam_longTime",this.exam.exam_longTime);
+                    params.append("exam_name",this.exam.exam_name);
                     let result=await axios({
                         method: 'post',
                         url: '/addExamCandidate',
@@ -201,6 +212,20 @@
                         type: 'success'
                     });
                 }
+            },
+            async addCandidateByExcel(){
+                let params=new FormData();
+                params.append("exam_id",this.exam.exam_id);
+                params.append("exam_name",this.exam.exam_name);
+                params.append("exam_start_time",this.exam.exam_start_time);
+                params.append("exam_noEntry_time",this.exam.exam_noEntry_time);
+                params.append("exam_longTime",this.exam.exam_longTime);
+                params.append("exam_notice",this.radio==='1'?1:0);
+                let result=await axios({
+                    method: 'post',
+                    url: '/addCandidateByExcel',
+                    data: params,
+                });
             }
         }
     })

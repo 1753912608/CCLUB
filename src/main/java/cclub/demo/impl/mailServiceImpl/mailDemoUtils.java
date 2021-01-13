@@ -32,14 +32,19 @@ public class mailDemoUtils {
         //邮箱内容
         StringBuffer sb = new StringBuffer();
         sb.append("<!DOCTYPE>"+"<div bgcolor='#f1fcfa'   style='border:1px solid #d9f4ee; font-size:14px; line-height:22px;padding-left:1px;padding-top:5px;   padding-bottom:5px;'><span style='font-weight:bold;'>温馨提示：</span>"
-                + "<div style='width:950px;font-family:arial;'>"+content+"<br/>感谢您的使用。<br/>茗少集团科技有限公司</div>"
+                + "<div style='width:950px;font-family:arial;'><br/>感谢您的使用。<br/>茗少集团科技有限公司</div>"
                 +"</div>");
         send(user,password,host,from,to,sb);
     }
 
 
-    public void sendExamTemplateNotice(String to, String name, exam exam){
-
+    public void sendExamTemplateNotice(String to, String exam_name,String exam_start_time,int exam_noEntry_time,int exam_longTime,String candidate_name){
+        //笔试邮箱内容
+        StringBuffer buffer=new StringBuffer("");
+        buffer.append("<!DOCTYPE>"+"<div bgcolor='#f1fcfa'   style='border:1px solid #d9f4ee; font-size:14px; line-height:22px;padding-left:1px;padding-top:5px;   padding-bottom:5px;'><span style='font-weight:bold;'>温馨提示：</span>"
+                + "<div style='width:950px;font-family:arial;'>亲爱的"+candidate_name+"<br/>现邀请你参加"+exam_name+"笔试<br/>笔试开始时间:"+exam_start_time+"<br/>"+exam_noEntry_time+"分钟后禁止进入笔试<br/>考试时长为:"+exam_longTime+"<br/>茗少集团科技有限公司</div>"
+                +"</div>");
+        send(user,password,host,from,to,buffer);
     }
 
     private void send(String user,String password,String host,String from,String to,StringBuffer sb) {
