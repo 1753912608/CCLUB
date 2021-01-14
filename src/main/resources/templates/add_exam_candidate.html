@@ -115,7 +115,7 @@
             </el-upload>
         </div>
         <div style="margin-left:450px;margin-top:20px;">
-            <a href="javascript:void(0)" style="text-decoration:none;">下载批量添加候选人模板</a>
+            <a href="../file/批量上传候选人信息模板.xlsx" style="text-decoration:none;">下载批量添加候选人模板</a>
         </div>
     </div>
     <div class="el-border2">
@@ -186,7 +186,7 @@
                     params.append("candidate_name",this.candidate.name);
                     params.append("candidate_phone",this.candidate.phone);
                     params.append("candidate_mail",this.candidate.mail);
-                    params.append("exam_notice",this.radio==='1'?1:0);
+                    params.append("exam_notice",this.checked?1:0);
                     params.append("exam_start_time",this.exam.exam_start_time);
                     params.append("exam_noEntry_time",this.exam.exam_noEntry_time);
                     params.append("exam_longTime",this.exam.exam_longTime);
@@ -220,12 +220,22 @@
                 params.append("exam_start_time",this.exam.exam_start_time);
                 params.append("exam_noEntry_time",this.exam.exam_noEntry_time);
                 params.append("exam_longTime",this.exam.exam_longTime);
-                params.append("exam_notice",this.radio==='1'?1:0);
+                params.append("exam_notice",this.checked?1:0);
                 let result=await axios({
                     method: 'post',
                     url: '/addCandidateByExcel',
                     data: params,
                 });
+                if(result.data===1){
+                    window.location.href="/test_exam";
+                }else{
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                }
             }
         }
     })

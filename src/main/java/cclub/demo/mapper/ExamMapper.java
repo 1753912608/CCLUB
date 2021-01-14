@@ -104,6 +104,6 @@ public interface ExamMapper {
      * @param exam_candidate_number
      * 对应的笔试新增候选人的数量字段
      */
-    @Update("update exam set exam_user_number=#{exam_candidate_number} where exam_id=#{exam_id}")
+    @Update("update exam set exam_user_number=exam_user_number+#{exam_candidate_number} where exam_id=#{exam_id}")
     void updateExamCandidateNumber(String exam_id,int exam_candidate_number);
 }

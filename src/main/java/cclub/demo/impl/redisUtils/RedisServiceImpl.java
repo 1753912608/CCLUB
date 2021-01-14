@@ -1,6 +1,7 @@
 package cclub.demo.impl.redisUtils;
 
 import cclub.demo.dao.Interview;
+import com.google.gson.Gson;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -60,8 +61,8 @@ public class RedisServiceImpl {
      * @return
      * 将缓存的候选人提交的Excel数据列表取出
      */
-    public List<List<String>>getCandidateExcel(String user_id){
-        return (List<List<String>>) redisTemplate.opsForValue().get("candidateExcel"+user_id);
+    public List<List<String>> getCandidateExcel(String user_id){
+        return (List<List<String>>)redisTemplate.opsForValue().get("candidateExcel:"+user_id);
     }
 
 }

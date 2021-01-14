@@ -108,14 +108,20 @@ public class ExcelUtils {
     public static List<List<String>> handleCandidateExcel(String fileSrc)
     throws Exception {
         List<List<String>>list=new ArrayList<>();
+        List<String>nameList=new ArrayList<>();
+        List<String>phoneList=new ArrayList<>();
+        List<String>mailList=new ArrayList<>();
         Sheet sheet=getExcelFileStream(fileSrc);
-        int firstRowIndex=sheet.getFirstRowNum()+1,lastRowIndex=sheet.getLastRowNum();
-        for(int index=firstRowIndex;index<=lastRowIndex;index++){
+        int rowNum=sheet.getPhysicalNumberOfRows();
+        for(int index=1;index<rowNum;index++){
             Row row=sheet.getRow(index);
-            for(int j=0;j<3;j++){
-                list.get(j).add(row.getCell(j).getStringCellValue());
-            }
+            nameList.add(row.getCell(0).toString());
+            phoneList.add(row.getCell(1).toString());
+            mailList.add(row.getCell(2).toString());
         }
+        list.add(nameList);
+        list.add(phoneList);
+        list.add(mailList);
         return list;
     }
 

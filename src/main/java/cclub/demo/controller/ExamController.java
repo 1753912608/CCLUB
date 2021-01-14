@@ -13,7 +13,6 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
@@ -39,6 +38,8 @@ public class ExamController {
 
     @Autowired
     private mailDemoUtils mailDemoUtils;
+
+    private static String HOSTURLEXAM="127.0.0.1:8080/test_examing/";
 
 
     /**
@@ -191,6 +192,7 @@ public class ExamController {
      * @param exam_start_time
      * @param exam_noEntry_time
      * @param exam_longTime
+     * @param exam_name
      * @param exam_notice
      * @return
      * 单个添加候选人
@@ -207,10 +209,11 @@ public class ExamController {
                                  String exam_name,
                                  int exam_notice)
     {
-        int result= examService.addExamCandidate(new exam_user(Rand.getInterviewCode(),exam_id,candidate_phone,candidate_name,exam_notice,-1,0,candidate_mail));
+        String access_code=Rand.getInterviewCode();
+        int result= examService.addExamCandidate(new exam_user(access_code,exam_id,candidate_phone,candidate_name,exam_notice,-1,0,candidate_mail));
         if(result==1){
             //发送笔试邀请到候选人邮箱
-            mailDemoUtils.sendExamTemplateNotice(candidate_mail,exam_name,exam_start_time,exam_noEntry_time,exam_longTime,candidate_name);
+            mailDemoUtils.sendExamTemplateNotice(candidate_mail,exam_name,exam_start_time,exam_noEntry_time,exam_longTime,candidate_name,HOSTURLEXAM+access_code);
         }
         return result;
     }
@@ -221,8 +224,7 @@ public class ExamController {
      * @param file
      * @param request
      * @return
-     * 批量添加候选人的时候提交候选人Excel
-     */
+     * 批量添加候选人的时候提交候选人Excel     */
     @ResponseBody
     @RequestMapping("/uploadCandidateExcel")
     public int uploadCandidateExcel(MultipartFile file,
@@ -274,7 +276,7 @@ public class ExamController {
         List<List<String>>list=redisService.getCandidateExcel(user_id);
         if(list==null)return 0;
         else{
-            threadPoolUtils.handleExcelTask(list,exam_id,exam_notice,exam_name,exam_start_time,exam_noEntry_time,exam_longTime);
+            threadPoolUtils.handleExcelTask(list,exam_id,exam_notice,exam_name,exam_start_time,exam_noEntry_time,exam_longTime,HOSTURLEXAM);
         }
         return 1;
     }
