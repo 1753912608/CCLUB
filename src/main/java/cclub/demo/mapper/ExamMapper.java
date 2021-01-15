@@ -15,13 +15,13 @@ public interface ExamMapper {
     /**
      *
      * @param exam
-     * 修改笔试
+     * 新增笔试
      */
     @Insert("insert into exam values(#{exam_id},#{exam_name},#{exam_created_user_id}," +
             "#{exam_start_time},#{exam_noEntry_time},#{exam_longTime}," +
             "#{exam_Upset_question},#{exam_Upset_answer},#{exam_jumpOut_number}," +
             "#{exam_recording},#{exam_user_info},#{exam_state},#{exam_question_number}," +
-            "#{exam_user_number})")
+            "#{exam_user_number},#{exam_score})")
     void createExam(exam exam);
 
 
@@ -38,7 +38,7 @@ public interface ExamMapper {
             "exam_Upset_answer=#{exam_Upset_answer},exam_jumpOut_number=#{exam_jumpOut_number}," +
             "exam_recording=#{exam_recording},exam_user_info=#{exam_user_info}," +
             "exam_state=#{exam_state},exam_question_number=#{exam_question_number}," +
-            "exam_user_number=#{exam_user_number} where exam_id=#{exam_id}")
+            "exam_user_number=#{exam_user_number}  where exam_id=#{exam_id}")
     void updateExam(exam exam);
 
 
@@ -106,4 +106,25 @@ public interface ExamMapper {
      */
     @Update("update exam set exam_user_number=exam_user_number+#{exam_candidate_number} where exam_id=#{exam_id}")
     void updateExamCandidateNumber(String exam_id,int exam_candidate_number);
+
+
+
+    /**
+     *
+     * @param access_code
+     * 根据access_code删除对应的笔试候选人
+     */
+    @Delete("delete from exam_user where access_code=#{access_code}")
+    void deleteExamUser(String access_code);
+
+
+    /**
+     *
+     * @param access_code
+     * @return
+     * 更新候选人当前笔试是否被通知
+     */
+    @Update("update exam_user set exam_notice=1 where access_code=#{access_code}")
+    void updateCandidateNotice(String access_code);
+
 }

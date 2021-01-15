@@ -15,12 +15,13 @@ public class exam {
     private int exam_state;
     private int exam_question_number;
     private int exam_user_number;
+    private int exam_score;
 
     public exam(String exam_id, String exam_name, String exam_created_user_id,
                 String exam_start_time, int exam_noEntry_time, int exam_longTime,
                 int exam_Upset_question, int exam_Upset_answer, int exam_jumpOut_number,
                 int exam_recording, String exam_user_info, int exam_state,
-                int exam_question_number,int exam_user_number) {
+                int exam_question_number,int exam_user_number,int exam_score) {
         this.exam_id = exam_id;
         this.exam_name = exam_name;
         this.exam_created_user_id = exam_created_user_id;
@@ -35,6 +36,7 @@ public class exam {
         this.exam_state = exam_state;
         this.exam_question_number=exam_question_number;
         this.exam_user_number=exam_user_number;
+        this.exam_score=exam_score;
     }
 
     public void setExam_id(String exam_id) {
@@ -147,5 +149,13 @@ public class exam {
 
     public int getExam_user_number() {
         return exam_user_number;
+    }
+
+    public void setExam_score(int exam_score) {
+        this.exam_score = exam_score;
+    }
+
+    public int getExam_score() {
+        return exam_score;
     }
 }

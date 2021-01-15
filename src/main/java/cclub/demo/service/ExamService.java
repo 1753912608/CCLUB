@@ -98,4 +98,23 @@ public interface ExamService {
 
 
 
+    /**
+     *
+     * @param access_code
+     * @param exam_id
+     * @return
+     * 根据access_code删除对应的笔试候选人
+     */
+    int deleteExamUserByAccessCode(String access_code,String exam_id);
+
+
+
+    /**
+     *
+     * @param access_code
+     * @return
+     * 更新候选人当前笔试是否被通知
+     */
+    int updateCandidateNotice(String access_code);
+
 }

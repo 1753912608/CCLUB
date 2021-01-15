@@ -75,7 +75,7 @@ public class ExamController {
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
         exam exam=new exam("",exam_name,user_id,exam_start_time,
                 exam_noEntry_time,exam_longTime,exam_Upset_question,exam_Upset_answer,
-                exam_jumpOut_number,exam_recording,exam_user_info,0,0,0);
+                exam_jumpOut_number,exam_recording,exam_user_info,0,0,0,0);
         if(exam_id.isEmpty()){
             exam.setExam_id(Rand.getInterviewId());
             return examService.createExam(exam)==1?exam.getExam_id():"";
@@ -281,4 +281,59 @@ public class ExamController {
         return 1;
     }
 
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 根据指定的exam_id获取参加该笔试的所有候选人信息
+     */
+    @ResponseBody
+    @RequestMapping("/getExamUserList")
+    public List<exam_user>getExamUserList(String exam_id){
+        return examService.getExamUserListById(exam_id);
+    }
+
+
+    /**
+     *
+     * @param access_code
+     * @param exam_id
+     * @return
+     * 根据access_code删除对应的笔试候选人
+     */
+    @ResponseBody
+    @RequestMapping("/deleteExamUserByAccessCode")
+    public int deleteExamUserByAccessCode(String access_code,
+                                          String exam_id){
+        return examService.deleteExamUserByAccessCode(access_code,exam_id);
+    }
+
+
+    /**
+     *
+     * @param candidate_name
+     * @param candidate_mail
+     * @param exam_start_time
+     * @param exam_noEntry_time
+     * @param exam_longTime
+     * @param exam_name
+     * @param access_code
+     * @return
+     * 通知单个候选人笔试信息
+     */
+    @ResponseBody
+    @RequestMapping("/noticeOneCandidte")
+    public int noticeOneCandidte(String candidate_name,
+                                 String candidate_mail,
+                                 String exam_start_time,
+                                 int exam_noEntry_time,
+                                 int exam_longTime,
+                                 String exam_name,
+                                 String access_code)
+    {
+        //发送笔试邀请到候选人邮箱
+        mailDemoUtils.sendExamTemplateNotice(candidate_mail,exam_name,exam_start_time,exam_noEntry_time,exam_longTime,candidate_name,HOSTURLEXAM+access_code);
+        return examService.updateCandidateNotice(access_code);
+    }
 }

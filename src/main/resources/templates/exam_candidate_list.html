@@ -66,11 +66,20 @@
                 <img src="../img/back.png" alt="" width="14px" height="14px">
             </a>
         </span>
-        <span>后端研发</span>
+        <span>{{exam.exam_name}}</span>
         <span>/</span>
         <span>候选人列表</span>
         <span style="margin-left:15px;font-size:12px;color:#8b8f94;">
-            共1人 1人参加笔试
+            共{{exam.exam_user_number}}人
+        </span>
+        <span style="margin-left:8px;font-size:12px;color:red;" v-if="exam.exam_state===0">
+            笔试未开始
+        </span>
+        <span style="margin-left:8px;font-size:12px;color:red;" v-if="exam.exam_state!=0">
+            1
+        </span>
+        <span style="font-size:12px;color:#8b8f94;" v-if="exam.exam_state!=0">
+            人参加考试
         </span>
         <span style="margin-left:870px;">
             <el-dropdown>
@@ -93,7 +102,7 @@
                 <el-input v-model="input" placeholder="请输入内容" style="width:200px;" size="small"></el-input>
             </div>
             <div style="margin-left:5px;float:left;">
-                <el-button type="info" style="width:60px;" size="small">搜索</el-button>
+                <el-button type="info" style="width:60px;" size="small" @click="searchCandidateByKey">搜索</el-button>
             </div>
             <div style="margin-left:20px;margin-top:5px;float:left;">
                 <span :class="first?'el-radio_button':'el-question_button'" style="border:1px solid #ececed;border-radius:6px 0 0 6px;">
@@ -105,40 +114,52 @@
                 <span :class="third?'el-radio_button':'el-question_button'" style="margin-left:-5px;">
                     <a href="javascript:void(0);" @click="switchThird" :style="{'color':third?'#fff':'#000'}" style="text-decoration:none;">已通知</a>
                 </span>
+                <span :class="fourth?'el-radio_button':'el-question_button'" style="margin-left:-5px;">
+                    <a href="javascript:void(0);" @click="switchFourth" :style="{'color':fourth?'#fff':'#000'}" style="text-decoration:none;">未进入笔试</a>
+                </span>
+                <span :class="fifth?'el-radio_button':'el-question_button'" style="margin-left:-5px;">
+                    <a href="javascript:void(0);" @click="switchFifth" :style="{'color':fifth?'#fff':'#000'}" style="text-decoration:none;">已进入笔试</a>
+                </span>
             </div>
-            <div style="float:left;margin-left:1060px;font-size:12px;color:rgb(139, 143, 148);margin-top:-15px;">0个结果</div>
+            <div style="float:left;margin-left:1060px;font-size:12px;color:rgb(139, 143, 148);margin-top:-15px;">{{tempList.length}}个结果</div>
         </div>
     </div>
     <div style="margin-left:40px;width:1430px;">
         <template>
-            <el-table :data="tableData" style="width: 100%">
-                <el-table-column prop="name" label="姓名" width="160">
+            <el-table :data="tempList" style="width: 100%">
+                <el-table-column prop="candidate_name" label="姓名" width="160">
                 </el-table-column>
-                <el-table-column prop="phone" label="手机" width="200">
+                <el-table-column prop="candidate_phone" label="手机" width="200">
                 </el-table-column>
-                <el-table-column prop="mail" label="邮箱" width="200">
+                <el-table-column prop="candidate_mail" label="邮箱" width="200">
                 </el-table-column>
-                <el-table-column prop="state" label="状态" width="200">
+                <el-table-column prop="exam_user_state" label="状态" width="200">
                     <template scope="scope">
-                        <span v-if="scope.row.state==='0'" style="color:red;">未进入笔试</span>
-                        <span v-if="scope.row.state==='1'" style="color:rgb(200,200,200)">已进入笔试</span>
+                        <span v-if="scope.row.exam_user_state===0" style="color:red;">未进入笔试</span>
+                        <span v-if="scope.row.exam_user_state===1" style="color:rgb(200,200,200)">已进入笔试</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="notice" label="状态" width="200">
+                <el-table-column prop="exam_notice" label="是否通知" width="200">
                     <template scope="scope">
-                        <span v-if="scope.row.notice==='0'">已通知</span>
-                        <span v-if="scope.row.notice==='1'">未通知</span>
+                        <span v-if="scope.row.exam_notice===1">已通知</span>
+                        <span v-if="scope.row.exam_notice===0">未通知</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="score" label="分数" width="200" sortable>
+                <el-table-column prop="exam_user_score" label="分数" width="200" sortable>
                     <template scope="scope">
-                        <span style="color:red;">{{scope.row.score}}</span>
-                        <span>/100</span>
+                        <span style="color:red;">{{scope.row.exam_user_score}}</span>
+                        <span>/{{exam.exam_score}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="" label="操作" width="270">
-                    <span><el-button type="danger" size="small">删除</el-button></span>
-                    <span style="margin-left:15px;"><el-button type="success" size="small">通知候选人</el-button></span>
+                    <template scope="scope">
+                        <span>
+                            <el-button type="danger" size="small" @click="deleteExamUser(scope.row.access_code)">删除</el-button>
+                        </span>
+                        <span style="margin-left:15px;">
+                            <el-button type="success" size="small" @click="notice(scope.row)">通知候选人</el-button>
+                        </span>
+                    </template>
                 </el-table-column>
             </el-table>
         </template>
@@ -155,34 +176,168 @@
                 user_phone: '18229583486',
                 user_company: '茗少集团'
             },
-            tableData: [{
-                name: '肖茗夫',
-                phone: '18229583486',
-                mail: '1753972608@qq.com',
-                state: '0',
-                score: 100,
-                notice: '0'
-            }],
+            tableData: [],
             input: '',
             first: true,
             second: false,
-            third: false
+            third: false,
+            fourth: false,
+            fifth: false,
+            exam:{},
+            tempList:[],
+            intoExamNumber: 0
         },
         created(){
-
+            this.getExamInfo();
+            this.getExamUserList();
         },
         methods:{
             signOut(){
 
             },
             switchFirst(){
-                this.second=this.third=!(this.first=true);
+                this.fourth=this.fifth=this.second=this.third=!(this.first=true);
+                this.tempList=[];
+                for(let i=0;i<this.tableData.length;i++){
+                    this.tempList[i]=this.tableData[i];
+                }
             },
             switchSecond(){
-                this.first=this.third=!(this.second=true);
+                this.fourth=this.fifth=this.first=this.third=!(this.second=true);
+                this.tempList=[];
+                for(let i=0;i<this.tableData.length;i++){
+                    if(this.tableData[i].exam_notice===0){
+                        this.tempList.push(this.tableData[i]);
+                    }
+                }
             },
             switchThird(){
-                this.first=this.second=!(this.third=true);
+                this.fourth=this.fifth=this.first=this.second=!(this.third=true);
+                this.tempList=[];
+                for(let i=0;i<this.tableData.length;i++){
+                    if(this.tableData[i].exam_notice===1){
+                        this.tempList.push(this.tableData[i]);
+                    }
+                }
+            },
+            switchFourth(){
+                this.first=this.second=this.third=this.fifth=!(this.fourth=true);
+                this.tempList=[];
+                for(let i=0;i<this.tableData.length;i++){
+                    if(this.tableData[i].exam_user_state===0){
+                        this.tempList.push(this.tableData[i]);
+                    }
+                }
+            },
+            switchFifth(){
+                this.first=this.second=this.third=this.fourth=!(this.fifth=true);
+                this.tempList=[];
+                for(let i=0;i<this.tableData.length;i++){
+                    if(this.tableData[i].exam_user_state===1){
+                        this.tempList.push(this.tableData[i]);
+                    }
+                }
+            },
+            async getExamInfo(){
+                let url=window.location.href.split("/");
+                let exam_id=url[url.length-1];
+                let result=await axios.get('/getOneExamInfo?exam_id='+exam_id);
+                this.exam=result.data;
+            },
+            async getExamUserList(){
+                let url=window.location.href.split("/");
+                let exam_id=url[url.length-1];
+                let result=await axios.get('/getExamUserList?exam_id='+exam_id);
+                this.tableData=result.data;
+                this.tempList=result.data;
+                for(let i=0;i<this.tableData.length;i++){
+                    if(this.tableData[i].exam_user_state===1){
+                        this.intoExamNumber++;
+                    }
+                }
+            },
+            deleteExamUser(access_code){
+                this.$confirm('此操作将永久删除该候选人信息记录, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.deleteExamUserByAccessCode(access_code);
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            async deleteExamUserByAccessCode(access_code){
+                let result=await axios.get('/deleteExamUserByAccessCode?access_code='+access_code+"&exam_id="+this.exam.exam_id);
+                if(result.data===1){
+                    this.$message({
+                        message: '删除候选人信息成功',
+                        type: 'success'
+                    });
+                }else{
+                    this.$message({
+                        message: '删除候选人信息失败,系统繁忙',
+                        type: 'warning'
+                    });
+                }
+                this.getExamInfo();
+                this.getExamUserList();
+            },
+            searchCandidateByKey(){
+                this.tempList=[];
+                for(let i=0;i<this.tableData.length;i++){
+                    if(this.tableData[i].candidate_name.indexOf(this.input)!=-1){
+                        this.tempList.push(this.tableData[i]);
+                    }else if(this.tableData[i].candidate_phone.indexOf(this.input)!=-1){
+                        this.tempList.push(this.tableData[i]);
+                    }else if(this.tableData[i].candidate_mail.indexOf(this.input)!=-1){
+                        this.tempList.push(this.tableData[i]);
+                    }
+                }
+            },
+            notice(row){
+                this.$confirm('是否通知当前候选人参加笔试, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.noticeOneCandidte(row);
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            async noticeOneCandidte(row){
+                let params=new FormData();
+                params.append("candidate_name",row.candidate_name);
+                params.append("candidate_mail",row.candidate_mail);
+                params.append("exam_start_time",this.exam.exam_start_time);
+                params.append("exam_noEntry_time",this.exam.exam_noEntry_time);
+                params.append("exam_longTime",this.exam.exam_longTime);
+                params.append("exam_name",this.exam.exam_name);
+                params.append("access_code",row.access_code);
+                let result=await axios({
+                    method: 'post',
+                    url: '/noticeOneCandidte',
+                    data: params,
+                });
+                if(result.data===1){
+                    this.$message({
+                        message: '通知该候选人成功',
+                        type: 'success'
+                    });
+                }else{
+                    this.$message({
+                        message: '通知该候选人失败,系统繁忙',
+                        type: 'warning'
+                    });
+                }
+                this.getExamUserList();
             }
         }
     })

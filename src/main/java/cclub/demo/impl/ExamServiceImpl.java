@@ -1,7 +1,6 @@
 package cclub.demo.impl;
 
 import cclub.demo.dao.exam.exam;
-import cclub.demo.dao.exam.exam_question;
 import cclub.demo.dao.exam.exam_user;
 import cclub.demo.mapper.ExamMapper;
 import cclub.demo.service.ExamService;
@@ -108,4 +107,28 @@ public class ExamServiceImpl implements ExamService {
         return 0;
     }
 
+    @Transactional
+    @Override
+    public int deleteExamUserByAccessCode(String access_code,String exam_id) {
+        try{
+            examMapper.deleteExamUser(access_code);
+            examMapper.updateExamCandidateNumber(exam_id,-1);
+            return 1;
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public int updateCandidateNotice(String access_code) {
+        try {
+            examMapper.updateCandidateNotice(access_code);
+            return 1;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }
