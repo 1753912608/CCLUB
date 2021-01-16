@@ -336,4 +336,51 @@ public class ExamController {
         mailDemoUtils.sendExamTemplateNotice(candidate_mail,exam_name,exam_start_time,exam_noEntry_time,exam_longTime,candidate_name,HOSTURLEXAM+access_code);
         return examService.updateCandidateNotice(access_code);
     }
+
+
+
+    /**
+     *
+     * @param access_code
+     * @param candidate_name
+     * @param candidate_phone
+     * @param candidate_mail
+     * @return
+     * 修改候选人个人信息
+     */
+    @ResponseBody
+    @RequestMapping("/updateExamUserInfo")
+    public int updateExamUserInfo(String access_code,
+                                  String candidate_name,
+                                  String candidate_phone,
+                                  String candidate_mail)
+    {
+        return examService.updateExamUserInfo(access_code,candidate_name,candidate_phone,candidate_mail);
+    }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param more
+     * @param exam_name
+     * @param exam_start_time
+     * @param exam_noEntry_time
+     * @param exam_longTime
+     * @return
+     * 批量通知候选人
+     */
+    @ResponseBody
+    @RequestMapping("/noticeMoreCandidate")
+    public int noticeMoreCandidate(String exam_id,
+                                   int more,
+                                   String exam_name,
+                                   String exam_start_time,
+                                   int exam_noEntry_time,
+                                   int exam_longTime)
+    {
+        List<exam_user>list=examService.noticeMoreCandidate(exam_id,more);
+        return threadPoolUtils.noticeMoreCandidate(list,exam_name,exam_start_time,exam_noEntry_time,exam_longTime,HOSTURLEXAM);
+    }
 }

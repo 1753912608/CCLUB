@@ -131,4 +131,20 @@ public class ExamServiceImpl implements ExamService {
         }
         return 0;
     }
+
+    @Override
+    public int updateExamUserInfo(String access_code, String candidate_name, String candidate_phone, String candidate_mail) {
+        try{
+            examMapper.updateExamUserInfo(access_code,candidate_name,candidate_phone,candidate_mail);
+            return 1;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public List<exam_user> noticeMoreCandidate(String exam_id, int more) {
+        return examMapper.getCandidateNoticeList(exam_id,more);
+    }
 }

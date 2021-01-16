@@ -1,8 +1,8 @@
 package cclub.demo.mapper;
 
 import cclub.demo.dao.exam.exam;
-import cclub.demo.dao.exam.exam_question;
 import cclub.demo.dao.exam.exam_user;
+import cclub.demo.mapper.sqlProvider.ExamProvider;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -126,5 +126,32 @@ public interface ExamMapper {
      */
     @Update("update exam_user set exam_notice=1 where access_code=#{access_code}")
     void updateCandidateNotice(String access_code);
+
+
+    /**
+     *
+     * @param access_code
+     * @param candidate_name
+     * @param candidate_phone
+     * @param candidate_mail
+     * @return
+     * 修改候选人个人信息
+     */
+    @Update("update exam_user set candidate_name=#{candidate_name}," +
+            "candidate_phone=#{candidate_phone},candidate_mail=#{candidate_mail}" +
+            " where access_code=#{access_code}")
+    void updateExamUserInfo(String access_code,String candidate_name,String candidate_phone,String candidate_mail);
+
+
+    /**
+     * \
+     * @param exam_id
+     * @param more
+     * @return
+     * 获取批量通知候选人的列表
+     */
+    @SelectProvider(type = ExamProvider.class,method = "getNoticeList")
+    List<exam_user>getCandidateNoticeList(@Param("exam_id") String exam_id,@Param("more") int more);
+
 
 }

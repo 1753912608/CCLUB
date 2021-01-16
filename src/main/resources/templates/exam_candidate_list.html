@@ -87,13 +87,17 @@
                     批量通知候选人<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item style="font-size:12px;">通知未发送的候选人</el-dropdown-item>
-                <el-dropdown-item style="font-size:12px;">通知全部候选人</el-dropdown-item>
+                <el-dropdown-item style="font-size:12px;" >
+                    <a href="javascript:void(0);" @click="noticeMoreCandidate(0)" style="text-decoration:none;color:rgb(60,60,60);">通知未发送的候选人</a>
+                </el-dropdown-item>
+                <el-dropdown-item style="font-size:12px;" >
+                    <a href="javascript:void(0);" @click="noticeMoreCandidate(1)" style="text-decoration:none;color:rgb(60,60,60);">通知全部候选人</a>
+                </el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </span>
         <span style="margin-left:10px;">
-            <el-button type="primary" size="small">添加候选人</el-button>
+            <el-button type="primary" size="small" @click="addCandidate">添加候选人</el-button>
         </span>
     </div>
     <div class="el-border">
@@ -145,25 +149,54 @@
                         <span v-if="scope.row.exam_notice===0">未通知</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="exam_user_score" label="分数" width="200" sortable>
+                <el-table-column prop="exam_user_score" label="分数" width="150" sortable>
                     <template scope="scope">
                         <span style="color:red;">{{scope.row.exam_user_score}}</span>
                         <span>/{{exam.exam_score}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="" label="操作" width="270">
+                <el-table-column prop="" label="操作" width="320">
                     <template scope="scope">
                         <span>
                             <el-button type="danger" size="small" @click="deleteExamUser(scope.row.access_code)">删除</el-button>
                         </span>
-                        <span style="margin-left:15px;">
+                        <span style="margin-left:13px;">
                             <el-button type="success" size="small" @click="notice(scope.row)">通知候选人</el-button>
+                        </span>
+                        <span style="margin-left:13px;">
+                            <el-button type="primary" size="small" @click="updateExamUserInfoOpen(scope.row)">修改候选人信息</el-button>
                         </span>
                     </template>
                 </el-table-column>
             </el-table>
         </template>
     </div>
+    <el-dialog title="候选人信息修改" :visible.sync="updateExamUserInfoDialog" width="25%">
+        <div style="font-size:13px;">
+            <div>
+                <span>名字:</span>
+                <span style="margin-left:10px;">
+                    <el-input v-model="exam_user.candidate_name" placeholder="请输入候选人名字" size="small" style="width:200px;"></el-input>
+                </span>
+            </div>
+            <div style="margin-top:30px;">
+                <span>电话:</span>
+                <span style="margin-left:10px;">
+                    <el-input v-model="exam_user.candidate_phone" placeholder="请输入候选人电话" size="small" style="width:200px;"></el-input>
+                </span>
+            </div>
+            <div style="margin-top:30px;">
+                <span>邮箱:</span>
+                <span style="margin-left:10px;">
+                    <el-input v-model="exam_user.candidate_mail" placeholder="请输入候选人邮箱" size="small" style="width:200px;"></el-input>
+                </span>
+            </div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="updateExamUserInfoDialog = false">取 消</el-button>
+            <el-button type="primary" @click="updateExamUserInfo">确 定</el-button>
+        </div>
+    </el-dialog>
     <div></div>
 </div>
 </body>
@@ -185,7 +218,9 @@
             fifth: false,
             exam:{},
             tempList:[],
-            intoExamNumber: 0
+            intoExamNumber: 0,
+            exam_user:{},
+            updateExamUserInfoDialog:false
         },
         created(){
             this.getExamInfo();
@@ -338,6 +373,66 @@
                     });
                 }
                 this.getExamUserList();
+            },
+            updateExamUserInfoOpen(row){
+                this.exam_user=row;
+                this.updateExamUserInfoDialog=true;
+            },
+            async updateExamUserInfo(){
+                let params=new FormData();
+                params.append("candidate_name",this.exam_user.candidate_name);
+                params.append("candidate_phone",this.exam_user.candidate_phone);
+                params.append("candidate_mail",this.exam_user.candidate_mail);
+                params.append("access_code",this.exam_user.access_code);
+                let result=await axios({
+                    method: 'post',
+                    url: '/updateExamUserInfo',
+                    data: params,
+                });
+                if(result.data===1){
+                    this.$message({
+                        message: '修改候选人信息成功',
+                        type: 'success'
+                    });
+                }else{
+                    this.$message({
+                        message: '修改候选人信息失败,系统繁忙',
+                        type: 'warning'
+                    });
+                }
+                this.updateExamUserInfoDialog=false;
+                this.getExamUserList();
+            },
+            async noticeMoreCandidate(more){
+                let params=new FormData();
+                params.append("exam_id",this.exam.exam_id);
+                params.append("more",more);
+                params.append("exam_name",this.exam.exam_name);
+                params.append("exam_start_time",this.exam.exam_start_time);
+                params.append("exam_noEntry_time",this.exam.exam_noEntry_time);
+                params.append("exam_longTime",this.exam.exam_longTime);
+                let result=await axios({
+                    method: 'post',
+                    url: '/noticeMoreCandidate',
+                    data: params,
+                });
+                if(result.data===1){
+                    this.$message({
+                        message: '通知候选人参加笔试成功',
+                        type: 'success'
+                    });
+                }else{
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
+                }
+                this.getExamUserList();
+            },
+            addCandidate(){
+                window.location.href="../test_add_exam_candidate/"+this.exam.exam_id;
             }
         }
     })

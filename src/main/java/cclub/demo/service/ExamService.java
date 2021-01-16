@@ -117,4 +117,28 @@ public interface ExamService {
      */
     int updateCandidateNotice(String access_code);
 
+
+
+    /**
+     *
+     * @param access_code
+     * @param candidate_name
+     * @param candidate_phone
+     * @param candidate_mail
+     * @return
+     * 修改候选人个人信息
+     */
+    int updateExamUserInfo(String access_code,String candidate_name,String candidate_phone,String candidate_mail);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param more
+     * @return
+     * 批量通知候选人
+     */
+    List<exam_user>noticeMoreCandidate(String exam_id,int more);
+
 }

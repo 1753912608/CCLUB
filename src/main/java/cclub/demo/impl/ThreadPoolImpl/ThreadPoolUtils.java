@@ -17,6 +17,8 @@ public class ThreadPoolUtils {
 
      private static int initPoolSize=20;
 
+     private static volatile boolean isWork=false;
+
      @Autowired
      private ExamServiceImpl examService;
 
@@ -24,14 +26,16 @@ public class ThreadPoolUtils {
      private mailDemoUtils mailDemoUtils;
 
      public static void initPool(){
-         pool=Executors.newFixedThreadPool(initPoolSize);
+         if(!isWork){
+             pool=Executors.newFixedThreadPool(initPoolSize);
+             isWork=true;
+         }
      }
 
      public int handleExcelTask(List<List<String>>list,String exam_id,int exam_notice,String exam_name,String exam_start_time,int exam_noEntry_time,int exam_longTime,String url){
          List<String>nameList=list.get(0);
          List<String>phoneList=list.get(1);
          List<String>mailList=list.get(2);
-         initPoolSize=Math.min(initPoolSize,nameList.size());
          initPool();
          for(int i=0;i<nameList.size();i++){
              final int index=i;
@@ -47,7 +51,23 @@ public class ThreadPoolUtils {
                  }
              });
          }
-         pool.shutdown();
+         return 1;
+     }
+
+
+
+     public int noticeMoreCandidate(List<exam_user>list,String exam_name,String exam_start_time,int exam_noEntry_time,int exam_longTime,String url){
+         initPool();
+         for(int i=0;i<list.size();i++){
+             final int index=i;
+             pool.execute(new Runnable() {
+                 @Override
+                 public void run() {
+                     examService.updateCandidateNotice(list.get(index).getAccess_code());
+                     mailDemoUtils.sendExamTemplateNotice(list.get(index).getCandidate_mail(),exam_name,exam_start_time,exam_noEntry_time,exam_longTime,list.get(index).getCandidate_name(),url+list.get(index).getAccess_code());
+                 }
+             });
+         }
          return 1;
      }
 }

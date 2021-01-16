@@ -197,7 +197,8 @@
                         data: params,
                     });
                     if(result.data===1){
-                        window.location.href="/test_exam";
+                        let referrer=document.referrer;
+                        window.location.href=referrer;
                     }else{
                         this.$message.error('系统繁忙,请稍候');
                     }
@@ -227,7 +228,8 @@
                     data: params,
                 });
                 if(result.data===1){
-                    window.location.href="/test_exam";
+                    let referrer=document.referrer;
+                    window.location.href=referrer;
                 }else{
                     const loading = this.$loading({
                         lock: true,
