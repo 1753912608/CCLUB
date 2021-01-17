@@ -50,15 +50,5 @@ public class Rand {
     }
 
 
-    /**
-     *
-     * @param type_name
-     * @return
-     * 根据传入的题目参数类型生成该题目的id
-     */
-    public static String getQuestionId(String type_name){
-        return "";
-    }
-
 
 }

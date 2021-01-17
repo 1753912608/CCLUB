@@ -1,7 +1,9 @@
 package cclub.demo.mapper;
 
+import cclub.demo.dao.exam.completion_question;
 import cclub.demo.dao.exam.exam;
 import cclub.demo.dao.exam.exam_user;
+import cclub.demo.dao.exam.judge_question;
 import cclub.demo.mapper.sqlProvider.ExamProvider;
 import org.apache.ibatis.annotations.*;
 
@@ -154,4 +156,77 @@ public interface ExamMapper {
     List<exam_user>getCandidateNoticeList(@Param("exam_id") String exam_id,@Param("more") int more);
 
 
+
+
+    /**
+     *
+     * @param question_id
+     * @param choice_question_name
+     * @param question_options
+     * @param choice_question_answer
+     * @param choice_question_difficult
+     * @param choice_question_score
+     * @param choice_question_remarks
+     * @param user_id
+     * 添加选择题
+     */
+    @InsertProvider(type = ExamProvider.class,method = "addChoiceQuestion")
+    void addChoiceQuestion(String question_id,
+                           String choice_question_name,
+                           String[] question_options,
+                           String choice_question_answer,
+                           int choice_question_difficult,
+                           int choice_question_score,
+                           String choice_question_remarks,
+                           String user_id);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param updateNumber
+     * 更新笔试的题目数量
+     */
+    @Update("update exam set exam_question_number=exam_question_number+#{updateNumber} where exam_id=#{exam_id}")
+    void updateExamQuestionNumber(String exam_id,int updateNumber);
+
+
+
+
+    /**
+     *
+     * @param question_id
+     * @param exam_id
+     * 绑定新增的试题与对应的笔试
+     */
+    @Insert("insert into exam_question values(#{exam_id},#{question_id})")
+    void insertExamQuestion(String question_id,String exam_id);
+
+
+    /**
+     *
+     * @param judge_question
+     * 添加判断题
+     */
+    @Insert("insert into judge_question values(#{judge_question_id}," +
+            "#{judge_question_name},#{judge_question_option_false}," +
+            "#{judge_question_option_true},#{judge_question_created_user_id}," +
+            "#{judge_question_answer},#{judge_question_difficult}," +
+            "#{judge_question_score},#{judge_question_remarks})")
+    void addJudgeQuestion(judge_question judge_question);
+
+
+
+
+    /**
+     *
+     * @param completion_question
+     * 添加填空题
+     */
+    @Insert("insert into completion_question values(#{completion_question_id}," +
+            "#{completion_question_name},#{completion_question_answer}," +
+            "#{completion_question_created_user_id},#{completion_question_difficult}," +
+            "#{completion_question_score},#{completion_question_remarks})")
+    void addCompletionQuestion(completion_question completion_question);
 }

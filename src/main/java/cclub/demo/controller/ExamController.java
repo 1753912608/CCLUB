@@ -1,8 +1,7 @@
 package cclub.demo.controller;
 
 import cclub.demo.dao.SessionInfo;
-import cclub.demo.dao.exam.exam;
-import cclub.demo.dao.exam.exam_user;
+import cclub.demo.dao.exam.*;
 import cclub.demo.dao.utils.Rand;
 import cclub.demo.impl.ExamServiceImpl;
 import cclub.demo.impl.ExcelImpl.ExcelUtils;
@@ -382,5 +381,97 @@ public class ExamController {
     {
         List<exam_user>list=examService.noticeMoreCandidate(exam_id,more);
         return threadPoolUtils.noticeMoreCandidate(list,exam_name,exam_start_time,exam_noEntry_time,exam_longTime,HOSTURLEXAM);
+    }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param choice_question_name
+     * @param question_options
+     * @param choice_question_answer
+     * @param choice_question_difficult
+     * @param choice_question_score
+     * @param choice_question_remarks
+     * @param request
+     * @return
+     * 添加选择题
+     */
+    @ResponseBody
+    @RequestMapping("/addChoiceQuestion")
+    public int addChoiceQuestion(String exam_id,
+                                 String choice_question_name,
+                                 String[] question_options,
+                                 String choice_question_answer,
+                                 int choice_question_difficult,
+                                 int choice_question_score,
+                                 String choice_question_remarks,
+                                 HttpServletRequest request)
+    {
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        return examService.addChoiceQuestion(exam_id,Rand.getInterviewCode(),choice_question_name,question_options,choice_question_answer,choice_question_difficult,choice_question_score,choice_question_remarks,user_id);
+    }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param judge_question_name
+     * @param judge_question_option_false
+     * @param judge_question_option_true
+     * @param judge_question_answer
+     * @param judge_question_score
+     * @param judge_question_remarks
+     * @param request
+     * @return
+     * 添加判断题
+     */
+    @ResponseBody
+    @RequestMapping("/addJudgeQuestion")
+    public int addJudgeQuestion(String exam_id,
+                                String judge_question_name,
+                                String judge_question_option_false,
+                                String judge_question_option_true,
+                                String judge_question_answer,
+                                int judge_question_score,
+                                int judge_question_difficult,
+                                String judge_question_remarks,
+                                HttpServletRequest request)
+    {
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        return examService.addJudgeQuestion(exam_id,new judge_question(Rand.getInterviewCode(),judge_question_name,judge_question_option_false,judge_question_option_true,user_id,judge_question_answer,judge_question_difficult,judge_question_score,judge_question_remarks));
+    }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param completion_question_name
+     * @param completion_question_answer
+     * @param completion_question_difficult
+     * @param completion_question_score
+     * @param completion_question_remarks
+     * @param request
+     * @return
+     * 添加填空题
+     */
+    @ResponseBody
+    @RequestMapping("/addCompletionQuestion")
+    public int addCompletionQuestion(String exam_id,
+                                     String completion_question_name,
+                                     String completion_question_answer,
+                                     int completion_question_difficult,
+                                     int completion_question_score,
+                                     String completion_question_remarks,
+                                     HttpServletRequest request)
+    {
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        return examService.addCompletionQuestion(exam_id,new completion_question(Rand.getInterviewCode(),completion_question_name,completion_question_answer,user_id,completion_question_difficult,completion_question_score,completion_question_remarks));
     }
 }

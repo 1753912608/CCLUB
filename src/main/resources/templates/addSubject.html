@@ -48,7 +48,7 @@
             <span style="margin-left:15px;">添加题目</span>
         </div>
     </div>
-    <div class="el-form" :style="{'height':(first||second)?'970px':'480px'}">
+    <div class="el-form" :style="{'height':(first||second)?(height+'px'):'480px'}">
         <div style="margin-top:15px;">
             <div style="float:left;font-size:12px;margin-left:130px;margin-top:10px;">
                 题型
@@ -97,47 +97,26 @@
                                 type="textarea"
                                 :rows="4"
                                 placeholder="请输入内容"
-                                v-model="question_A">
+                                v-model="choiceQuestion.questionList[0]">
                         </el-input>
                     </div>
                 </div>
                 <div style="float:left;margin-left:15px;">
-                    <el-checkbox-group v-model="checkedQuestions" v-if="second">
-                        <el-checkbox  label="1" >正确答案</el-checkbox>
+                    <el-checkbox-group v-model="choiceQuestion.answerList" v-if="second">
+                        <el-checkbox  :label="1" >正确答案</el-checkbox>
                     </el-checkbox-group>
-                    <el-radio-group v-model="correct" v-if="first">
+                    <el-radio-group v-model="choiceQuestion.answer" v-if="first">
                         <el-radio :label="1">正确答案</el-radio>
                     </el-radio-group>
                 </div>
-            </div>
-            <div style="margin-left:130px;padding-top:135px;">
-                <div style="float:left;margin-left:75px;">
-                    <div style="width:742px;height:30px;background-color:#eff2ff;"></div>
-                    <div>
-                        <el-input
-                                type="textarea"
-                                :rows="4"
-                                placeholder="请输入内容"
-                                v-model="question_A">
-                        </el-input>
-                    </div>
-                </div>
                 <div style="float:left;margin-left:15px;">
-                    <el-checkbox-group v-model="checkedQuestions" v-if="second">
-                        <el-checkbox  label="2" >正确答案</el-checkbox>
-                    </el-checkbox-group>
-                    <el-radio-group v-model="correct" v-if="first">
-                        <el-radio :label="2">正确答案</el-radio>
-                    </el-radio-group>
-                </div>
-                <div style="float:left;margin-left:15px;">
-                    <a href="javascript:void(0);" @click="" style="color:red;text-decoration:none;">
+                    <a href="javascript:void(0);" @click="deleteChoice(index+1)" style="color:red;text-decoration:none;">
                         <i class="el-icon-delete" style="color:red;"></i>
                         删除
                     </a>
                 </div>
             </div>
-            <div style="margin-left:130px;padding-top:135px;">
+            <div v-for="(item,index) in choiceQuestion.questionList" style="margin-left:130px;padding-top:135px;" v-if="index>0">
                 <div style="float:left;margin-left:75px;">
                     <div style="width:742px;height:30px;background-color:#eff2ff;"></div>
                     <div>
@@ -145,54 +124,27 @@
                                 type="textarea"
                                 :rows="4"
                                 placeholder="请输入内容"
-                                v-model="question_A">
+                                v-model="choiceQuestion.questionList[index]">
                         </el-input>
                     </div>
                 </div>
                 <div style="float:left;margin-left:15px;">
-                    <el-checkbox-group v-model="checkedQuestions" v-if="second">
-                        <el-checkbox  label="3" >正确答案</el-checkbox>
+                    <el-checkbox-group v-model="choiceQuestion.answerList" v-if="second">
+                        <el-checkbox  :label="index+1" >正确答案</el-checkbox>
                     </el-checkbox-group>
-                    <el-radio-group v-model="correct" v-if="first">
-                        <el-radio :label="3">正确答案</el-radio>
+                    <el-radio-group v-model="choiceQuestion.answer" v-if="first">
+                        <el-radio :label="index+1">正确答案</el-radio>
                     </el-radio-group>
                 </div>
                 <div style="float:left;margin-left:15px;">
-                    <a href="javascript:void(0);" @click="" style="color:red;text-decoration:none;">
-                        <i class="el-icon-delete" style="color:red;"></i>
-                        删除
-                    </a>
-                </div>
-            </div>
-            <div style="margin-left:130px;padding-top:135px;">
-                <div style="float:left;margin-left:75px;">
-                    <div style="width:742px;height:30px;background-color:#eff2ff;"></div>
-                    <div>
-                        <el-input
-                                type="textarea"
-                                :rows="4"
-                                placeholder="请输入内容"
-                                v-model="question_A">
-                        </el-input>
-                    </div>
-                </div>
-                <div style="float:left;margin-left:15px;">
-                    <el-checkbox-group v-model="checkedQuestions" v-if="second">
-                        <el-checkbox  label="4" >正确答案</el-checkbox>
-                    </el-checkbox-group>
-                    <el-radio-group v-model="correct" v-if="first">
-                        <el-radio :label="4">正确答案</el-radio>
-                    </el-radio-group>
-                </div>
-                <div style="float:left;margin-left:15px;">
-                    <a href="javascript:void(0);" @click="" style="color:red;text-decoration:none;">
+                    <a href="javascript:void(0);" @click="deleteChoice(index+1)" style="color:red;text-decoration:none;">
                         <i class="el-icon-delete" style="color:red;"></i>
                         删除
                     </a>
                 </div>
             </div>
             <div style="margin-left:200px;padding-top:165px;font-size:12px;">
-                <a href="javascript:void(0);" @click="" style="color:#5272ff;text-decoration:none;">
+                <a href="javascript:void(0);" @click="addChoice" style="color:#5272ff;text-decoration:none;">
                     <i class="el-icon-circle-plus"></i>
                     增加选项
                 </a>
@@ -215,18 +167,18 @@
             <div style="margin-left:130px;margin-top:20px;">
                 <span style="font-size:12px;">选项</span>
                 <span style="margin-left:45px;">
-                    <el-input v-model="panduan_input1" style="width:745px;" size="small"></el-input>
+                    <el-input v-model="judgeQuestion.judgeInput1" style="width:745px;" size="small"></el-input>
                 </span>
                 <span style="margin-left:15px;">
-                    <el-radio v-model="panduan_radio" label="1">正确答案</el-radio>
+                    <el-radio v-model="judgeQuestion.judgeRadio" :label="1">正确答案</el-radio>
                 </span>
             </div>
             <div style="margin-left:160px;margin-top:20px;">
                 <span style="margin-left:45px;">
-                    <el-input v-model="panduan_input2" style="width:745px;" size="small"></el-input>
+                    <el-input v-model="judgeQuestion.judgeInput2" style="width:745px;" size="small"></el-input>
                 </span>
                 <span style="margin-left:15px;">
-                    <el-radio v-model="panduan_radio" label="2">正确答案</el-radio>
+                    <el-radio v-model="judgeQuestion.judgeRadio" :label="2">正确答案</el-radio>
                 </span>
             </div>
             <div style="width:1210px;height:1px;background-color:#d8dadb;margin-top:35px;margin-left:130px;"></div>
@@ -253,7 +205,7 @@
                         type="textarea"
                         :rows="3"
                         placeholder="请按规则输入填空题答案"
-                        v-model="completion_subject"
+                        v-model="completionQuestion.answer"
                 style="width:750px;">
                 </el-input>
             </div>
@@ -277,7 +229,7 @@
             <el-button type="primary" plain style="width:120px;" size="small">继续添加下一题</el-button>
         </span>
         <span style="margin-left:5px;">
-            <el-button type="primary" style="width:120px;" size="small">完成</el-button>
+            <el-button type="primary" style="width:120px;" size="small" @click="submitSubject">完成</el-button>
         </span>
     </div>
 </div>
@@ -291,19 +243,27 @@
             fourth: false,
             fifth: false,
             subject_name: '',
-            question_A: '',
-            correct: '',
             question_color: '',
             question_score: '',
             question_remarks: '',
-            checkedQuestions: [],
-            panduan_input1: '是',
-            panduan_input2: '否',
-            panduan_radio: '1',
-            completion_subject: ''
+            choiceQuestion:{
+                questionList:['','',''],
+                answerList:[],
+                answer:''
+            },
+            height:820,
+            exam_id: '',
+            judgeQuestion:{
+                judgeInput1: '是',
+                judgeInput2: '否',
+                judgeRadio: '1'
+            },
+            completionQuestion:{
+                answer: ''
+            }
         },
         created(){
-
+            this.getExamId();
         },
         methods:{
             handleClick(tab, event) {
@@ -323,8 +283,110 @@
             },
             switchFifth(){
                 this.first=this.second=this.third=this.fourth=!(this.fifth=true);
+            },
+            addChoice(){
+                if(this.choiceQuestion.questionList.length===7){
+                    this.$message({
+                        message: '最多创建7个选项',
+                        type: 'warning'
+                    });
+                }else{
+                    this.choiceQuestion.questionList.push('');
+                    this.height+=132;
+                }
+            },
+            deleteChoice(index){
+                if(this.choiceQuestion.questionList.length===3){
+                    this.$message({
+                        message: '选择题最少需要三个选项',
+                        type: 'warning'
+                    });
+                }else{
+                    this.height-=132;
+                    this.choiceQuestion.questionList.splice(this.choiceQuestion.questionList.indexOf(index),1);
+                    let i=this.choiceQuestion.answerList.indexOf(index);
+                    if(i!=-1){
+                        this.choiceQuestion.answerList.splice(i,1);
+                    }
+                    console.log(i);
+                    console.log(this.choiceQuestion.answerList);
+                }
+            },
+            submitSubject(){
+                if(this.first||this.second){
+                    this.addChoiceQuestion();
+                }else if(this.third){
+                    this.addJudgeQuestion();
+                }else if(this.fourth){
+                    this.addCompletionQuestion();
+                }
+            },
+            async addChoiceQuestion(){
+                let params=new FormData();
+                params.append("exam_id",this.exam_id);
+                params.append("choice_question_name",this.subject_name);
+                params.append("question_options",this.choiceQuestion.questionList);
+                if(this.first){
+                    params.append("choice_question_answer",this.choiceQuestion.answer);
+                }else{
+                    params.append("choice_question_answer",this.choiceQuestion.answerList);
+                }
+                params.append("choice_question_difficult",this.question_color);
+                params.append("choice_question_score",this.question_score);
+                params.append("choice_question_remarks",this.question_remarks);
+                let result=await axios({
+                    method: 'post',
+                    url: '/addChoiceQuestion',
+                    data: params,
+                });
+                this.jsonUtils(result.data);
+            },
+            async addCompletionQuestion(){
+                let params=new FormData();
+                params.append("exam_id",this.exam_id);
+                params.append("completion_question_name",this.subject_name);
+                params.append("completion_question_answer",this.completionQuestion.answer);
+                params.append("completion_question_difficult",this.question_color);
+                params.append("completion_question_score",this.question_score);
+                params.append("completion_question_remarks",this.question_remarks);
+                let result=await axios({
+                    method: 'post',
+                    url: '/addCompletionQuestion',
+                    data: params,
+                });
+                this.jsonUtils(result.data);
+            },
+            async addJudgeQuestion(){
+                let params=new FormData();
+                params.append("exam_id",this.exam_id);
+                params.append("judge_question_name",this.subject_name);
+                params.append("judge_question_option_false",this.judgeQuestion.judgeInput2);
+                params.append("judge_question_option_true",this.judgeQuestion.judgeInput1);
+                params.append("judge_question_answer",this.judgeQuestion.judgeRadio);
+                params.append("judge_question_score",this.question_score);
+                params.append("judge_question_difficult",this.question_color);
+                params.append("judge_question_remarks",this.question_remarks);
+                let result=await axios({
+                    method: 'post',
+                    url: '/addJudgeQuestion',
+                    data: params,
+                });
+                this.jsonUtils(result.data);
+            },
+            jsonUtils(value){
+                if(value===1){
+                    window.location.href=document.referrer;
+                }else{
+                    this.$message({
+                        message: '服务器繁忙,请稍后',
+                        type: 'warning'
+                    });
+                }
+            },
+            getExamId(){
+                let url=window.location.href.split("/");
+                this.exam_id=url[url.length-1];
             }
-
         }
     })
 </script>

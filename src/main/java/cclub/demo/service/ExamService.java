@@ -1,7 +1,9 @@
 package cclub.demo.service;
 
+import cclub.demo.dao.exam.completion_question;
 import cclub.demo.dao.exam.exam;
 import cclub.demo.dao.exam.exam_user;
+import cclub.demo.dao.exam.judge_question;
 
 import java.util.List;
 import java.util.Map;
@@ -140,5 +142,51 @@ public interface ExamService {
      * 批量通知候选人
      */
     List<exam_user>noticeMoreCandidate(String exam_id,int more);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param question_id
+     * @param choice_question_name
+     * @param question_options
+     * @param choice_question_answer
+     * @param choice_question_difficult
+     * @param choice_question_score
+     * @param choice_question_remarks
+     * @param user_id
+     * @return
+     * 添加选择题
+     */
+    int addChoiceQuestion(String exam_id,String question_id,String choice_question_name,String[] question_options,String choice_question_answer,int choice_question_difficult,int choice_question_score,String choice_question_remarks,String user_id);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param judge_question
+     * @return
+     * 添加判断题
+     */
+    int addJudgeQuestion(String exam_id, judge_question judge_question);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param completion_question
+     * @return
+     * 添加填空题
+     */
+    int addCompletionQuestion(String exam_id, completion_question completion_question);
+
+
+
+
+
+
 
 }

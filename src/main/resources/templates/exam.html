@@ -123,7 +123,7 @@
                             <a href="javascript:void(0);" @click="addSubject(scope.row.exam_id)" style="text-decoration:none;">设置考试规则</a>
                         </span>
                         <span style="font-size:12px;margin-left:15px;" v-if="scope.row.exam_state===0">
-                            <a href="javascript:void(0);" @click="" style="text-decoration:none;">编辑题目</a>
+                            <a href="javascript:void(0);" @click="addSubject(scope.row.exam_id)" style="text-decoration:none;">编辑题目</a>
                         </span>
                         <span style="font-size:12px;margin-left:15px;">
                             <a href="javascript:void(0);" @click="copyExamOpen(scope.row.exam_id)" style="text-decoration:none;">考试链接</a>
@@ -306,6 +306,9 @@
             },
             exam_candidate_list(exam_id){
                 window.location.href="/test_exam_candidate_list/"+exam_id;
+            },
+            addSubject(exam_id){
+                window.location.href="/test_addSubject/"+exam_id;
             }
         }
     })

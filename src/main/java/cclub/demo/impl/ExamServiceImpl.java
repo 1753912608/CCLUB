@@ -1,7 +1,9 @@
 package cclub.demo.impl;
 
+import cclub.demo.dao.exam.completion_question;
 import cclub.demo.dao.exam.exam;
 import cclub.demo.dao.exam.exam_user;
+import cclub.demo.dao.exam.judge_question;
 import cclub.demo.mapper.ExamMapper;
 import cclub.demo.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,5 +148,50 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public List<exam_user> noticeMoreCandidate(String exam_id, int more) {
         return examMapper.getCandidateNoticeList(exam_id,more);
+    }
+
+    @Transactional
+    @Override
+    public int addChoiceQuestion(String exam_id,String question_id,String choice_question_name, String[] question_options, String choice_question_answer, int choice_question_difficult, int choice_question_score, String choice_question_remarks, String user_id) {
+        try {
+            examMapper.addChoiceQuestion(question_id,choice_question_name,question_options,choice_question_answer,choice_question_difficult,choice_question_score,choice_question_remarks,user_id);
+            examMapper.updateExamQuestionNumber(exam_id,1);
+            examMapper.insertExamQuestion(question_id,exam_id);
+            return 1;
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Transactional
+    @Override
+    public int addJudgeQuestion(String exam_id, judge_question judge_question) {
+        try{
+            examMapper.addJudgeQuestion(judge_question);
+            examMapper.updateExamQuestionNumber(exam_id,1);
+            examMapper.insertExamQuestion(judge_question.getJudge_question_id(),exam_id);
+            return 1;
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Transactional
+    @Override
+    public int addCompletionQuestion(String exam_id, completion_question completion_question) {
+        try{
+            examMapper.addCompletionQuestion(completion_question);
+            examMapper.updateExamQuestionNumber(exam_id,1);
+            examMapper.insertExamQuestion(completion_question.getCompletion_question_id(),exam_id);
+            return 1;
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
