@@ -1,9 +1,6 @@
 package cclub.demo.mapper;
 
-import cclub.demo.dao.exam.completion_question;
-import cclub.demo.dao.exam.exam;
-import cclub.demo.dao.exam.exam_user;
-import cclub.demo.dao.exam.judge_question;
+import cclub.demo.dao.exam.*;
 import cclub.demo.mapper.sqlProvider.ExamProvider;
 import org.apache.ibatis.annotations.*;
 
@@ -229,4 +226,37 @@ public interface ExamMapper {
             "#{completion_question_created_user_id},#{completion_question_difficult}," +
             "#{completion_question_score},#{completion_question_remarks})")
     void addCompletionQuestion(completion_question completion_question);
+
+
+
+    /**
+     *
+     * @param user_id
+     * @return
+     * 获取题库选择题列表
+     */
+    @Select("select * from choice_question where choice_question_created_user_id=#{user_id}")
+    List<choice_question>getChoiceQuestionList(String user_id);
+
+
+
+    /**
+     *
+     * @param user_id
+     * @return
+     * 获取题库判断题列表
+     */
+    @Select("select * from judge_question where judge_question_created_user_id=#{user_id}")
+    List<judge_question>getJudgeQuestionList(String user_id);
+
+
+
+    /**
+     *
+     * @param user_id
+     * @return
+     * 获取填空题列表
+     */
+    @Select("select * from completion_question where completion_question_created_user_id=#{user_id}")
+    List<completion_question>getCompletionQuestionList(String user_id);
 }

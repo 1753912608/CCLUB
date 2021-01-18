@@ -1,9 +1,6 @@
 package cclub.demo.service;
 
-import cclub.demo.dao.exam.completion_question;
-import cclub.demo.dao.exam.exam;
-import cclub.demo.dao.exam.exam_user;
-import cclub.demo.dao.exam.judge_question;
+import cclub.demo.dao.exam.*;
 
 import java.util.List;
 import java.util.Map;
@@ -185,8 +182,30 @@ public interface ExamService {
 
 
 
+    /**
+     *
+     * @param user_id
+     * @return
+     * 获取当前用户创建的选择题列表
+     */
+    List<choice_question>getChoiceQuestionList(String user_id);
 
 
 
+    /**
+     *
+     * @param user_id
+     * @return
+     * 获取当前用户创建的判断题列表
+     */
+    List<judge_question>getJudgeQuestionList(String user_id);
 
+
+    /**
+     *
+     * @param user_id
+     * @return
+     * 获取当前用户创建的填空题列表
+     */
+    List<completion_question>getCompletionQuestionList(String user_id);
 }

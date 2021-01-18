@@ -474,4 +474,55 @@ public class ExamController {
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
         return examService.addCompletionQuestion(exam_id,new completion_question(Rand.getInterviewCode(),completion_question_name,completion_question_answer,user_id,completion_question_difficult,completion_question_score,completion_question_remarks));
     }
+
+
+
+    /**
+     *
+     * @param request
+     * @return
+     * 获取当前用户创建的选择题列表
+     */
+    @ResponseBody
+    @RequestMapping("/getChoiceQuestionList")
+    public List<choice_question>getChoiceQuestionList(HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        return examService.getChoiceQuestionList(user_id);
+    }
+
+
+
+    /**
+     *
+     * @param request
+     * @return
+     * 获取当前用户创建的判断题列表
+     */
+    @ResponseBody
+    @RequestMapping("/getJudgeQuestionList")
+    public List<judge_question>getJudgeQuestionList(HttpServletRequest request)
+    {
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        return examService.getJudgeQuestionList(user_id);
+    }
+
+
+
+
+    /**
+     * \
+     * @param request
+     * @return
+     * 获取当前用户创建的填空题列表
+     */
+    @ResponseBody
+    @RequestMapping("/getCompletionQuestionList")
+    public List<completion_question>getCompletionQuestionList(HttpServletRequest request)
+    {
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        return examService.getCompletionQuestionList(user_id);
+    }
 }

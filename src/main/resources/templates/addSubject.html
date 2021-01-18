@@ -327,9 +327,16 @@
                 params.append("choice_question_name",this.subject_name);
                 params.append("question_options",this.choiceQuestion.questionList);
                 if(this.first){
-                    params.append("choice_question_answer",this.choiceQuestion.answer);
+                    params.append("choice_question_answer",this.choiceQuestion.questionList[this.choiceQuestion.answer]);
                 }else{
-                    params.append("choice_question_answer",this.choiceQuestion.answerList);
+                    let answer='';
+                    for(let i=0;i<this.choiceQuestion.answerList;i++){
+                        answer+=this.choiceQuestion.questionList[this.choiceQuestion.answerList[i]-1];
+                        if(i<this.choiceQuestion.answerList.length-1){
+                            answer+=',';
+                        }
+                    }
+                    params.append("choice_question_answer",answer);
                 }
                 params.append("choice_question_difficult",this.question_color);
                 params.append("choice_question_score",this.question_score);
@@ -362,7 +369,11 @@
                 params.append("judge_question_name",this.subject_name);
                 params.append("judge_question_option_false",this.judgeQuestion.judgeInput2);
                 params.append("judge_question_option_true",this.judgeQuestion.judgeInput1);
-                params.append("judge_question_answer",this.judgeQuestion.judgeRadio);
+                if(this.judgeQuestion.judgeRadio==='1'){
+                    params.append("judge_question_answer",this.judgeQuestion.judgeInput1);
+                }else{
+                    params.append("judge_question_answer",this.judgeQuestion.judgeInput2);
+                }
                 params.append("judge_question_score",this.question_score);
                 params.append("judge_question_difficult",this.question_color);
                 params.append("judge_question_remarks",this.question_remarks);

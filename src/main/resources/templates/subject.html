@@ -21,6 +21,7 @@
             border: 1px solid rgb(235,235,235);
             width:1390px;
             font-size:13px;
+            margin-bottom:70px;
         }
         .el-subject-remarks{
             width:1280px;
@@ -28,6 +29,7 @@
             background-color:#eff2ff;
             margin-left:80px;
             margin-top:10px;
+            margin-bottom:30px;
         }
     </style>
 </head>
@@ -60,7 +62,7 @@
     <el-divider></el-divider>
     <div style="margin-top:40px;margin-left:60px;">
         <div style="float:left;">
-            <a href="javascript:void(0);" @click="home"><img src="img/back.png" alt="" width="13px" height="13px"></a>
+            <a href="javascript:void(0);" @click="home"><img src="../img/back.png" alt="" width="13px" height="13px"></a>
         </div>
         <div style="float:left;margin-left:10px;font-size:18px;margin-top:-3px;">题库</div>
         <div style="float:left;margin-left:1250px;"><el-button type="primary" size="small">添加试题</el-button></div>
@@ -100,27 +102,89 @@
         </div>
     </div>
     <div class="el-subject-content">
-        <div style="margin-left:15px;margin-top:15px;margin-bottom:10px;">
+        <div style="margin-left:15px;margin-top:15px;margin-bottom:10px;" v-for="(item,index) in choiceQuestionList">
             <div>
-                <span>[单选题]</span>
-                <span style="margin-left:30px;">什么语言不是面向对象的</span>
-                <span style="color:#8b8f94;margin-left:1060px;">试题编号:1</span>
+                <span v-if="item.choice_question_answer.length===1">[单选题]</span>
+                <span v-if="item.choice_question_answer.length>1">[多选题]</span>
+                <span style="margin-left:30px;">{{item.choice_question_name}}</span>
+                <span style="color:#8b8f94;margin-left:1060px;">试题编号:{{index+1}}</span>
             </div>
             <div>
-                <div style="margin-left:80px;margin-top:15px;"><el-radio disabled v-model="radio" label="java">java</el-radio></div>
-                <div style="margin-left:80px;margin-top:10px;"><el-radio disabled v-model="radio" label="c++">c++</el-radio></div>
-                <div style="margin-left:80px;margin-top:10px;"><el-radio disabled v-model="radio" label="python">python</el-radio></div>
-                <div style="margin-left:80px;margin-top:10px;"><el-radio disabled v-model="radio" label="c语言">c语言</el-radio></div>
+                <div style="margin-left:80px;margin-top:15px;" v-if="item.choice_question_option_A!=null">
+                    <el-radio disabled  :label="item.choice_question_option_A">{{item.choice_question_option_A}}</el-radio>
+                </div>
+                <div style="margin-left:80px;margin-top:10px;" v-if="item.choice_question_option_B!=null">
+                    <el-radio disabled  :label="item.choice_question_option_B">{{item.choice_question_option_B}}</el-radio>
+                </div>
+                <div style="margin-left:80px;margin-top:10px;" v-if="item.choice_question_option_C!=null">
+                    <el-radio disabled :label="item.choice_question_option_C">{{item.choice_question_option_C}}</el-radio>
+                </div>
+                <div style="margin-left:80px;margin-top:10px;" v-if="item.choice_question_option_D!=null">
+                    <el-radio disabled  :label="item.choice_question_option_D">{{item.choice_question_option_D}}</el-radio>
+                </div>
+                <div style="margin-left:80px;margin-top:10px;" v-if="item.choice_question_option_E!=null">
+                    <el-radio disabled  :label="item.choice_question_option_E">{{item.choice_question_option_E}}</el-radio>
+                </div>
+                <div style="margin-left:80px;margin-top:10px;" v-if="item.choice_question_option_F!=null">
+                    <el-radio disabled  :label="item.choice_question_option_F">{{item.choice_question_option_F}}</el-radio>
+                </div>
+                <div style="margin-left:80px;margin-top:10px;" v-if="item.choice_question_option_G!=null">
+                    <el-radio disabled  :label="item.choice_question_option_C">{{item.choice_question_option_G}}</el-radio>
+                </div>
+            </div>
+            <div style="margin-top:10px;">
+                <span style="color:red;">[答案]</span>
+                <span style="margin-left:40px;font-weight:700;">{{item.choice_question_answer}}</span>
             </div>
             <div class="el-subject-remarks">
                 <div style="padding-top:10px;">
-                    <span style="margin-left:900px;">备注:</span>
-                    <span style="margin-left:5px;">无</span>
-                    <span style="margin-left:10px;">|</span>
-                    <span style="margin-left:10px;">默认分值1分</span>
+                    <span style="margin-left:800px;">备注:</span>
+                    <span style="margin-left:5px;width:100px;">{{item.choice_question_remarks}}</span>
+                    <span style="margin-left:90px;">默认分值{{item.choice_question_score}}分</span>
                     <span style="margin-left:10px;">｜</span>
                     <span style="margin-left:10px;">难度</span>
-                    <span>3</span>
+                    <span>{{item.choice_question_difficult}}</span>
+                    <span style="margin-left:20px;">
+                        <a href="javascript:void(0);" style="text-decoration:none;">
+                            <i class="el-icon-edit-outline" style="font-size:13px;"></i>
+                            编辑
+                        </a>
+                    </span>
+                    <span style="margin-left:10px;">
+                        <a href="javascript:void(0);" style="text-decoration:none;color:red;">
+                            <i class="el-icon-delete" style="font-size:13px;"></i>
+                            删除
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div style="margin-left:15px;margin-top:15px;margin-bottom:10px;" v-for="(item,index) in judgeQuestionList">
+            <div>
+                <span>[判断题]</span>
+                <span style="margin-left:30px;">{{item.judge_question_name}}</span>
+                <span style="color:#8b8f94;margin-left:1060px;">试题编号:{{index+1+choiceQuestionList.length}}</span>
+            </div>
+            <div>
+                <div style="margin-left:80px;margin-top:15px;">
+                    <el-radio disabled  :label="item.judge_question_option_false">{{item.judge_question_option_false}}</el-radio>
+                </div>
+                <div style="margin-left:80px;margin-top:10px;">
+                    <el-radio disabled  :label="item.judge_question_option_true">{{item.judge_question_option_true}}</el-radio>
+                </div>
+            </div>
+            <div style="margin-top:10px;">
+                <span style="color:red;">[答案]</span>
+                <span style="margin-left:40px;font-weight:700;">{{item.judge_question_answer}}</span>
+            </div>
+            <div class="el-subject-remarks">
+                <div style="padding-top:10px;">
+                    <span style="margin-left:800px;">备注:</span>
+                    <span style="margin-left:5px;width:100px;">{{item.judge_question_remarks}}</span>
+                    <span style="margin-left:90px;">默认分值{{item.judge_question_score}}分</span>
+                    <span style="margin-left:10px;">｜</span>
+                    <span style="margin-left:10px;">难度</span>
+                    <span>{{item.judge_question_difficult}}</span>
                     <span style="margin-left:20px;">
                         <a href="javascript:void(0);" style="text-decoration:none;">
                             <i class="el-icon-edit-outline" style="font-size:13px;"></i>
@@ -155,10 +219,14 @@
             difficulty_value: '',
             subject_key: '',
             subject_remarks: '',
-            radio: 'c语言'
+            choiceQuestionList:[],
+            judgeQuestionList:[],
+            completionQuestionList:[]
         },
         created() {
-
+            this.getChoiceQuestionList();
+            this.getJudgeQuestionList();
+            this.getCompletionQuestionList();
         },
         methods:{
             interview(){
@@ -169,6 +237,20 @@
             },
             home(){
                 window.location.href="/ming";
+            },
+            async getChoiceQuestionList(){
+                let result=await axios.get('/getChoiceQuestionList');
+                this.choiceQuestionList=result.data;
+                console.log(this.choiceQuestionList);
+            },
+            async getJudgeQuestionList(){
+                let result=await axios.get('/getJudgeQuestionList');
+                this.judgeQuestionList=result.data;
+                console.log(this.judgeQuestionList);
+            },
+            async getCompletionQuestionList(){
+                let result=await axios.get('/getCompletionQuestionList');
+                this.completionQuestionList=result.data;
             }
         }
     })

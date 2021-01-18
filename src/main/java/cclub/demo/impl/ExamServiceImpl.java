@@ -1,9 +1,6 @@
 package cclub.demo.impl;
 
-import cclub.demo.dao.exam.completion_question;
-import cclub.demo.dao.exam.exam;
-import cclub.demo.dao.exam.exam_user;
-import cclub.demo.dao.exam.judge_question;
+import cclub.demo.dao.exam.*;
 import cclub.demo.mapper.ExamMapper;
 import cclub.demo.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,5 +190,21 @@ public class ExamServiceImpl implements ExamService {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    public List<choice_question> getChoiceQuestionList(String user_id) {
+        List<choice_question>choiceQuestionList=examMapper.getChoiceQuestionList(user_id);
+        return choiceQuestionList;
+    }
+
+    @Override
+    public List<judge_question> getJudgeQuestionList(String user_id) {
+        return examMapper.getJudgeQuestionList(user_id);
+    }
+
+    @Override
+    public List<completion_question> getCompletionQuestionList(String user_id) {
+        return examMapper.getCompletionQuestionList(user_id);
     }
 }
