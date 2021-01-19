@@ -208,4 +208,15 @@ public interface ExamService {
      * 获取当前用户创建的填空题列表
      */
     List<completion_question>getCompletionQuestionList(String user_id);
+
+
+
+    /**
+     *
+     * @param question_id
+     * @param question_type
+     * @return
+     * 删除题库的试题
+     */
+    int deleteMySubjectQuestion(String question_id,int question_type);
 }

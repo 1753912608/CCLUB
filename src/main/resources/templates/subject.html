@@ -65,7 +65,6 @@
             <a href="javascript:void(0);" @click="home"><img src="../img/back.png" alt="" width="13px" height="13px"></a>
         </div>
         <div style="float:left;margin-left:10px;font-size:18px;margin-top:-3px;">题库</div>
-        <div style="float:left;margin-left:1250px;"><el-button type="primary" size="small">添加试题</el-button></div>
     </div>
     <div class="el-header">
         <div style="margin-top:20px;">
@@ -96,20 +95,21 @@
                 <el-input v-model="subject_remarks" placeholder="备注" style="width:200px;" size="small"></el-input>
             </span>
             <span style="margin-left:10px;">
-                 <el-button type="info" style="width:60px;" size="small">搜索</el-button>
+                 <el-button type="info" style="width:60px;" size="small" @click="searchQuestion">搜索</el-button>
             </span>
-            <span style="margin-left:190px;">1个结果</span>
+            <span style="margin-left:190px;">{{tempChoiceList.length+tempJudgeList.length+tempCompletionList.length}}个结果</span>
         </div>
     </div>
     <div class="el-subject-content">
-        <div style="margin-left:15px;margin-top:15px;margin-bottom:10px;" v-for="(item,index) in choiceQuestionList">
+        <!--选择题-->
+        <div style="margin-left:15px;margin-top:15px;margin-bottom:10px;" v-for="(item,index) in tempChoiceList">
             <div>
-                <span v-if="item.choice_question_answer.length===1">[单选题]</span>
-                <span v-if="item.choice_question_answer.length>1">[多选题]</span>
-                <span style="margin-left:30px;">{{item.choice_question_name}}</span>
-                <span style="color:#8b8f94;margin-left:1060px;">试题编号:{{index+1}}</span>
+                <div v-if="item.choice_question_answer.length===1" style="float:left;">[单选题]</div>
+                <div v-if="item.choice_question_answer.length>1" style="float:left;">[多选题]</div>
+                <div style="margin-left:30px;float:left;width:1200px;">{{item.choice_question_name}}</div>
+                <div style="color:#8b8f94;float:left;">试题编号:{{index+1}}</div>
             </div>
-            <div>
+            <div style="padding-top:10px;">
                 <div style="margin-left:80px;margin-top:15px;" v-if="item.choice_question_option_A!=null">
                     <el-radio disabled  :label="item.choice_question_option_A">{{item.choice_question_option_A}}</el-radio>
                 </div>
@@ -138,34 +138,29 @@
             </div>
             <div class="el-subject-remarks">
                 <div style="padding-top:10px;">
-                    <span style="margin-left:800px;">备注:</span>
-                    <span style="margin-left:5px;width:100px;">{{item.choice_question_remarks}}</span>
-                    <span style="margin-left:90px;">默认分值{{item.choice_question_score}}分</span>
-                    <span style="margin-left:10px;">｜</span>
-                    <span style="margin-left:10px;">难度</span>
-                    <span>{{item.choice_question_difficult}}</span>
-                    <span style="margin-left:20px;">
-                        <a href="javascript:void(0);" style="text-decoration:none;">
-                            <i class="el-icon-edit-outline" style="font-size:13px;"></i>
-                            编辑
-                        </a>
-                    </span>
-                    <span style="margin-left:10px;">
-                        <a href="javascript:void(0);" style="text-decoration:none;color:red;">
+                    <div style="margin-left:800px;float:left;">备注:</div>
+                    <div style="margin-left:5px;width:80px;float:left;">{{item.choice_question_remarks}}</div>
+                    <div style="margin-left:150px;float:left;">默认分值{{item.choice_question_score}}分</div>
+                    <div style="margin-left:10px;float:left;">｜</div>
+                    <div style="margin-left:10px;float:left;">难度</div>
+                    <div style="float:left;">{{item.choice_question_difficult}}</div>
+                    <div style="margin-left:10px;float:left;">
+                        <a href="javascript:void(0);" style="text-decoration:none;color:red;" @click="deleteQuestionOpen(item.choice_question_id,1)">
                             <i class="el-icon-delete" style="font-size:13px;"></i>
                             删除
                         </a>
-                    </span>
+                    </div>
                 </div>
             </div>
         </div>
-        <div style="margin-left:15px;margin-top:15px;margin-bottom:10px;" v-for="(item,index) in judgeQuestionList">
+        <!--判断题-->
+        <div style="margin-left:15px;margin-top:15px;margin-bottom:10px;" v-for="(item,index) in tempJudgeList">
             <div>
-                <span>[判断题]</span>
-                <span style="margin-left:30px;">{{item.judge_question_name}}</span>
-                <span style="color:#8b8f94;margin-left:1060px;">试题编号:{{index+1+choiceQuestionList.length}}</span>
+                <div style="float:left;">[判断题]</div>
+                <div style="margin-left:30px;float:left;width:1200px;">{{item.judge_question_name}}</div>
+                <div style="color:#8b8f94;float:left;">试题编号:{{index+1+tempChoiceList.length}}</div>
             </div>
-            <div>
+            <div style="padding-top:10px;">
                 <div style="margin-left:80px;margin-top:15px;">
                     <el-radio disabled  :label="item.judge_question_option_false">{{item.judge_question_option_false}}</el-radio>
                 </div>
@@ -179,24 +174,46 @@
             </div>
             <div class="el-subject-remarks">
                 <div style="padding-top:10px;">
-                    <span style="margin-left:800px;">备注:</span>
-                    <span style="margin-left:5px;width:100px;">{{item.judge_question_remarks}}</span>
-                    <span style="margin-left:90px;">默认分值{{item.judge_question_score}}分</span>
-                    <span style="margin-left:10px;">｜</span>
-                    <span style="margin-left:10px;">难度</span>
-                    <span>{{item.judge_question_difficult}}</span>
-                    <span style="margin-left:20px;">
-                        <a href="javascript:void(0);" style="text-decoration:none;">
-                            <i class="el-icon-edit-outline" style="font-size:13px;"></i>
-                            编辑
-                        </a>
-                    </span>
-                    <span style="margin-left:10px;">
-                        <a href="javascript:void(0);" style="text-decoration:none;color:red;">
+                    <div style="margin-left:800px;float:left;">备注:</div>
+                    <div style="margin-left:5px;width:80px;float:left;">{{item.judge_question_remarks}}</div>
+                    <div style="margin-left:150px;float:left;">默认分值{{item.judge_question_score}}分</div>
+                    <div style="margin-left:10px;float:left;">｜</div>
+                    <div style="margin-left:10px;float:left;">难度</div>
+                    <div style="float:left;">{{item.judge_question_difficult}}</div>
+                    <div style="margin-left:10px;float:left;">
+                        <a href="javascript:void(0);" style="text-decoration:none;color:red;" @click="deleteQuestionOpen(item.judge_question_id,2)">
                             <i class="el-icon-delete" style="font-size:13px;"></i>
                             删除
                         </a>
-                    </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--填空题-->
+        <div style="margin-left:15px;margin-top:15px;margin-bottom:10px;" v-for="(item,index) in tempCompletionList">
+            <div>
+                <div style="float:left;">[填空题]</div>
+                <div style="margin-left:30px;float:left;width:1200px;">{{item.completion_question_name}}</div>
+                <div style="color:#8b8f94;float:left;">试题编号:{{index+1+tempChoiceList.length+tempJudgeList.length}}</div>
+            </div>
+            <div style="padding-top:30px;">
+                <span style="color:red;">[答案]</span>
+                <span style="margin-left:40px;font-weight:700;">{{item.completion_question_answer}}</span>
+            </div>
+            <div class="el-subject-remarks">
+                <div style="padding-top:10px;">
+                    <div style="margin-left:800px;float:left;">备注:</div>
+                    <div style="margin-left:5px;width:80px;float:left;">{{item.completion_question_remarks}}</div>
+                    <div style="margin-left:150px;float:left;">默认分值{{item.completion_question_score}}分</div>
+                    <div style="margin-left:10px;float:left;">｜</div>
+                    <div style="margin-left:10px;float:left;">难度</div>
+                    <div style="float:left;">{{item.completion_question_difficult}}</div>
+                    <div style="margin-left:10px;float:left;">
+                        <a href="javascript:void(0);" style="text-decoration:none;color:red;" @click="deleteQuestionOpen(item.completion_question_id,3)">
+                            <i class="el-icon-delete" style="font-size:13px;"></i>
+                            删除
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -221,7 +238,10 @@
             subject_remarks: '',
             choiceQuestionList:[],
             judgeQuestionList:[],
-            completionQuestionList:[]
+            completionQuestionList:[],
+            tempChoiceList:[],
+            tempJudgeList:[],
+            tempCompletionList:[]
         },
         created() {
             this.getChoiceQuestionList();
@@ -241,16 +261,109 @@
             async getChoiceQuestionList(){
                 let result=await axios.get('/getChoiceQuestionList');
                 this.choiceQuestionList=result.data;
-                console.log(this.choiceQuestionList);
+                this.tempChoiceList=result.data;
             },
             async getJudgeQuestionList(){
                 let result=await axios.get('/getJudgeQuestionList');
                 this.judgeQuestionList=result.data;
-                console.log(this.judgeQuestionList);
+                this.tempJudgeList=result.data;
             },
             async getCompletionQuestionList(){
                 let result=await axios.get('/getCompletionQuestionList');
                 this.completionQuestionList=result.data;
+                this.tempCompletionList=result.data;
+            },
+            deleteQuestionOpen(question_id,question_type){
+                this.$confirm('此操作将永久删除题库的试题, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.deleteMySubjectQuestion(question_id,question_type);
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            async deleteMySubjectQuestion(question_id,question_type){
+                let result=await axios.get('/deleteMySubjectQuestion?question_id='+question_id+"&question_type="+question_type);
+                if(result.data===1){
+                    this.$message({
+                        type: 'success',
+                        message: '删除题库试题成功!'
+                    });
+                }else{
+                    this.$message({
+                        type: 'info',
+                        message: '删除题库试题失败,服务器繁忙,请稍后'
+                    });
+                }
+                this.getChoiceQuestionList();
+                this.getJudgeQuestionList();
+                this.getCompletionQuestionList();
+            },
+            searchQuestion(){
+                this.tempChoiceList=[];
+                this.tempJudgeList=[];
+                this.tempCompletionList=[];
+                if(this.difficulty_value==='全部')this.difficulty_value='';
+                if(this.options_value==='单选题'){
+                    for(let i=0;i<this.choiceQuestionList.length;i++){
+                        if((this.choiceQuestionList[i].choice_question_difficult+'').indexOf(this.difficulty_value)!=-1&&this.choiceQuestionList[i].choice_question_remarks.indexOf(this.subject_remarks)!=-1&&this.choiceQuestionList[i].choice_question_name.indexOf(this.subject_key)!=-1){
+                            if(this.choiceQuestionList[i].choice_question_answer.split(" ").length===1){
+                                this.tempChoiceList.push(this.choiceQuestionList[i]);
+                            }
+                        }
+                    }
+                }
+                else if(this.options_value==='多选题'){
+                    for(let i=0;i<this.choiceQuestionList.length;i++){
+                        if((this.choiceQuestionList[i].choice_question_difficult+'').indexOf(this.difficulty_value)!=-1&&this.choiceQuestionList[i].choice_question_remarks.indexOf(this.subject_remarks)!=-1&&this.choiceQuestionList[i].choice_question_name.indexOf(this.subject_key)!=-1){
+                            if(this.choiceQuestionList[i].choice_question_answer.split(" ").length>1){
+                                this.tempChoiceList.push(this.choiceQuestionList[i]);
+                            }
+                        }
+                    }
+                }else if(this.options_value==='判断题'){
+                    for(let i=0;i<this.judgeQuestionList.length;i++){
+                        if((this.judgeQuestionList[i].judge_question_difficult+'').indexOf(this.difficulty_value)!=-1&&this.judgeQuestionList[i].judge_question_remarks.indexOf(this.subject_remarks)!=-1&&this.judgeQuestionList[i].judge_question_name.indexOf(this.subject_key)!=-1){
+                            this.tempJudgeList.push(this.judgeQuestionList[i]);
+                        }
+                    }
+                }else if(this.options_value==='填空题'){
+                    for(let i=0;i<this.completionQuestionList.length;i++){
+                        if((this.completionQuestionList[i].completion_question_difficult+'').indexOf(this.difficulty_value)!=-1&&this.completionQuestionList[i].completion_question_remarks.indexOf(this.subject_remarks)!=-1&&this.completionQuestionList[i].completion_question_name.indexOf(this.subject_key)!=-1){
+                            this.tempCompletionList.push(this.completionQuestionList[i]);
+                        }
+                    }
+                }else if(this.options_value===''||this.options_value==='全部'){
+                    for(let i=0;i<this.choiceQuestionList.length;i++){
+                        if((this.choiceQuestionList[i].choice_question_difficult+'').indexOf(this.difficulty_value)!=-1&&this.choiceQuestionList[i].choice_question_remarks.indexOf(this.subject_remarks)!=-1&&this.choiceQuestionList[i].choice_question_name.indexOf(this.subject_key)!=-1){
+                            if(this.choiceQuestionList[i].choice_question_answer.split(" ").length===1){
+                                this.tempChoiceList.push(this.choiceQuestionList[i]);
+                            }
+                        }
+                    }
+                    for(let i=0;i<this.choiceQuestionList.length;i++){
+                        if((this.choiceQuestionList[i].choice_question_difficult+'').indexOf(this.difficulty_value)!=-1&&this.choiceQuestionList[i].choice_question_remarks.indexOf(this.subject_remarks)!=-1&&this.choiceQuestionList[i].choice_question_name.indexOf(this.subject_key)!=-1){
+                            if(this.choiceQuestionList[i].choice_question_answer.split(" ").length>1){
+                                this.tempChoiceList.push(this.choiceQuestionList[i]);
+                            }
+                        }
+                    }
+                    for(let i=0;i<this.judgeQuestionList.length;i++){
+                        if((this.judgeQuestionList[i].judge_question_difficult+'').indexOf(this.difficulty_value)!=-1&&this.judgeQuestionList[i].judge_question_remarks.indexOf(this.subject_remarks)!=-1&&this.judgeQuestionList[i].judge_question_name.indexOf(this.subject_key)!=-1){
+                            this.tempJudgeList.push(this.judgeQuestionList[i]);
+                        }
+                    }
+                    for(let i=0;i<this.completionQuestionList.length;i++){
+                        if((this.completionQuestionList[i].completion_question_difficult+'').indexOf(this.difficulty_value)!=-1&&this.completionQuestionList[i].completion_question_remarks.indexOf(this.subject_remarks)!=-1&&this.completionQuestionList[i].completion_question_name.indexOf(this.subject_key)!=-1){
+                            this.tempCompletionList.push(this.completionQuestionList[i]);
+                        }
+                    }
+                }
             }
         }
     })

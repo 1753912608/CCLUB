@@ -525,4 +525,23 @@ public class ExamController {
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
         return examService.getCompletionQuestionList(user_id);
     }
+
+
+
+
+    /**
+     *
+     * @param question_id
+     * @param question_type
+     * @return
+     * 删除题库的试题
+     */
+    @ResponseBody
+    @RequestMapping("/deleteMySubjectQuestion")
+    public int deleteMySubjectQuestion( String question_id,
+                                       int question_type)
+    {
+        System.out.println(question_id+" "+question_type);
+        return examService.deleteMySubjectQuestion(question_id,question_type);
+    }
 }

@@ -333,7 +333,7 @@
                     for(let i=0;i<this.choiceQuestion.answerList;i++){
                         answer+=this.choiceQuestion.questionList[this.choiceQuestion.answerList[i]-1];
                         if(i<this.choiceQuestion.answerList.length-1){
-                            answer+=',';
+                            answer+=' ';
                         }
                     }
                     params.append("choice_question_answer",answer);

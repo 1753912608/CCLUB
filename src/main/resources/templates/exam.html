@@ -70,7 +70,7 @@
             <el-button type="primary" style="width:60px;" size="small" @click="subject">题库</el-button>
         </div>
         <div style="float:left;margin-left:25px;">
-            <el-button type="primary" style="width:120px;" size="small" @click="addSubject('all')">新建在线笔试</el-button>
+            <el-button type="primary" style="width:120px;" size="small" @click="createExam('all')">新建在线笔试</el-button>
         </div>
     </div>
     <div class="el-header">
@@ -236,7 +236,7 @@
             subject(){
                 window.location.href="/test_subject/all";
             },
-            addSubject(exam_id){
+            createExam(exam_id){
                 window.location.href="/test_createWrittenExam/"+exam_id;
             },
             async getMyCreatedExam(){

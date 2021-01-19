@@ -73,4 +73,29 @@ public class ExamProvider {
             }
         }}.toString();
     }
+
+
+
+    /**
+     *
+     * @param question_id
+     * @param question_type
+     * @return
+     * 删除题库中试题
+     */
+    public String deleteMySubjectQuestion(String question_id,int question_type)
+    {
+        return new SQL(){{
+            if(question_type==1){
+                DELETE_FROM("choice_question");
+                WHERE("choice_question_id=#{question_id}");
+            }else if(question_type==2){
+                DELETE_FROM("judge_question");
+                WHERE("judge_question_id=#{question_id}");
+            }else if(question_type==3){
+                DELETE_FROM("completion_question");
+                WHERE("completion_question_id=#{question_id}");
+            }
+        }}.toString();
+    }
 }

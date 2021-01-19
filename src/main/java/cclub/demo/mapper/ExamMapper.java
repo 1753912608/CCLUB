@@ -259,4 +259,26 @@ public interface ExamMapper {
      */
     @Select("select * from completion_question where completion_question_created_user_id=#{user_id}")
     List<completion_question>getCompletionQuestionList(String user_id);
+
+
+
+    /**
+     *
+     * @param question_id
+     * @param question_type
+     * 删除题库试题
+     */
+    @DeleteProvider(type = ExamProvider.class,method = "deleteMySubjectQuestion")
+    void deleteMySubjectQuestion(String question_id,int question_type);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * 删除笔试时,删除所有绑定该笔试的试题id
+     */
+    @Delete("delete from exam_question where exam_id=#{exam_id}")
+    void deleteExamQuestion(String exam_id);
+
 }

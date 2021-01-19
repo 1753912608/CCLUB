@@ -53,14 +53,18 @@ public class ExamServiceImpl implements ExamService {
         return examQuestionList;
     }
 
+    @Transactional
     @Override
     public int deleteExamById(String exam_id) {
         try{
             examMapper.deleteExamById(exam_id);
+            examMapper.deleteExamQuestion(exam_id);
+            return 1;
         }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
         }
-        return 1;
+        return 0;
     }
 
     @Override
@@ -206,5 +210,16 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public List<completion_question> getCompletionQuestionList(String user_id) {
         return examMapper.getCompletionQuestionList(user_id);
+    }
+
+    @Override
+    public int deleteMySubjectQuestion(String question_id, int question_type) {
+        try{
+            examMapper.deleteMySubjectQuestion(question_id,question_type);
+            return 1;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
