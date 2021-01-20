@@ -222,4 +222,19 @@ public class ExamServiceImpl implements ExamService {
         }
         return 0;
     }
+
+    @Override
+    public List<choice_question> getChoiceQuestionListByExamId(String exam_id) {
+        return examMapper.getChoiceQuestionListByExamId(exam_id);
+    }
+
+    @Override
+    public List<judge_question> getJudgeQuestionListByExamId(String exam_id) {
+        return examMapper.getJudgeQuestionListByExamId(exam_id);
+    }
+
+    @Override
+    public List<completion_question> getCompletionQuestionListByExamId(String exam_id) {
+        return examMapper.getCompletionQuestionListByExamId(exam_id);
+    }
 }

@@ -219,4 +219,31 @@ public interface ExamService {
      * 删除题库的试题
      */
     int deleteMySubjectQuestion(String question_id,int question_type);
+
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 获取当前笔试的选择题列表
+     */
+    List<choice_question>getChoiceQuestionListByExamId(String exam_id);
+
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 获取当前笔试的判断题列表
+     */
+    List<judge_question>getJudgeQuestionListByExamId(String exam_id);
+
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 获取当前笔试的填空题列表
+     */
+    List<completion_question>getCompletionQuestionListByExamId(String exam_id);
 }

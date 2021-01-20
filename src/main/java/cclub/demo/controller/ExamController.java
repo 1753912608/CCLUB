@@ -485,7 +485,7 @@ public class ExamController {
      */
     @ResponseBody
     @RequestMapping("/getChoiceQuestionList")
-    public List<choice_question>getChoiceQuestionList(HttpServletRequest request){
+    public List<choice_question>getChoiceQuestionListByUserId(HttpServletRequest request){
         HttpSession session=request.getSession();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
         return examService.getChoiceQuestionList(user_id);
@@ -501,7 +501,7 @@ public class ExamController {
      */
     @ResponseBody
     @RequestMapping("/getJudgeQuestionList")
-    public List<judge_question>getJudgeQuestionList(HttpServletRequest request)
+    public List<judge_question>getJudgeQuestionListByUserId(HttpServletRequest request)
     {
         HttpSession session=request.getSession();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
@@ -519,7 +519,7 @@ public class ExamController {
      */
     @ResponseBody
     @RequestMapping("/getCompletionQuestionList")
-    public List<completion_question>getCompletionQuestionList(HttpServletRequest request)
+    public List<completion_question>getCompletionQuestionListByUserId(HttpServletRequest request)
     {
         HttpSession session=request.getSession();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
@@ -543,5 +543,46 @@ public class ExamController {
     {
         System.out.println(question_id+" "+question_type);
         return examService.deleteMySubjectQuestion(question_id,question_type);
+    }
+
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 获取当前笔试的选择题列表
+     */
+    @ResponseBody
+    @RequestMapping("/getChoiceQuestionListByExamId")
+    public List<choice_question>getChoiceQuestionListByExamId(String exam_id){
+        return examService.getChoiceQuestionListByExamId(exam_id);
+    }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 获取当前笔试的判断题列表
+     */
+    @ResponseBody
+    @RequestMapping("/getJudgeQuestionByExamId")
+    public List<judge_question>getJudgeQuestionByExamId(String exam_id){
+        return examService.getJudgeQuestionListByExamId(exam_id);
+    }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 获取当前笔试的填空题列表
+     */
+    @ResponseBody
+    @RequestMapping("/getCompletionQuestionListByExamId")
+    public List<completion_question>getCompletionQuestionListByExamId(String exam_id){
+        return examService.getCompletionQuestionListByExamId(exam_id);
     }
 }

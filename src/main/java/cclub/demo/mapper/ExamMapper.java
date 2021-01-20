@@ -281,4 +281,33 @@ public interface ExamMapper {
     @Delete("delete from exam_question where exam_id=#{exam_id}")
     void deleteExamQuestion(String exam_id);
 
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 获取当前笔试的选择题列表
+     */
+    @Select("select choice_question.* from choice_question,exam_question where choice_question.choice_question_id=exam_question.question_id and exam_question.exam_id=#{exam_id}")
+    List<choice_question>getChoiceQuestionListByExamId(String exam_id);
+
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 获取当前笔试的判断题列表
+     */
+    @Select("select judge_question.* from judge_question,exam_question where judge_question.judge_question_id=exam_question.question_id and exam_question.exam_id=#{exam_id}")
+    List<judge_question>getJudgeQuestionListByExamId(String exam_id);
+
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 获取当前笔试的填空题列表
+     */
+    @Select("select completion_question.* from completion_question,exam_question where completion_question.completion_question_id=exam_question.question_id and exam_question.exam_id=#{exam_id}")
+    List<completion_question>getCompletionQuestionListByExamId(String exam_id);
 }

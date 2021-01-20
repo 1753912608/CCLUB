@@ -94,7 +94,7 @@
                 <span style="margin-left:20px;">试卷题数: 0题</span>
             </div>
         </div>
-        <div style="width:1320px;margin-left:10px;background-color:#e9f8f5;height:215px;">
+        <div style="width:1320px;margin-left:10px;background-color:#e9f8f5;height:215px;" v-if="isEmpty">
             <div style="margin-left:640px;padding-top:40px;">
                 <img src="../img/exam_no_question.png" alt="" width="50px" height="50px">
             </div>
@@ -106,14 +106,43 @@
                     <el-button type="primary" size="small" style="width:100px;">从题库中选择</el-button>
                 </span>
                 <span style="margin-left:1px;">
-                    <el-button type="primary" size="small" style="width:100px;">+ 录入新题</el-button>
+                    <el-button type="primary" size="small" style="width:100px;" @click="addSubject">+ 录入新题</el-button>
                 </span>
             </div>
+        </div>
+        <div style="width:1320px;margin-left:10px;font-size:13px;">
+            <div style="margin-top:20px;margin-left:20px;">
+                <div style="float:left;">1.[多选题]</div>
+                <div style="float:left;margin-left:20px;width:1200px;">面向对象的语言有哪些</div>
+            </div>
+            <div style="margin-left:20px;padding-top:10px;">
+                <div style="margin-left:80px;margin-top:15px;">
+                    <div style="float:left;"><strong>A.&nbsp;</strong></div>
+                    <div style="float:left;">C语言</div>
+                </div>
+                <div style="margin-left:80px;padding-top:30px;" >
+                    <div style="float:left;"><strong>B.&nbsp;</strong></div>
+                    <div style="float:left;">c++</div>
+                </div>
+                <div style="margin-left:80px;padding-top:30px;" >
+                    <div style="float:left;"><strong>C.&nbsp;</strong></div>
+                    <div style="float:left;">java</div>
+                </div>
+                <div style="margin-left:80px;padding-top:30px;">
+                    <div style="float:left;"><strong>D.&nbsp;</strong></div>
+                    <div style="float:left;">python</div>
+                </div>
+            </div>
+            <div style="margin-left:20px;padding-top:30px;color:red;">
+                <div style="float:left;">[答案]</div>
+                <div style="float:left;margin-left:45px;"><strong>ABC</strong></div>
+            </div>
+            <div></div>
         </div>
     </div>
     <div style="margin-left:550px;margin-top:35px;">
         <span>
-            <el-button type="primary" plain style="width:150px;" size="small">上一步</el-button>
+            <el-button type="primary" plain style="width:150px;" size="small" @click="pre">上一步</el-button>
         </span>
         <span style="margin-left:30px;">
             <el-button type="primary" style="width:150px;" size="small">完成编辑,下一步</el-button>
@@ -128,14 +157,45 @@
             userInfo:{
                 user_phone: '18229583486',
                 user_company: '茗少集团'
-            }
+            },
+            exam_id: '',
+            choiceQuestion:[],
+            judgeQuestion:[],
+            completionQuestion:[],
+            isEmpty: false
         },
         created(){
-
+            this.getExamInfo();
+            this.getExamChoiceQuestion();
+            this.getExamJudgeQuestion();
+            this.getExamCompletionQuestion();
         },
         methods:{
             signOut(){
 
+            },
+            addSubject(){
+                window.location.href="/test_addSubject/"+this.exam_id;
+            },
+            getExamInfo(){
+                let url=window.location.href.split("/");
+                this.exam_id=url[url.length-1];
+            },
+            pre(){
+                window.location.href="/test_createWrittenExam/"+this.exam_id;
+            },
+            async getExamChoiceQuestion(){
+                console.log(this.exam_id);
+                let result=await axios.get('/getChoiceQuestionListByExamId?exam_id='+this.exam_id);
+                this.choiceQuestionList=result.data;
+            },
+            async getExamJudgeQuestion(){
+                let result=await axios.get('/getJudgeQuestionByExamId?exam_id='+this.exam_id);
+                this.judgeQuestionList=result.data;
+            },
+            async getExamCompletionQuestion(){
+                let result=await axios.get('/getCompletionQuestionListByExamId?exam_id='+this.exam_id);
+                this.completionQuestionList=result.data;
             }
         }
     })
