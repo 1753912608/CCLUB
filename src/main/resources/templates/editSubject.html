@@ -32,10 +32,17 @@
         }
         .el-form{
             width:1340px;
-            height:300px;
             border:1px solid #ececed;
             margin-left:50px;
             margin-top:10px;
+            margin-bottom:70px;
+        }
+        .el-form-foot{
+            margin-left:85px;
+            margin-top:35px;
+            width:1235px;
+            height:40px;
+            background-color:#eff2ff;
         }
     </style>
 </head>
@@ -110,7 +117,8 @@
                 </span>
             </div>
         </div>
-        <div style="width:1320px;margin-left:10px;font-size:13px;">
+        <!--选择题-->
+        <div style="width:1320px;margin-left:10px;font-size:13px;margin-bottom:30px;" v-for="i in 1" v-if="!isEmpty">
             <div style="margin-top:20px;margin-left:20px;">
                 <div style="float:left;">1.[多选题]</div>
                 <div style="float:left;margin-left:20px;width:1200px;">面向对象的语言有哪些</div>
@@ -137,7 +145,99 @@
                 <div style="float:left;">[答案]</div>
                 <div style="float:left;margin-left:45px;"><strong>ABC</strong></div>
             </div>
-            <div></div>
+            <div class="el-form-foot">
+                <div style="margin-left:950px;padding-top:7px;">
+                    <span>分值</span>
+                    <span style="margin-left:5px;">
+                        <el-input v-model="input" size="mini" style="width:60px;"></el-input>
+                    </span>
+                    <span style="margin-left:5px;">分</span>
+                    <span style="margin-left:15px;">
+                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;">
+                            <i class="el-icon-edit-outline"></i>
+                            编辑
+                        </a>
+                    </span>
+                    <span style="margin-left:15px;">
+                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;color:red;">
+                            <i class="el-icon-delete"></i>
+                            删除
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!--判断题-->
+        <div style="width:1320px;margin-left:10px;font-size:13px;margin-bottom:30px;" v-for="i in 1" v-if="!isEmpty">
+            <div style="margin-top:20px;margin-left:20px;">
+                <div style="float:left;">1.[判断题]</div>
+                <div style="float:left;margin-left:20px;width:1200px;">java是面向对象的语言</div>
+            </div>
+            <div style="margin-left:20px;padding-top:10px;">
+                <div style="margin-left:75px;padding-top:20px;" >
+                    <div style=""><strong>是</strong></div>
+                </div>
+                <div style="margin-left:75px;padding-top:5px;">
+                    <div style=""><strong>否</strong></div>
+                </div>
+            </div>
+            <div style="margin-left:20px;padding-top:20px;color:red;">
+                <div style="float:left;">[答案]</div>
+                <div style="float:left;margin-left:40px;"><strong>是</strong></div>
+            </div>
+            <div class="el-form-foot">
+                <div style="margin-left:950px;padding-top:7px;">
+                    <span>分值</span>
+                    <span style="margin-left:5px;">
+                        <el-input v-model="input" size="mini" style="width:60px;"></el-input>
+                    </span>
+                    <span style="margin-left:5px;">分</span>
+                    <span style="margin-left:15px;">
+                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;">
+                            <i class="el-icon-edit-outline"></i>
+                            编辑
+                        </a>
+                    </span>
+                    <span style="margin-left:15px;">
+                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;color:red;">
+                            <i class="el-icon-delete"></i>
+                            删除
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!--填空题-->
+        <div style="width:1320px;margin-left:10px;font-size:13px;margin-bottom:30px;" v-for="i in 1" v-if="!isEmpty">
+            <div style="margin-top:20px;margin-left:20px;">
+                <div style="float:left;">1.[填空题]</div>
+                <div style="float:left;margin-left:20px;width:1200px;">int的包装类是什么</div>
+            </div>
+            <div style="margin-left:20px;padding-top:40px;color:red;">
+                <div style="float:left;">[答案]</div>
+                <div style="float:left;margin-left:45px;"><strong>Integer</strong></div>
+            </div>
+            <div class="el-form-foot">
+                <div style="margin-left:950px;padding-top:7px;">
+                    <span>分值</span>
+                    <span style="margin-left:5px;">
+                        <el-input v-model="input" size="mini" style="width:60px;"></el-input>
+                    </span>
+                    <span style="margin-left:5px;">分</span>
+                    <span style="margin-left:15px;">
+                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;">
+                            <i class="el-icon-edit-outline"></i>
+                            编辑
+                        </a>
+                    </span>
+                    <span style="margin-left:15px;">
+                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;color:red;">
+                            <i class="el-icon-delete"></i>
+                            删除
+                        </a>
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
     <div style="margin-left:550px;margin-top:35px;">
@@ -162,13 +262,15 @@
             choiceQuestion:[],
             judgeQuestion:[],
             completionQuestion:[],
-            isEmpty: false
+            isEmpty: true,
+            input: '5'
         },
         created(){
             this.getExamInfo();
             this.getExamChoiceQuestion();
             this.getExamJudgeQuestion();
             this.getExamCompletionQuestion();
+            this.displayForm();
         },
         methods:{
             signOut(){
@@ -188,6 +290,7 @@
                 console.log(this.exam_id);
                 let result=await axios.get('/getChoiceQuestionListByExamId?exam_id='+this.exam_id);
                 this.choiceQuestionList=result.data;
+                console.log(this.choiceQuestionList);
             },
             async getExamJudgeQuestion(){
                 let result=await axios.get('/getJudgeQuestionByExamId?exam_id='+this.exam_id);
@@ -196,6 +299,9 @@
             async getExamCompletionQuestion(){
                 let result=await axios.get('/getCompletionQuestionListByExamId?exam_id='+this.exam_id);
                 this.completionQuestionList=result.data;
+            },
+            displayForm(){
+                this.isEmpty=(this.choiceQuestion.length===0&&this.judgeQuestion===0&&this.completionQuestion.length===0);
             }
         }
     })
