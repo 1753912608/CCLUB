@@ -237,4 +237,19 @@ public class ExamServiceImpl implements ExamService {
     public List<completion_question> getCompletionQuestionListByExamId(String exam_id) {
         return examMapper.getCompletionQuestionListByExamId(exam_id);
     }
+
+
+    @Transactional
+    @Override
+    public int deleleExamQuestion(String exam_id, String question_id) {
+        try {
+            examMapper.deleteExamOneQuestion(exam_id,question_id);
+            examMapper.updateExamQuestionNumber(exam_id,-1);
+            return 1;
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

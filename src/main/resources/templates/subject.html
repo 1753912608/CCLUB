@@ -104,8 +104,8 @@
         <!--选择题-->
         <div style="margin-left:15px;margin-top:15px;margin-bottom:10px;" v-for="(item,index) in tempChoiceList">
             <div>
-                <div v-if="item.choice_question_answer.length===1" style="float:left;">[单选题]</div>
-                <div v-if="item.choice_question_answer.length>1" style="float:left;">[多选题]</div>
+                <div v-if="item.choice_question_answer.split(' ').length===1" style="float:left;">[单选题]</div>
+                <div v-if="item.choice_question_answer.split(' ').length>1" style="float:left;">[多选题]</div>
                 <div style="margin-left:30px;float:left;width:1200px;">{{item.choice_question_name}}</div>
                 <div style="color:#8b8f94;float:left;">试题编号:{{index+1}}</div>
             </div>

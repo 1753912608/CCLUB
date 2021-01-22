@@ -246,4 +246,15 @@ public interface ExamService {
      * 获取当前笔试的填空题列表
      */
     List<completion_question>getCompletionQuestionListByExamId(String exam_id);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param question_id
+     * @return
+     * 删除笔试中的某个题目
+     */
+    int deleleExamQuestion(String exam_id,String question_id);
 }

@@ -330,7 +330,7 @@
                     params.append("choice_question_answer",this.choiceQuestion.questionList[this.choiceQuestion.answer]);
                 }else{
                     let answer='';
-                    for(let i=0;i<this.choiceQuestion.answerList;i++){
+                    for(let i=0;i<this.choiceQuestion.answerList.length;i++){
                         answer+=this.choiceQuestion.questionList[this.choiceQuestion.answerList[i]-1];
                         if(i<this.choiceQuestion.answerList.length-1){
                             answer+=' ';

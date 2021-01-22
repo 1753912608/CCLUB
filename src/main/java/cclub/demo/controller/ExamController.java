@@ -585,4 +585,21 @@ public class ExamController {
     public List<completion_question>getCompletionQuestionListByExamId(String exam_id){
         return examService.getCompletionQuestionListByExamId(exam_id);
     }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param question_id
+     * @return
+     * 删除笔试中的某个题目
+     */
+    @ResponseBody
+    @RequestMapping("/deleteExamQuestion")
+    public int deleteExamQuestion(String exam_id,
+                                  String question_id)
+    {
+        return examService.deleleExamQuestion(exam_id,question_id);
+    }
 }

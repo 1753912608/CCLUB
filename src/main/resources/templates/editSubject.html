@@ -97,11 +97,11 @@
     <div class="el-form">
         <div style="width:1320px;margin-left:10px;margin-top:10px;background-color:#f2f5ff;height:60px;">
             <div style="margin-left:40px;padding-top:20px;">
-                <span>试卷总分: 0分</span>
-                <span style="margin-left:20px;">试卷题数: 0题</span>
+                <span>试卷总分: {{allScore}}分</span>
+                <span style="margin-left:20px;">试卷题数: {{choiceQuestion.length+judgeQuestion.length+completionQuestion.length}}题</span>
             </div>
         </div>
-        <div style="width:1320px;margin-left:10px;background-color:#e9f8f5;height:215px;" v-if="isEmpty">
+        <div style="width:1320px;margin-left:10px;background-color:#e9f8f5;height:215px;margin-bottom:10px;" v-if="choiceQuestion.length+judgeQuestion.length+completionQuestion.length===0">
             <div style="margin-left:640px;padding-top:40px;">
                 <img src="../img/exam_no_question.png" alt="" width="50px" height="50px">
             </div>
@@ -118,38 +118,51 @@
             </div>
         </div>
         <!--选择题-->
-        <div style="width:1320px;margin-left:10px;font-size:13px;margin-bottom:30px;" v-for="i in 1" v-if="!isEmpty">
+        <div style="width:1320px;margin-left:10px;font-size:13px;margin-bottom:30px;" v-for="(item,index) in choiceQuestion" v-if="choiceQuestion.length>0">
             <div style="margin-top:20px;margin-left:20px;">
-                <div style="float:left;">1.[多选题]</div>
-                <div style="float:left;margin-left:20px;width:1200px;">面向对象的语言有哪些</div>
+                <div style="float:left;" v-if="item.choice_question_answer.split(' ').length>1">{{index+1}}.[多选题]</div>
+                <div style="float:left;" v-if="item.choice_question_answer.split(' ').length===1">{{index+1}}.[单选题]</div>
+                <div style="float:left;margin-left:20px;width:1200px;">{{item.choice_question_name}}</div>
             </div>
             <div style="margin-left:20px;padding-top:10px;">
                 <div style="margin-left:80px;margin-top:15px;">
                     <div style="float:left;"><strong>A.&nbsp;</strong></div>
-                    <div style="float:left;">C语言</div>
+                    <div style="float:left;">{{item.choice_question_option_A}}</div>
                 </div>
                 <div style="margin-left:80px;padding-top:30px;" >
                     <div style="float:left;"><strong>B.&nbsp;</strong></div>
-                    <div style="float:left;">c++</div>
+                    <div style="float:left;">{{item.choice_question_option_B}}</div>
                 </div>
                 <div style="margin-left:80px;padding-top:30px;" >
                     <div style="float:left;"><strong>C.&nbsp;</strong></div>
-                    <div style="float:left;">java</div>
+                    <div style="float:left;">{{item.choice_question_option_C}}</div>
                 </div>
-                <div style="margin-left:80px;padding-top:30px;">
+                <div style="margin-left:80px;padding-top:30px;" v-if="item.choice_question_option_D!=null">
                     <div style="float:left;"><strong>D.&nbsp;</strong></div>
-                    <div style="float:left;">python</div>
+                    <div style="float:left;">{{item.choice_question_option_D}}</div>
+                </div>
+                <div style="margin-left:80px;padding-top:30px;" v-if="item.choice_question_option_E!=null">
+                    <div style="float:left;"><strong>D.&nbsp;</strong></div>
+                    <div style="float:left;">{{item.choice_question_option_E}}</div>
+                </div>
+                <div style="margin-left:80px;padding-top:30px;" v-if="item.choice_question_option_F!=null">
+                    <div style="float:left;"><strong>D.&nbsp;</strong></div>
+                    <div style="float:left;">{{item.choice_question_option_F}}</div>
+                </div>
+                <div style="margin-left:80px;padding-top:30px;" v-if="item.choice_question_option_G!=null">
+                    <div style="float:left;"><strong>D.&nbsp;</strong></div>
+                    <div style="float:left;">{{item.choice_question_option_G}}</div>
                 </div>
             </div>
             <div style="margin-left:20px;padding-top:30px;color:red;">
                 <div style="float:left;">[答案]</div>
-                <div style="float:left;margin-left:45px;"><strong>ABC</strong></div>
+                <div style="float:left;margin-left:45px;"><strong>{{item.choice_question_answer}}</strong></div>
             </div>
             <div class="el-form-foot">
                 <div style="margin-left:950px;padding-top:7px;">
                     <span>分值</span>
                     <span style="margin-left:5px;">
-                        <el-input v-model="input" size="mini" style="width:60px;"></el-input>
+                        <el-input v-model="item.choice_question_score" size="mini" style="width:60px;" @change="scoreChange"></el-input>
                     </span>
                     <span style="margin-left:5px;">分</span>
                     <span style="margin-left:15px;">
@@ -159,7 +172,7 @@
                         </a>
                     </span>
                     <span style="margin-left:15px;">
-                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;color:red;">
+                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;color:red;" @click="deleteExamQuestionOpen(item.choice_question_id)">
                             <i class="el-icon-delete"></i>
                             删除
                         </a>
@@ -168,28 +181,28 @@
             </div>
         </div>
         <!--判断题-->
-        <div style="width:1320px;margin-left:10px;font-size:13px;margin-bottom:30px;" v-for="i in 1" v-if="!isEmpty">
+        <div style="width:1320px;margin-left:10px;font-size:13px;margin-bottom:30px;" v-for="(item,index) in judgeQuestion" v-if="judgeQuestion.length>0">
             <div style="margin-top:20px;margin-left:20px;">
-                <div style="float:left;">1.[判断题]</div>
-                <div style="float:left;margin-left:20px;width:1200px;">java是面向对象的语言</div>
+                <div style="float:left;">{{index+1+choiceQuestion.length}}.[判断题]</div>
+                <div style="float:left;margin-left:20px;width:1200px;">{{item.judge_question_name}}</div>
             </div>
             <div style="margin-left:20px;padding-top:10px;">
                 <div style="margin-left:75px;padding-top:20px;" >
-                    <div style=""><strong>是</strong></div>
+                    <div style=""><strong>{{item.judge_question_option_true}}</strong></div>
                 </div>
                 <div style="margin-left:75px;padding-top:5px;">
-                    <div style=""><strong>否</strong></div>
+                    <div style=""><strong>{{item.judge_question_option_false}}</strong></div>
                 </div>
             </div>
             <div style="margin-left:20px;padding-top:20px;color:red;">
                 <div style="float:left;">[答案]</div>
-                <div style="float:left;margin-left:40px;"><strong>是</strong></div>
+                <div style="float:left;margin-left:40px;"><strong>{{item.judge_question_answer}}</strong></div>
             </div>
             <div class="el-form-foot">
                 <div style="margin-left:950px;padding-top:7px;">
                     <span>分值</span>
                     <span style="margin-left:5px;">
-                        <el-input v-model="input" size="mini" style="width:60px;"></el-input>
+                        <el-input v-model="item.judge_question_score" size="mini" style="width:60px;"></el-input>
                     </span>
                     <span style="margin-left:5px;">分</span>
                     <span style="margin-left:15px;">
@@ -199,7 +212,7 @@
                         </a>
                     </span>
                     <span style="margin-left:15px;">
-                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;color:red;">
+                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;color:red;" @click="deleteExamQuestionOpen(item.judge_question_id)">
                             <i class="el-icon-delete"></i>
                             删除
                         </a>
@@ -208,20 +221,20 @@
             </div>
         </div>
         <!--填空题-->
-        <div style="width:1320px;margin-left:10px;font-size:13px;margin-bottom:30px;" v-for="i in 1" v-if="!isEmpty">
+        <div style="width:1320px;margin-left:10px;font-size:13px;margin-bottom:30px;" v-for="(item,index) in completionQuestion" v-if="completionQuestion.length>0">
             <div style="margin-top:20px;margin-left:20px;">
-                <div style="float:left;">1.[填空题]</div>
-                <div style="float:left;margin-left:20px;width:1200px;">int的包装类是什么</div>
+                <div style="float:left;">{{index+1+choiceQuestion.length+completionQuestion.length}}.[填空题]</div>
+                <div style="float:left;margin-left:20px;width:1200px;">{{item.completion_question_name}}</div>
             </div>
             <div style="margin-left:20px;padding-top:40px;color:red;">
                 <div style="float:left;">[答案]</div>
-                <div style="float:left;margin-left:45px;"><strong>Integer</strong></div>
+                <div style="float:left;margin-left:45px;"><strong>{{item.completion_question_answer}}</strong></div>
             </div>
             <div class="el-form-foot">
                 <div style="margin-left:950px;padding-top:7px;">
                     <span>分值</span>
                     <span style="margin-left:5px;">
-                        <el-input v-model="input" size="mini" style="width:60px;"></el-input>
+                        <el-input v-model="item.completion_question_score" size="mini" style="width:60px;"></el-input>
                     </span>
                     <span style="margin-left:5px;">分</span>
                     <span style="margin-left:15px;">
@@ -231,12 +244,23 @@
                         </a>
                     </span>
                     <span style="margin-left:15px;">
-                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;color:red;">
+                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;color:red;" @click="deleteExamQuestionOpen(item.completion_question_id)">
                             <i class="el-icon-delete"></i>
                             删除
                         </a>
                     </span>
                 </div>
+            </div>
+        </div>
+        <div style="margin-bottom:15px;margin-top:-16px;" v-if="choiceQuestion.length+judgeQuestion.length+completionQuestion.length>0">
+            <div style="width:1340px;background-color:#ececed;height:1px;"></div>
+            <div style="margin-top:15px;margin-left:20px;">
+                <span>
+                    <el-button type="primary" size="small" style="width:100px;">从题库选择</el-button>
+                </span>
+                <span style="margin-left:3px;">
+                    <el-button type="primary" size="small" style="width:100px;" @click="addSubject">+录入新题</el-button>
+                </span>
             </div>
         </div>
     </div>
@@ -262,15 +286,15 @@
             choiceQuestion:[],
             judgeQuestion:[],
             completionQuestion:[],
-            isEmpty: true,
-            input: '5'
+            input: '5',
+            allScore: 0
         },
         created(){
             this.getExamInfo();
             this.getExamChoiceQuestion();
             this.getExamJudgeQuestion();
             this.getExamCompletionQuestion();
-            this.displayForm();
+            this.scoreChange();
         },
         methods:{
             signOut(){
@@ -287,21 +311,68 @@
                 window.location.href="/test_createWrittenExam/"+this.exam_id;
             },
             async getExamChoiceQuestion(){
-                console.log(this.exam_id);
                 let result=await axios.get('/getChoiceQuestionListByExamId?exam_id='+this.exam_id);
-                this.choiceQuestionList=result.data;
-                console.log(this.choiceQuestionList);
+                this.choiceQuestion=result.data;
+                for(let i=0;i<this.choiceQuestion.length;i++){
+                    this.allScore+=this.choiceQuestion[i].choice_question_score
+                }
             },
             async getExamJudgeQuestion(){
                 let result=await axios.get('/getJudgeQuestionByExamId?exam_id='+this.exam_id);
-                this.judgeQuestionList=result.data;
+                this.judgeQuestion=result.data;
+                for(let i=0;i<this.judgeQuestion.length;i++){
+                    this.allScore+=this.judgeQuestion[i].judge_question_score
+                }
             },
             async getExamCompletionQuestion(){
                 let result=await axios.get('/getCompletionQuestionListByExamId?exam_id='+this.exam_id);
-                this.completionQuestionList=result.data;
+                this.completionQuestion=result.data;
+                for(let i=0;i<this.completionQuestion.length;i++){
+                    this.allScore+=this.completionQuestion[i].completion_question_score
+                }
             },
-            displayForm(){
-                this.isEmpty=(this.choiceQuestion.length===0&&this.judgeQuestion===0&&this.completionQuestion.length===0);
+            deleteExamQuestionOpen(question_id){
+                this.$confirm('此操作将删除该试题, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.deleteExamQuestion(question_id);
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            async deleteExamQuestion(question_id){
+                let result=await axios.get('/deleteExamQuestion?exam_id='+this.exam_id+"&question_id="+question_id);
+                if(result.data===1){
+                    this.$message({
+                        type: 'success',
+                        message: '删除试题成功'
+                    });
+                }else{
+                    this.$message({
+                        type: 'info',
+                        message: '删除试题失败,服务器繁忙,请稍后'
+                    });
+                }
+                this.getExamChoiceQuestion();
+                this.getExamJudgeQuestion();
+                this.getExamCompletionQuestion();
+            },
+            scoreChange(){
+                this.allScore=0;
+                for(let i=0;i<this.choiceQuestion.length;i++){
+                    this.allScore+=parseInt(this.choiceQuestion[i].choice_question_score);
+                }
+                for(let i=0;i<this.judgeQuestion.length;i++){
+                    this.allScore+=this.judgeQuestion[i].judge_question_score;
+                }
+                for(let i=0;i<this.completionQuestion.length;i++){
+                    this.allScore+=this.completionQuestion[i].completion_question_score
+                }
             }
         }
     })

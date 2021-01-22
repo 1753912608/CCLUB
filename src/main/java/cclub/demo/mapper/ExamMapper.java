@@ -310,4 +310,15 @@ public interface ExamMapper {
      */
     @Select("select completion_question.* from completion_question,exam_question where completion_question.completion_question_id=exam_question.question_id and exam_question.exam_id=#{exam_id}")
     List<completion_question>getCompletionQuestionListByExamId(String exam_id);
+
+
+    /**
+     *
+     * @param exam_id
+     * @param question_id
+     * @return
+     * 删除笔试中的某个题目
+     */
+    @Delete("delete from exam_question where exam_id=#{exam_id} and question_id=#{question_id}")
+    int deleteExamOneQuestion(String exam_id,String question_id);
 }
