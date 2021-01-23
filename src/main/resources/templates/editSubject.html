@@ -166,7 +166,7 @@
                     </span>
                     <span style="margin-left:5px;">分</span>
                     <span style="margin-left:15px;">
-                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;">
+                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;" @click="editQuestion(item.choice_question_id,1)">
                             <i class="el-icon-edit-outline"></i>
                             编辑
                         </a>
@@ -206,7 +206,7 @@
                     </span>
                     <span style="margin-left:5px;">分</span>
                     <span style="margin-left:15px;">
-                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;">
+                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;" @click="editQuestion(item.judge_question_id,2)">
                             <i class="el-icon-edit-outline"></i>
                             编辑
                         </a>
@@ -238,7 +238,7 @@
                     </span>
                     <span style="margin-left:5px;">分</span>
                     <span style="margin-left:15px;">
-                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;">
+                        <a href="javascript:void(0);" style="text-decoration:none;font-size:13px;" @click="editQuestion(item.completion_question_id,3)">
                             <i class="el-icon-edit-outline"></i>
                             编辑
                         </a>
@@ -373,6 +373,9 @@
                 for(let i=0;i<this.completionQuestion.length;i++){
                     this.allScore+=this.completionQuestion[i].completion_question_score
                 }
+            },
+            editQuestion(question_id,type){
+                window.location.href="/test_addSubject/"+this.exam_id+"#"+question_id+"#"+type;
             }
         }
     })

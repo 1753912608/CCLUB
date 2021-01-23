@@ -387,6 +387,7 @@ public class ExamController {
 
     /**
      *
+     * @param question_id
      * @param exam_id
      * @param choice_question_name
      * @param question_options
@@ -400,7 +401,8 @@ public class ExamController {
      */
     @ResponseBody
     @RequestMapping("/addChoiceQuestion")
-    public int addChoiceQuestion(String exam_id,
+    public int addChoiceQuestion(String question_id,
+                                 String exam_id,
                                  String choice_question_name,
                                  String[] question_options,
                                  String choice_question_answer,
@@ -411,13 +413,14 @@ public class ExamController {
     {
         HttpSession session=request.getSession();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
-        return examService.addChoiceQuestion(exam_id,Rand.getInterviewCode(),choice_question_name,question_options,choice_question_answer,choice_question_difficult,choice_question_score,choice_question_remarks,user_id);
+        return examService.updateChoiceQuestion(exam_id,question_id,choice_question_name,question_options,choice_question_answer,choice_question_difficult,choice_question_score,choice_question_remarks,user_id);
     }
 
 
 
     /**
      *
+     * @param question_id
      * @param exam_id
      * @param judge_question_name
      * @param judge_question_option_false
@@ -431,7 +434,8 @@ public class ExamController {
      */
     @ResponseBody
     @RequestMapping("/addJudgeQuestion")
-    public int addJudgeQuestion(String exam_id,
+    public int addJudgeQuestion(String question_id,
+                                String exam_id,
                                 String judge_question_name,
                                 String judge_question_option_false,
                                 String judge_question_option_true,
@@ -443,13 +447,14 @@ public class ExamController {
     {
         HttpSession session=request.getSession();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
-        return examService.addJudgeQuestion(exam_id,new judge_question(Rand.getInterviewCode(),judge_question_name,judge_question_option_false,judge_question_option_true,user_id,judge_question_answer,judge_question_difficult,judge_question_score,judge_question_remarks));
+        return examService.updateJudgeQuestion(exam_id,new judge_question(question_id,judge_question_name,judge_question_option_false,judge_question_option_true,user_id,judge_question_answer,judge_question_difficult,judge_question_score,judge_question_remarks));
     }
 
 
 
     /**
      *
+     * @param question_id
      * @param exam_id
      * @param completion_question_name
      * @param completion_question_answer
@@ -462,7 +467,8 @@ public class ExamController {
      */
     @ResponseBody
     @RequestMapping("/addCompletionQuestion")
-    public int addCompletionQuestion(String exam_id,
+    public int addCompletionQuestion(String question_id,
+                                     String exam_id,
                                      String completion_question_name,
                                      String completion_question_answer,
                                      int completion_question_difficult,
@@ -472,7 +478,7 @@ public class ExamController {
     {
         HttpSession session=request.getSession();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
-        return examService.addCompletionQuestion(exam_id,new completion_question(Rand.getInterviewCode(),completion_question_name,completion_question_answer,user_id,completion_question_difficult,completion_question_score,completion_question_remarks));
+        return examService.updateCompletionQuestion(exam_id,new completion_question(question_id,completion_question_name,completion_question_answer,user_id,completion_question_difficult,completion_question_score,completion_question_remarks));
     }
 
 
@@ -601,5 +607,28 @@ public class ExamController {
                                   String question_id)
     {
         return examService.deleleExamQuestion(exam_id,question_id);
+    }
+
+
+
+    /**
+     *
+     * @param question_id
+     * @param typeQuestion
+     * @return
+     * 获取单个试题信息
+     */
+    @ResponseBody
+    @RequestMapping("/getOneQuestion")
+    public Object getOneQuestion(String question_id,
+                                 int typeQuestion){
+       if(typeQuestion==1){
+           return examService.getOneChoiceQuestion(question_id);
+       }else if(typeQuestion==2){
+           return examService.getOneJudgeQuestion(question_id);
+       }else if(typeQuestion==3){
+           return examService.getOneCompletionQuestion(question_id);
+       }
+       return null;
     }
 }

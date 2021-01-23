@@ -80,4 +80,17 @@ public class completion_question {
     public String getCompletion_question_remarks() {
         return completion_question_remarks;
     }
+
+    @Override
+    public String toString() {
+        return "completion_question{" +
+                "completion_question_id='" + completion_question_id + '\'' +
+                ", completion_question_name='" + completion_question_name + '\'' +
+                ", completion_question_answer='" + completion_question_answer + '\'' +
+                ", completion_question_created_user_id='" + completion_question_created_user_id + '\'' +
+                ", completion_question_difficult=" + completion_question_difficult +
+                ", completion_question_score=" + completion_question_score +
+                ", completion_question_remarks='" + completion_question_remarks + '\'' +
+                '}';
+    }
 }

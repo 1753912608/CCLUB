@@ -321,4 +321,89 @@ public interface ExamMapper {
      */
     @Delete("delete from exam_question where exam_id=#{exam_id} and question_id=#{question_id}")
     int deleteExamOneQuestion(String exam_id,String question_id);
+
+
+
+
+    /**
+     *
+     * @param question_id
+     * @return
+     * 获取单个选择题信息
+     */
+    @Select("select * from choice_question where choice_question_id=#{question_id}")
+    choice_question getOneChoiceQuestion(String question_id);
+
+
+
+    /**
+     *
+     * @param question_id
+     * @return
+     * 获取单个判断题信息
+     */
+    @Select("select * from judge_question where judge_question_id=#{question_id}")
+    judge_question getOneJudgeQuestion(String question_id);
+
+
+    /**
+     *
+     * @param question_id
+     * @return
+     * 获取单个填空题信息
+     */
+    @Select("select * from completion_question where completion_question_id=#{question_id}")
+    completion_question getOneCompletionQuestion(String question_id);
+
+
+    /**
+     *
+     * @param question_id
+     * @param choice_question_name
+     * @param question_options
+     * @param choice_question_answer
+     * @param choice_question_difficult
+     * @param choice_question_score
+     * @param choice_question_remarks
+     * 更新选择题信息
+     */
+    @UpdateProvider(type = ExamProvider.class,method = "updateChoiceQuestion")
+    void updateChoiceQuestion(String question_id,
+                              String choice_question_name,
+                              String[] question_options,
+                              String choice_question_answer,
+                              int choice_question_difficult,
+                              int choice_question_score,
+                              String choice_question_remarks);
+
+
+    /**
+     *
+     * @param judge_question
+     * 更新判断题信息
+     */
+    @Update("update judge_question set judge_question_name=#{judge_question_name}," +
+            "judge_question_option_false=#{judge_question_option_false}," +
+            "judge_question_option_true=#{judge_question_option_true}," +
+            "judge_question_answer=#{judge_question_answer}," +
+            "judge_question_difficult=#{judge_question_difficult}," +
+            "judge_question_score=#{judge_question_score}," +
+            "judge_question_remarks=#{judge_question_remarks} " +
+            "where judge_question_id={judge_question_id}")
+    void updateJudgeQuestion(judge_question judge_question);
+
+
+
+    /**
+     *
+     * @param completion_question
+     * 更新填空题信息
+     */
+    @Update("update completion_question set completion_question_name=#{completion_question_name}," +
+            "completion_question_answer=#{completion_question_answer}," +
+            "completion_question_difficult=#{completion_question_difficult}," +
+            "completion_question_score=#{completion_question_score}," +
+            "completion_question_remarks=#{completion_question_remarks} " +
+            "where completion_question_id=#{completion_question_id}")
+    void updateCompletionQuestion(completion_question completion_question);
 }

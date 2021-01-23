@@ -1,6 +1,7 @@
 package cclub.demo.impl;
 
 import cclub.demo.dao.exam.*;
+import cclub.demo.dao.utils.Rand;
 import cclub.demo.mapper.ExamMapper;
 import cclub.demo.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,46 +154,78 @@ public class ExamServiceImpl implements ExamService {
 
     @Transactional
     @Override
-    public int addChoiceQuestion(String exam_id,String question_id,String choice_question_name, String[] question_options, String choice_question_answer, int choice_question_difficult, int choice_question_score, String choice_question_remarks, String user_id) {
-        try {
-            examMapper.addChoiceQuestion(question_id,choice_question_name,question_options,choice_question_answer,choice_question_difficult,choice_question_score,choice_question_remarks,user_id);
-            examMapper.updateExamQuestionNumber(exam_id,1);
-            examMapper.insertExamQuestion(question_id,exam_id);
-            return 1;
-        }catch (Exception e){
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            e.printStackTrace();
+    public int updateChoiceQuestion(String exam_id,String question_id,String choice_question_name, String[] question_options, String choice_question_answer, int choice_question_difficult, int choice_question_score, String choice_question_remarks, String user_id) {
+        if(question_id.equals("")){
+            try {
+                question_id= Rand.getInterviewCode();
+                examMapper.addChoiceQuestion(question_id,choice_question_name,question_options,choice_question_answer,choice_question_difficult,choice_question_score,choice_question_remarks,user_id);
+                examMapper.updateExamQuestionNumber(exam_id,1);
+                examMapper.insertExamQuestion(question_id,exam_id);
+                return 1;
+            }catch (Exception e){
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                e.printStackTrace();
+            }
+        }else{
+            try {
+                examMapper.updateChoiceQuestion(question_id,choice_question_name,question_options,choice_question_answer,choice_question_difficult,choice_question_score,choice_question_remarks);
+                return 1;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
         return 0;
     }
 
     @Transactional
     @Override
-    public int addJudgeQuestion(String exam_id, judge_question judge_question) {
-        try{
-            examMapper.addJudgeQuestion(judge_question);
-            examMapper.updateExamQuestionNumber(exam_id,1);
-            examMapper.insertExamQuestion(judge_question.getJudge_question_id(),exam_id);
-            return 1;
-        }catch (Exception e){
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            e.printStackTrace();
+    public int updateJudgeQuestion(String exam_id, judge_question judge_question) {
+        if(judge_question.getJudge_question_id().equals("")){
+            judge_question.setJudge_question_id(Rand.getInterviewCode());
+            try{
+                examMapper.addJudgeQuestion(judge_question);
+                examMapper.updateExamQuestionNumber(exam_id,1);
+                examMapper.insertExamQuestion(judge_question.getJudge_question_id(),exam_id);
+                return 1;
+            }catch (Exception e){
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                e.printStackTrace();
+            }
+        }else{
+            try{
+                examMapper.updateJudgeQuestion(judge_question);
+                return 1;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
+
         return 0;
     }
 
     @Transactional
     @Override
-    public int addCompletionQuestion(String exam_id, completion_question completion_question) {
-        try{
-            examMapper.addCompletionQuestion(completion_question);
-            examMapper.updateExamQuestionNumber(exam_id,1);
-            examMapper.insertExamQuestion(completion_question.getCompletion_question_id(),exam_id);
-            return 1;
-        }catch (Exception e){
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            e.printStackTrace();
+    public int updateCompletionQuestion(String exam_id, completion_question completion_question) {
+        if(completion_question.getCompletion_question_id().equals("")){
+            completion_question.setCompletion_question_id(Rand.getInterviewCode());
+            try{
+                examMapper.addCompletionQuestion(completion_question);
+                examMapper.updateExamQuestionNumber(exam_id,1);
+                examMapper.insertExamQuestion(completion_question.getCompletion_question_id(),exam_id);
+                return 1;
+            }catch (Exception e){
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                e.printStackTrace();
+            }
+        }else{
+            try{
+                examMapper.updateCompletionQuestion(completion_question);
+                return 1;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
+
         return 0;
     }
 
@@ -251,5 +284,20 @@ public class ExamServiceImpl implements ExamService {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    public choice_question getOneChoiceQuestion(String question_id) {
+        return  examMapper.getOneChoiceQuestion(question_id);
+    }
+
+    @Override
+    public judge_question getOneJudgeQuestion(String question_id) {
+        return examMapper.getOneJudgeQuestion(question_id);
+    }
+
+    @Override
+    public completion_question getOneCompletionQuestion(String question_id) {
+        return examMapper.getOneCompletionQuestion(question_id);
     }
 }

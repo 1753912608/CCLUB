@@ -156,7 +156,7 @@ public interface ExamService {
      * @return
      * 添加选择题
      */
-    int addChoiceQuestion(String exam_id,String question_id,String choice_question_name,String[] question_options,String choice_question_answer,int choice_question_difficult,int choice_question_score,String choice_question_remarks,String user_id);
+    int updateChoiceQuestion(String exam_id,String question_id,String choice_question_name,String[] question_options,String choice_question_answer,int choice_question_difficult,int choice_question_score,String choice_question_remarks,String user_id);
 
 
 
@@ -167,7 +167,7 @@ public interface ExamService {
      * @return
      * 添加判断题
      */
-    int addJudgeQuestion(String exam_id, judge_question judge_question);
+    int updateJudgeQuestion(String exam_id, judge_question judge_question);
 
 
 
@@ -178,7 +178,7 @@ public interface ExamService {
      * @return
      * 添加填空题
      */
-    int addCompletionQuestion(String exam_id, completion_question completion_question);
+    int updateCompletionQuestion(String exam_id, completion_question completion_question);
 
 
 
@@ -257,4 +257,31 @@ public interface ExamService {
      * 删除笔试中的某个题目
      */
     int deleleExamQuestion(String exam_id,String question_id);
+
+
+    /**
+     *
+     * @param question_id
+     * @return
+     * 获取单个选择题信息
+     */
+    choice_question getOneChoiceQuestion(String question_id);
+
+
+    /**
+     *
+     * @param question_id
+     * @return
+     * 获取单个判断题信息
+     */
+    judge_question getOneJudgeQuestion(String question_id);
+
+
+    /**
+     *
+     * @param question_id
+     * @return
+     * 获取单个填空题信息
+     */
+    completion_question getOneCompletionQuestion(String question_id);
 }

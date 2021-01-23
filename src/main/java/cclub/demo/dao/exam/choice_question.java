@@ -150,4 +150,24 @@ public class choice_question {
     public String getChoice_question_remarks() {
         return choice_question_remarks;
     }
+
+    @Override
+    public String toString() {
+        return "choice_question{" +
+                "choice_question_id='" + choice_question_id + '\'' +
+                ", choice_question_name='" + choice_question_name + '\'' +
+                ", choice_question_option_A='" + choice_question_option_A + '\'' +
+                ", choice_question_option_B='" + choice_question_option_B + '\'' +
+                ", choice_question_option_C='" + choice_question_option_C + '\'' +
+                ", choice_question_option_D='" + choice_question_option_D + '\'' +
+                ", choice_question_option_E='" + choice_question_option_E + '\'' +
+                ", choice_question_option_F='" + choice_question_option_F + '\'' +
+                ", choice_question_option_G='" + choice_question_option_G + '\'' +
+                ", choice_question_created_user_id='" + choice_question_created_user_id + '\'' +
+                ", choice_question_answer='" + choice_question_answer + '\'' +
+                ", choice_question_difficult=" + choice_question_difficult +
+                ", choice_question_score=" + choice_question_score +
+                ", choice_question_remarks='" + choice_question_remarks + '\'' +
+                '}';
+    }
 }

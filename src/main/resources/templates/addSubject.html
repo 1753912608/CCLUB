@@ -260,7 +260,9 @@
             },
             completionQuestion:{
                 answer: ''
-            }
+            },
+            question_id: '',
+            typeQuestion: ''
         },
         created(){
             this.getExamId();
@@ -323,6 +325,7 @@
             },
             async addChoiceQuestion(){
                 let params=new FormData();
+                params.append("question_id",this.question_id);
                 params.append("exam_id",this.exam_id);
                 params.append("choice_question_name",this.subject_name);
                 params.append("question_options",this.choiceQuestion.questionList);
@@ -350,6 +353,7 @@
             },
             async addCompletionQuestion(){
                 let params=new FormData();
+                params.append("question_id",this.question_id);
                 params.append("exam_id",this.exam_id);
                 params.append("completion_question_name",this.subject_name);
                 params.append("completion_question_answer",this.completionQuestion.answer);
@@ -365,6 +369,7 @@
             },
             async addJudgeQuestion(){
                 let params=new FormData();
+                params.append("question_id",this.question_id);
                 params.append("exam_id",this.exam_id);
                 params.append("judge_question_name",this.subject_name);
                 params.append("judge_question_option_false",this.judgeQuestion.judgeInput2);
@@ -396,7 +401,74 @@
             },
             getExamId(){
                 let url=window.location.href.split("/");
+                if(url[url.length-1].length>16){
+                    let str=url[url.length-1].split("#");
+                    this.exam_id=str[0];
+                    this.question_id=str[1];
+                    this.typeQuestion=str[2];
+                    this.modifyQuestion(this.question_id,this.typeQuestion)
+                }
                 this.exam_id=url[url.length-1];
+            },
+            async modifyQuestion(question_id,typeQuestion) {
+                let result = await axios.get('/getOneQuestion?question_id='+question_id+"&typeQuestion=" + typeQuestion);
+                console.log(result.data);
+                if (typeQuestion === '1') {
+                    this.modifyChoiceQuestion(result.data);
+                } else if (typeQuestion === '2') {
+                    this.modifyJudgeQuestion(result.data);
+                } else if (typeQuestion === '3') {
+                   this.modifyCompletionQuestion(result.data);
+                }
+            },
+            modifyChoiceQuestion(question){
+                this.subject_name=question.choice_question_name;
+                this.question_color=question.choice_question_difficult;
+                this.question_score=question.choice_question_score;
+                this.question_remarks=question.choice_question_remarks;
+                this.choiceQuestion.questionList[0]=question.choice_question_option_A;
+                this.choiceQuestion.questionList[1]=question.choice_question_option_B;
+                this.choiceQuestion.questionList[2]=question.choice_question_option_C;
+                if(question.choice_question_option_D!=null){
+                    this.choiceQuestion.answerList.push(question.choice_question_option_D);
+                }
+                if(question.choice_question_option_E!=null){
+                    this.choiceQuestion.answerList.push(question.choice_question_option_E);
+                }
+                if(question.choice_question_option_F!=null){
+                    this.choiceQuestion.answerList.push(question.choice_question_option_F);
+                }
+                if(question.choice_question_option_G!=null){
+                    this.choiceQuestion.answerList.push(question.choice_question_option_G)
+                }
+                if(question.choice_question_answer.split(" ").length===1){
+                    this.switchFirst();
+                    this.choiceQuestion.answer=this.choiceQuestion.questionList.indexOf(question.choice_question_answer);
+                }else{
+                    this.switchSecond();
+                    let arr=question.choice_question_answer.split(" ");
+                    for(let i=0;i<arr.length;i++){
+                        this.choiceQuestion.answerList.push(this.choiceQuestion.questionList.indexOf(arr[i])+1);
+                    }
+                }
+            },
+            modifyJudgeQuestion(question){
+                this.subject_name=question.judge_question_name;
+                this.question_color=question.judge_question_difficult;
+                this.question_score=question.judge_question_score;
+                this.question_remarks=question.judge_question_remarks;
+                this.judgeQuestion.judgeInput1=question.judge_question_option_true;
+                this.judgeQuestion.judgeInput2=question.judge_question_option_false;
+                this.judgeQuestion.judgeRadio=question.judge_question_option_true===question.judge_question_answer?'1':'2'
+                this.switchThird();
+            },
+            modifyCompletionQuestion(question){
+                this.subject_name=question.completion_question_name;
+                this.question_color=question.completion_question_difficult;
+                this.question_score=question.completion_question_score;
+                this.question_remarks=question.completion_question_remarks;
+                this.completionQuestion.answer=question.completion_question_answer;
+                this.switchFourth();
             }
         }
     })

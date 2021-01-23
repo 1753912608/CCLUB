@@ -102,4 +102,19 @@ public class judge_question {
     public String getJudge_question_remarks() {
         return judge_question_remarks;
     }
+
+    @Override
+    public String toString() {
+        return "judge_question{" +
+                "judge_question_id='" + judge_question_id + '\'' +
+                ", judge_question_name='" + judge_question_name + '\'' +
+                ", judge_question_option_false='" + judge_question_option_false + '\'' +
+                ", judge_question_option_true='" + judge_question_option_true + '\'' +
+                ", judge_question_created_user_id='" + judge_question_created_user_id + '\'' +
+                ", judge_question_answer='" + judge_question_answer + '\'' +
+                ", judge_question_difficult=" + judge_question_difficult +
+                ", judge_question_score=" + judge_question_score +
+                ", judge_question_remarks='" + judge_question_remarks + '\'' +
+                '}';
+    }
 }
