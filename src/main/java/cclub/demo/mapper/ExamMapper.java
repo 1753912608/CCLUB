@@ -406,4 +406,15 @@ public interface ExamMapper {
             "completion_question_remarks=#{completion_question_remarks} " +
             "where completion_question_id=#{completion_question_id}")
     void updateCompletionQuestion(completion_question completion_question);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @return
+     * 获取一个笔试的所有试题id
+     */
+    @Select("select question_id from exam_question where exam_id=#{exam_id}")
+    List<String>getExamQuestionId(String exam_id);
 }

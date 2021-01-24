@@ -110,7 +110,7 @@
             </div>
             <div style="margin-left:560px;margin-top:20px;">
                 <span>
-                    <el-button type="primary" size="small" style="width:100px;">从题库中选择</el-button>
+                    <el-button type="primary" size="small" style="width:100px;" @click="subject">从题库中选择</el-button>
                 </span>
                 <span style="margin-left:1px;">
                     <el-button type="primary" size="small" style="width:100px;" @click="addSubject">+ 录入新题</el-button>
@@ -256,7 +256,7 @@
             <div style="width:1340px;background-color:#ececed;height:1px;"></div>
             <div style="margin-top:15px;margin-left:20px;">
                 <span>
-                    <el-button type="primary" size="small" style="width:100px;">从题库选择</el-button>
+                    <el-button type="primary" size="small" style="width:100px;" @click="subject">从题库选择</el-button>
                 </span>
                 <span style="margin-left:3px;">
                     <el-button type="primary" size="small" style="width:100px;" @click="addSubject">+录入新题</el-button>
@@ -376,6 +376,9 @@
             },
             editQuestion(question_id,type){
                 window.location.href="/test_addSubject/"+this.exam_id+"#"+question_id+"#"+type;
+            },
+            subject(){
+                window.location.href="/test_subject/"+this.exam_id;
             }
         }
     })

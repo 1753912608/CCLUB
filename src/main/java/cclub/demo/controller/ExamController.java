@@ -631,4 +631,20 @@ public class ExamController {
        }
        return null;
     }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param questionIdList
+     * @return
+     * 从题库中导入笔试题
+     */
+    @ResponseBody
+    @RequestMapping("/addQuestionBySubject")
+    public int addQuestionBySubject(String exam_id,
+                                    String[] questionIdList){
+        return examService.addQuestionBySubject(exam_id,questionIdList);
+    }
 }

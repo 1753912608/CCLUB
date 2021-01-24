@@ -325,7 +325,7 @@
             },
             async addChoiceQuestion(){
                 let params=new FormData();
-                params.append("question_id",this.question_id);
+                params.append("question_id",this.question_id===undefined?"":this.question_id);
                 params.append("exam_id",this.exam_id);
                 params.append("choice_question_name",this.subject_name);
                 params.append("question_options",this.choiceQuestion.questionList);
@@ -353,7 +353,7 @@
             },
             async addCompletionQuestion(){
                 let params=new FormData();
-                params.append("question_id",this.question_id);
+                params.append("question_id",this.question_id===undefined?"":this.question_id);
                 params.append("exam_id",this.exam_id);
                 params.append("completion_question_name",this.subject_name);
                 params.append("completion_question_answer",this.completionQuestion.answer);
@@ -369,7 +369,7 @@
             },
             async addJudgeQuestion(){
                 let params=new FormData();
-                params.append("question_id",this.question_id);
+                params.append("question_id",this.question_id===undefined?"":this.question_id);
                 params.append("exam_id",this.exam_id);
                 params.append("judge_question_name",this.subject_name);
                 params.append("judge_question_option_false",this.judgeQuestion.judgeInput2);

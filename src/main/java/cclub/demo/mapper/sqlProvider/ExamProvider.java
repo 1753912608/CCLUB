@@ -2,6 +2,8 @@ package cclub.demo.mapper.sqlProvider;
 
 import org.apache.ibatis.jdbc.SQL;
 
+import java.util.List;
+
 public class ExamProvider {
 
 
@@ -147,28 +149,30 @@ public class ExamProvider {
     {
         return new SQL(){{
             UPDATE("choice_question");
-            SET("choice_question_name","#{choice_question_name}");
-            SET("choice_question_answer","#{choice_question_answer}");
-            SET("choice_question_difficult","#{choice_question_difficult}");
-            SET("choice_question_score","#{choice_question_score}");
-            SET("choice_question_remarks","#{choice_question_remarks}");
-            SET("choice_question_option_A","#{question_options[0]}");
-            SET("choice_question_option_B","#{question_options[1]}");
-            SET("choice_question_option_C","#{question_options[2]}");
+            SET("choice_question_name=#{choice_question_name}");
+            SET("choice_question_answer=#{choice_question_answer}");
+            SET("choice_question_difficult=#{choice_question_difficult}");
+            SET("choice_question_score=#{choice_question_score}");
+            SET("choice_question_remarks=#{choice_question_remarks}");
+            SET("choice_question_option_A=#{question_options[0]}");
+            SET("choice_question_option_B=#{question_options[1]}");
+            SET("choice_question_option_C=#{question_options[2]}");
             if(question_options.length>3){
-                SET("choice_question_option_D","#{question_options[3]}");
+                SET("choice_question_option_D=#{question_options[3]}");
             }
             if(question_options.length>4){
-                SET("choice_question_option_E","#{question_options[4]}");
+                SET("choice_question_option_E=#{question_options[4]}");
             }
             if(question_options.length>5){
-                SET("choice_question_option_F","#{question_options[5]}");
+                SET("choice_question_option_F=#{question_options[5]}");
             }
             if(question_options.length>6){
-                SET("choice_question_option_G","#{question_options[6]}");
+                SET("choice_question_option_G=#{question_options[6]}");
             }
-            WHERE("choice_question_id","#{question_id}");
+            WHERE("choice_question_id=#{question_id}");
         }}.toString();
     }
+
+
 
 }

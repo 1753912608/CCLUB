@@ -155,6 +155,7 @@ public class ExamServiceImpl implements ExamService {
     @Transactional
     @Override
     public int updateChoiceQuestion(String exam_id,String question_id,String choice_question_name, String[] question_options, String choice_question_answer, int choice_question_difficult, int choice_question_score, String choice_question_remarks, String user_id) {
+        System.out.println(question_id);
         if(question_id.equals("")){
             try {
                 question_id= Rand.getInterviewCode();
@@ -299,5 +300,16 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public completion_question getOneCompletionQuestion(String question_id) {
         return examMapper.getOneCompletionQuestion(question_id);
+    }
+
+    @Override
+    public int addQuestionBySubject(String exam_id, String[] questionIdList) {
+        List<String>arr=examMapper.getExamQuestionId(exam_id);
+        for(int i=0;i<questionIdList.length;i++){
+            if(!arr.contains(questionIdList[i])){
+                examMapper.insertExamQuestion(questionIdList[i],exam_id);
+            }
+        }
+        return 1;
     }
 }

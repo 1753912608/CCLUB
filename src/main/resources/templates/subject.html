@@ -12,24 +12,33 @@
             margin-top:80px;
             margin-left:60px;
             border: 1px solid rgb(235,235,235);
-            width:1390px;
+            width:1290px;
             height:70px;
             font-size:13px;
         }
         .el-subject-content{
             margin-left:60px;
             border: 1px solid rgb(235,235,235);
-            width:1390px;
+            width:1290px;
             font-size:13px;
             margin-bottom:70px;
         }
         .el-subject-remarks{
-            width:1280px;
+            width:1180px;
             height:40px;
             background-color:#eff2ff;
             margin-left:80px;
             margin-top:10px;
             margin-bottom:30px;
+        }
+        .el-submit{
+            border:4px solid #7dd6c4;
+            border-radius:4px;
+            float:left;
+            margin-left:1360px;
+            margin-top:-115px;
+            width:100px;
+            height:120px;
         }
     </style>
 </head>
@@ -65,6 +74,9 @@
             <a href="javascript:void(0);" @click="home"><img src="../img/back.png" alt="" width="13px" height="13px"></a>
         </div>
         <div style="float:left;margin-left:10px;font-size:18px;margin-top:-3px;">题库</div>
+        <div style="float:left;margin-left:1150px;margin-top:-3px;">
+            <el-button type="primary" size="small">添加试题</el-button>
+        </div>
     </div>
     <div class="el-header">
         <div style="margin-top:20px;">
@@ -97,19 +109,32 @@
             <span style="margin-left:10px;">
                  <el-button type="info" style="width:60px;" size="small" @click="searchQuestion">搜索</el-button>
             </span>
-            <span style="margin-left:190px;">{{tempChoiceList.length+tempJudgeList.length+tempCompletionList.length}}个结果</span>
+            <span style="margin-left:90px;">{{tempChoiceList.length+tempJudgeList.length+tempCompletionList.length}}个结果</span>
+        </div>
+    </div>
+    <div class="el-submit" v-if="isEdit">
+        <div style="height:10px;background-color:#7dd6c4;"></div>
+        <div style="margin-left:20px;font-size:14px;margin-top:5px;">
+            已选试题
+        </div>
+        <div style="margin-left:35px;font-size:32px;font-weight:700;color:#04a887;">
+            {{questionIdList.length}}
+        </div>
+        <div style="margin-left:20px;margin-top:5px;">
+            <el-button type="success" size="small" @click="addQuestionBySubject">提交</el-button>
         </div>
     </div>
     <div class="el-subject-content">
         <!--选择题-->
         <div style="margin-left:15px;margin-top:15px;margin-bottom:10px;" v-for="(item,index) in tempChoiceList">
             <div>
-                <div v-if="item.choice_question_answer.split(' ').length===1" style="float:left;">[单选题]</div>
-                <div v-if="item.choice_question_answer.split(' ').length>1" style="float:left;">[多选题]</div>
-                <div style="margin-left:30px;float:left;width:1200px;">{{item.choice_question_name}}</div>
+                <div style="float:left;" v-if="isEdit"><el-checkbox label="" @change="change(item.choice_question_id)"></el-checkbox></div>
+                <div v-if="item.choice_question_answer.split(' ').length===1" style="float:left;" :style="{'margin-left':isEdit?'10px':'0px'}">[单选题]</div>
+                <div v-if="item.choice_question_answer.split(' ').length>1" style="float:left;" :style="{'margin-left':isEdit?'10px':'0px'}">[多选题]</div>
+                <div style="margin-left:30px;float:left;" :style="{'width':isEdit?'1090px':'1110px'}">{{item.choice_question_name}}</div>
                 <div style="color:#8b8f94;float:left;">试题编号:{{index+1}}</div>
             </div>
-            <div style="padding-top:10px;">
+            <div style="padding-top:10px;" :style="{'margin-left':isEdit?'20px':'0px'}">
                 <div style="margin-left:80px;margin-top:15px;" v-if="item.choice_question_option_A!=null">
                     <el-radio disabled  :label="item.choice_question_option_A">{{item.choice_question_option_A}}</el-radio>
                 </div>
@@ -134,11 +159,11 @@
             </div>
             <div style="margin-top:10px;">
                 <span style="color:red;">[答案]</span>
-                <span style="margin-left:40px;font-weight:700;">{{item.choice_question_answer}}</span>
+                <span style="font-weight:700;" :style="{'margin-left':isEdit?'60px':'40px'}">{{item.choice_question_answer}}</span>
             </div>
             <div class="el-subject-remarks">
                 <div style="padding-top:10px;">
-                    <div style="margin-left:800px;float:left;">备注:</div>
+                    <div style="margin-left:700px;float:left;">备注:</div>
                     <div style="margin-left:5px;width:80px;float:left;">{{item.choice_question_remarks}}</div>
                     <div style="margin-left:150px;float:left;">默认分值{{item.choice_question_score}}分</div>
                     <div style="margin-left:10px;float:left;">｜</div>
@@ -156,11 +181,12 @@
         <!--判断题-->
         <div style="margin-left:15px;margin-top:15px;margin-bottom:10px;" v-for="(item,index) in tempJudgeList">
             <div>
-                <div style="float:left;">[判断题]</div>
-                <div style="margin-left:30px;float:left;width:1200px;">{{item.judge_question_name}}</div>
+                <div style="float:left;" v-if="isEdit"><el-checkbox label="" @change="change(item.judge_question_id)"></el-checkbox></div>
+                <div style="float:left;" :style="{'margin-left':isEdit?'10px':'0px'}">[判断题]</div>
+                <div style="margin-left:30px;float:left;" :style="{'width':isEdit?'1090px':'1100px'}">{{item.judge_question_name}}</div>
                 <div style="color:#8b8f94;float:left;">试题编号:{{index+1+tempChoiceList.length}}</div>
             </div>
-            <div style="padding-top:10px;">
+            <div style="padding-top:10px;" :style="{'margin-left':isEdit?'20px':'0px'}">
                 <div style="margin-left:80px;margin-top:15px;">
                     <el-radio disabled  :label="item.judge_question_option_false">{{item.judge_question_option_false}}</el-radio>
                 </div>
@@ -170,11 +196,11 @@
             </div>
             <div style="margin-top:10px;">
                 <span style="color:red;">[答案]</span>
-                <span style="margin-left:40px;font-weight:700;">{{item.judge_question_answer}}</span>
+                <span style="font-weight:700;" :style="{'margin-left':isEdit?'60px':'40px'}">{{item.judge_question_answer}}</span>
             </div>
             <div class="el-subject-remarks">
                 <div style="padding-top:10px;">
-                    <div style="margin-left:800px;float:left;">备注:</div>
+                    <div style="margin-left:700px;float:left;">备注:</div>
                     <div style="margin-left:5px;width:80px;float:left;">{{item.judge_question_remarks}}</div>
                     <div style="margin-left:150px;float:left;">默认分值{{item.judge_question_score}}分</div>
                     <div style="margin-left:10px;float:left;">｜</div>
@@ -192,17 +218,18 @@
         <!--填空题-->
         <div style="margin-left:15px;margin-top:15px;margin-bottom:10px;" v-for="(item,index) in tempCompletionList">
             <div>
-                <div style="float:left;">[填空题]</div>
-                <div style="margin-left:30px;float:left;width:1200px;">{{item.completion_question_name}}</div>
+                <div style="float:left;" v-if="isEdit"><el-checkbox label="" @change="change(item.completion_question_id)"></el-checkbox></div>
+                <div style="float:left;" :style="{'margin-left':isEdit?'10px':'0px'}">[填空题]</div>
+                <div style="margin-left:30px;float:left;" :style="{'width':isEdit?'1090px':'1100px'}">{{item.completion_question_name}}</div>
                 <div style="color:#8b8f94;float:left;">试题编号:{{index+1+tempChoiceList.length+tempJudgeList.length}}</div>
             </div>
-            <div style="padding-top:30px;">
+            <div style="padding-top:50px;">
                 <span style="color:red;">[答案]</span>
-                <span style="margin-left:40px;font-weight:700;">{{item.completion_question_answer}}</span>
+                <span style="font-weight:700;" :style="{'margin-left':isEdit?'60px':'40px'}">{{item.completion_question_answer}}</span>
             </div>
             <div class="el-subject-remarks">
                 <div style="padding-top:10px;">
-                    <div style="margin-left:800px;float:left;">备注:</div>
+                    <div style="margin-left:700px;float:left;">备注:</div>
                     <div style="margin-left:5px;width:80px;float:left;">{{item.completion_question_remarks}}</div>
                     <div style="margin-left:150px;float:left;">默认分值{{item.completion_question_score}}分</div>
                     <div style="margin-left:10px;float:left;">｜</div>
@@ -218,7 +245,6 @@
             </div>
         </div>
     </div>
-    <div></div>
 </div>
 </body>
 <script>
@@ -241,12 +267,16 @@
             completionQuestionList:[],
             tempChoiceList:[],
             tempJudgeList:[],
-            tempCompletionList:[]
+            tempCompletionList:[],
+            isEdit:false,
+            exam_id:'',
+            questionIdList:[]
         },
         created() {
             this.getChoiceQuestionList();
             this.getJudgeQuestionList();
             this.getCompletionQuestionList();
+            this.getExamId();
         },
         methods:{
             interview(){
@@ -363,6 +393,33 @@
                             this.tempCompletionList.push(this.completionQuestionList[i]);
                         }
                     }
+                }
+            },
+            change(question_id){
+                if(this.questionIdList.indexOf(question_id)!=-1){
+                     let index=this.questionIdList.indexOf(question_id);
+                     this.questionIdList.splice(index,1);
+                    console.log(index);
+                }else{
+                    this.questionIdList.push(question_id);
+                }
+            },
+            getExamId(){
+                let url=window.location.href.split("/");
+                if(url[url.length-1]!='all'){
+                    this.exam_id=url[url.length-1];
+                    this.isEdit=true;
+                }
+            },
+            async addQuestionBySubject(){
+                let result=await axios.get('/addQuestionBySubject?exam_id='+this.exam_id+"&questionIdList="+this.questionIdList);
+                if(result.data===1){
+                    window.location.href=document.referrer;
+                }else{
+                    this.$message({
+                        message: '服务器繁忙,请稍后',
+                        type: 'warning'
+                    });
                 }
             }
         }
