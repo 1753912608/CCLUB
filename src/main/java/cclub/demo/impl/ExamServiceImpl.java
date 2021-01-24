@@ -2,6 +2,7 @@ package cclub.demo.impl;
 
 import cclub.demo.dao.exam.*;
 import cclub.demo.dao.utils.Rand;
+import cclub.demo.dao.utils.TimeUtils;
 import cclub.demo.mapper.ExamMapper;
 import cclub.demo.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public List<exam> getMyCreatedExamList(String user_id) {
-        return examMapper.getMyCreatedExam(user_id);
+        return handleExamList(examMapper.getMyCreatedExam(user_id));
     }
 
     @Override
@@ -311,5 +312,18 @@ public class ExamServiceImpl implements ExamService {
             }
         }
         return 1;
+    }
+
+
+    /**
+     *
+     * @return
+     * 处理笔试列表的状态
+     */
+    public List<exam> handleExamList(List<exam> examList){
+        for(exam exam:examList){
+            exam.setExam_state(TimeUtils.ExamTimeState(exam));
+        }
+        return examList;
     }
 }
