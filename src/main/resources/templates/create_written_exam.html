@@ -224,7 +224,7 @@
                 isMust: '2'
             },{
                 name: '邮箱',
-                isMust: '1'
+                isMust: '2'
             }],
             addItem:{
                 name: '',
@@ -252,15 +252,24 @@
             },
             add(){
                 let obj=new Object();
+                let flag=1;
                 obj.name=this.addItem.name;
                 obj.isMust=this.addItem.isMust;
+                for(let i=0;i<this.list.length;i++){
+                    if(this.list[i].name===obj.name){
+                        flag=0;
+                        this.list[i].isMust=obj.isMust;
+                    }
+                }
                 if(obj.name.length===0||obj.isMust.length===0){
                     this.$message({
                         message: '请填好所有必选项',
                         type: 'warning'
                     });
                 }else{
-                    this.list.push(obj);
+                    if(flag===1){
+                        this.list.push(obj);
+                    }
                     this.dialogVisible_field=false;
                 }
             },
@@ -268,41 +277,63 @@
                 window.location.href="/test_editSubject";
             },
             async createExam(){
-                let params=new FormData();
-                let date1=this.date.date1;
-                let date2=this.date.date2;
-                let date=null;
-                if(date1.length<=10){
-                    date=date1+" "+date2;
-                }else{
-                    date=date1.getFullYear()+"-"+(parseInt(date1.getMonth())+1)+"-"+date1.getDate()+" "+date2;
-                }
-                params.append("exam_name",this.exam_name);
-                params.append("exam_start_time",date);
-                params.append("exam_longTime",this.time_length);
-                params.append("exam_noEntry_time",this.ban_time);
-                params.append("exam_Upset_question",this.checkList.indexOf('1')!=-1?1:0);
-                params.append("exam_Upset_answer",this.checkList.indexOf('2')!=-1?1:0);
-                params.append("exam_jumpOut_number",this.checkList.indexOf('3')!=-1?1:0);
-                params.append("exam_recording",this.checkList.indexOf('4')!=-1?1:0);
-                params.append("exam_user_info",JSON.stringify(this.list));
-                params.append("exam_id",this.exam.exam_id!=undefined?this.exam.exam_id:"");
-                let result=await axios({
-                    method: 'post',
-                    url: '/createExam',
-                    data: params,
-                });
-                if(this.exam.exam_id!=undefined){
-                    window.location.href="/test_exam";
-                }else{
-                    if(result.data.length>0){
-                        window.location.href="/test_editSubject/"+result.data;
-                    }else{
-                        this.$message({
-                            type: 'info',
-                            message: '新建笔试失败'
-                        });
+                let tempList=['姓名','邮箱','电话号码'];
+                let isLegal=true;
+                for(let i=0;i<tempList.length;i++){
+                    let flag=0;
+                    for(let j=0;j<this.checkList.length;j++){
+                        if(this.checkList[i].name===tempList[i]){
+                            flag=1;
+                            break;
+                        }
                     }
+                    if(flag===0){
+                        isLegal=false;
+                        break;
+                    }
+                }
+                if(isLegal){
+                    let params=new FormData();
+                    let date1=this.date.date1;
+                    let date2=this.date.date2;
+                    let date=null;
+                    if(date1.length<=10){
+                        date=date1+" "+date2;
+                    }else{
+                        date=date1.getFullYear()+"-"+(parseInt(date1.getMonth())+1)+"-"+date1.getDate()+" "+date2;
+                    }
+                    params.append("exam_name",this.exam_name);
+                    params.append("exam_start_time",date);
+                    params.append("exam_longTime",this.time_length);
+                    params.append("exam_noEntry_time",this.ban_time);
+                    params.append("exam_Upset_question",this.checkList.indexOf('1')!=-1?1:0);
+                    params.append("exam_Upset_answer",this.checkList.indexOf('2')!=-1?1:0);
+                    params.append("exam_jumpOut_number",this.checkList.indexOf('3')!=-1?1:0);
+                    params.append("exam_recording",this.checkList.indexOf('4')!=-1?1:0);
+                    params.append("exam_user_info",JSON.stringify(this.list));
+                    params.append("exam_id",this.exam.exam_id!=undefined?this.exam.exam_id:"");
+                    let result=await axios({
+                        method: 'post',
+                        url: '/createExam',
+                        data: params,
+                    });
+                    if(this.exam.exam_id!=undefined){
+                        window.location.href="/test_exam";
+                    }else{
+                        if(result.data.length>0){
+                            window.location.href="/test_editSubject/"+result.data;
+                        }else{
+                            this.$message({
+                                type: 'info',
+                                message: '新建笔试失败'
+                            });
+                        }
+                    }
+                }else{
+                    this.$message({
+                        message: '姓名,邮箱,电话号码为必填项',
+                        type: 'warning'
+                    });
                 }
             },
             async getExamInfo(){

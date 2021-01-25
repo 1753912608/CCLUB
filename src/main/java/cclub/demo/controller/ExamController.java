@@ -213,7 +213,7 @@ public class ExamController {
         int result= examService.addExamCandidate(new exam_user(access_code,exam_id,candidate_phone,candidate_name,exam_notice,-1,0,candidate_mail));
         if(result==1){
             //发送笔试邀请到候选人邮箱
-            mailDemoUtils.sendExamTemplateNotice(candidate_mail,exam_name,exam_start_time,exam_noEntry_time,exam_longTime,candidate_name,HOSTURLEXAM+access_code);
+            mailDemoUtils.sendExamTemplateNotice(candidate_mail,exam_name,exam_start_time,exam_noEntry_time,exam_longTime,candidate_name,HOSTURLEXAM+exam_id);
         }
         return result;
     }
@@ -224,7 +224,8 @@ public class ExamController {
      * @param file
      * @param request
      * @return
-     * 批量添加候选人的时候提交候选人Excel     */
+     * 批量添加候选人的时候提交候选人Excel
+     */
     @ResponseBody
     @RequestMapping("/uploadCandidateExcel")
     public int uploadCandidateExcel(MultipartFile file,
