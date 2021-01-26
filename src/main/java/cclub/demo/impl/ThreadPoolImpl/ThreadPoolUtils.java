@@ -43,7 +43,7 @@ public class ThreadPoolUtils {
                  @Override
                  public void run() {
                      String access_code=Rand.getInterviewCode();
-                     examService.addExamCandidate(new exam_user(access_code,exam_id,phoneList.get(index),nameList.get(index),exam_notice,-1,0,mailList.get(index)));
+                     examService.addExamCandidate(new exam_user(access_code,exam_id,phoneList.get(index),nameList.get(index),exam_notice,-1,0,mailList.get(index),0));
                      if(exam_notice==1){
                          //发送邮件到候选人邮箱
                          mailDemoUtils.sendExamTemplateNotice(mailList.get(index),exam_name,exam_start_time,exam_noEntry_time,exam_longTime,nameList.get(index),url+exam_id);

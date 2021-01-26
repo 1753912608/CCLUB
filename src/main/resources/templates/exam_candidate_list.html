@@ -76,12 +76,12 @@
             笔试未开始
         </span>
         <span style="margin-left:8px;font-size:12px;color:red;" v-if="exam.exam_state!=0">
-            1
+            {{intoExamNumber}}
         </span>
         <span style="font-size:12px;color:#8b8f94;" v-if="exam.exam_state!=0">
             人参加考试
         </span>
-        <span style="margin-left:870px;">
+        <span style="margin-left:850px;">
             <el-dropdown>
                 <el-button type="primary" size="small" style="width:150px;">
                     批量通知候选人<i class="el-icon-arrow-down el-icon--right"></i>
@@ -128,31 +128,45 @@
             <div style="float:left;margin-left:1060px;font-size:12px;color:rgb(139, 143, 148);margin-top:-15px;">{{tempList.length}}个结果</div>
         </div>
     </div>
-    <div style="margin-left:40px;width:1430px;">
+    <div style="margin-left:40px;width:1430px;margin-bottom:50px;">
         <template>
             <el-table :data="tempList" style="width: 100%">
-                <el-table-column prop="candidate_name" label="姓名" width="160">
+                <el-table-column prop="candidate_name" label="姓名" width="100">
                 </el-table-column>
-                <el-table-column prop="candidate_phone" label="手机" width="200">
+                <el-table-column prop="candidate_phone" label="手机" width="120">
                 </el-table-column>
                 <el-table-column prop="candidate_mail" label="邮箱" width="200">
                 </el-table-column>
-                <el-table-column prop="exam_user_state" label="状态" width="200">
+                <el-table-column prop="exam_user_state" label="状态" width="130">
                     <template scope="scope">
                         <span v-if="scope.row.exam_user_state===0" style="color:red;">未进入笔试</span>
                         <span v-if="scope.row.exam_user_state===1" style="color:rgb(200,200,200)">已进入笔试</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="exam_notice" label="是否通知" width="200">
+                <el-table-column prop="exam_notice" label="是否通知" width="130">
                     <template scope="scope">
                         <span v-if="scope.row.exam_notice===1">已通知</span>
                         <span v-if="scope.row.exam_notice===0">未通知</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="exam_user_score" label="分数" width="150" sortable>
+                <el-table-column prop="exam_user_score" label="分数" width="120" sortable>
                     <template scope="scope">
                         <span style="color:red;">{{scope.row.exam_user_score}}</span>
                         <span>/{{exam.exam_score}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="exam_user_skip_number" label="跳出屏幕次数" width="160">
+                </el-table-column>
+                <el-table-column prop="" label="查看笔试录屏" width="150">
+                    <template scope="scope">
+                        <span v-if="exam.exam_jumpOut_number===1">
+                            <a href="javascript:void(0);" style="text-decoration:none;">
+                                查看录屏
+                            </a>
+                        </span>
+                        <span v-if="exam.exam_jumpOut_number!=1">
+                            ----
+                        </span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="" label="操作" width="320">
@@ -220,7 +234,7 @@
             tempList:[],
             intoExamNumber: 0,
             exam_user:{},
-            updateExamUserInfoDialog:false
+            updateExamUserInfoDialog:false,
         },
         created(){
             this.getExamInfo();

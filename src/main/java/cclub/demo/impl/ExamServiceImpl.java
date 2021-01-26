@@ -93,6 +93,7 @@ public class ExamServiceImpl implements ExamService {
             map.put("exam_notice",exam_user.getExam_notice()==1?"已发笔试通知":"未发笔试通知");
             map.put("exam_user_score",exam_user.getExam_user_score()==-1?"---":exam_user.getExam_user_score());
             map.put("exam_user_state",exam_user.getExam_user_state()==1?"已进入笔试":"未进入笔试");
+            map.put("exam_user_skip_number",exam_user.getExam_user_skip_number());
             mapList.add(map);
         }
         return mapList;
@@ -322,7 +323,11 @@ public class ExamServiceImpl implements ExamService {
      */
     public List<exam> handleExamList(List<exam> examList){
         for(exam exam:examList){
+            int oldState=exam.getExam_state();
             exam.setExam_state(TimeUtils.ExamTimeState(exam));
+            if(exam.getExam_state()!=oldState){
+                examMapper.updateExamState(exam.getExam_id(),exam.getExam_state());
+            }
         }
         return examList;
     }

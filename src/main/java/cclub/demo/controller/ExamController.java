@@ -146,8 +146,8 @@ public class ExamController {
     throws IOException{
         List<exam_user>list=examService.getExamUserListById(exam_id);
         List<Map<String,Object>>mapList=new ArrayList<>();
-        String[] keys={"access_code","exam_id","candidate_name","candidate_phone","candidate_mail","exam_notice","exam_user_score","exam_user_state"};
-        String[] colums={"笔试接入码","笔试id","候选人姓名","候选人电话","候选人邮箱","是否被通知","候选人分数","候选人是否进入笔试"};
+        String[] keys={"access_code","exam_id","candidate_name","candidate_phone","candidate_mail","exam_notice","exam_user_score","exam_user_state","exam_user_skip_number"};
+        String[] colums={"笔试接入码","笔试id","候选人姓名","候选人电话","候选人邮箱","是否被通知","候选人分数","候选人是否进入笔试","跳出屏幕次数"};
         mapList=examService.createExcelRecord(list);
         ByteArrayOutputStream os=new ByteArrayOutputStream();
         try {
@@ -210,7 +210,7 @@ public class ExamController {
                                  int exam_notice)
     {
         String access_code=Rand.getInterviewCode();
-        int result= examService.addExamCandidate(new exam_user(access_code,exam_id,candidate_phone,candidate_name,exam_notice,-1,0,candidate_mail));
+        int result= examService.addExamCandidate(new exam_user(access_code,exam_id,candidate_phone,candidate_name,exam_notice,-1,0,candidate_mail,0));
         if(result==1){
             //发送笔试邀请到候选人邮箱
             mailDemoUtils.sendExamTemplateNotice(candidate_mail,exam_name,exam_start_time,exam_noEntry_time,exam_longTime,candidate_name,HOSTURLEXAM+exam_id);

@@ -9,10 +9,11 @@ public class exam_user {
     private int exam_notice;
     private int exam_user_score;
     private int exam_user_state;
+    private int exam_user_skip_number;
 
     public exam_user(String access_code, String exam_id, String candidate_phone,
                      String candidate_name, int exam_notice, int exam_user_score,
-                     int exam_user_state,String candidate_mail) {
+                     int exam_user_state,String candidate_mail,int exam_user_skip_number) {
         this.access_code = access_code;
         this.exam_id = exam_id;
         this.candidate_phone = candidate_phone;
@@ -21,6 +22,7 @@ public class exam_user {
         this.exam_user_score = exam_user_score;
         this.exam_user_state = exam_user_state;
         this.candidate_mail=candidate_mail;
+        this.exam_user_skip_number=exam_user_skip_number;
     }
 
     public void setAccess_code(String access_code) {
@@ -87,6 +89,14 @@ public class exam_user {
         return candidate_mail;
     }
 
+    public void setExam_user_skip_number(int exam_user_skip_number) {
+        this.exam_user_skip_number = exam_user_skip_number;
+    }
+
+    public int getExam_user_skip_number() {
+        return exam_user_skip_number;
+    }
+
     @Override
     public String toString() {
         return "exam_user{" +
@@ -98,6 +108,7 @@ public class exam_user {
                 ", exam_notice=" + exam_notice +
                 ", exam_user_score=" + exam_user_score +
                 ", exam_user_state=" + exam_user_state +
+                ", exam_user_skip_number=" + exam_user_skip_number +
                 '}';
     }
 }

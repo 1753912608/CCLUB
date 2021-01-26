@@ -92,7 +92,8 @@ public interface ExamMapper {
      */
     @Insert("insert into exam_user values(#{access_code},#{exam_id}," +
             "#{candidate_name},#{candidate_phone},#{candidate_mail}," +
-            "#{exam_notice},#{exam_user_score},#{exam_user_state})")
+            "#{exam_notice},#{exam_user_score},#{exam_user_state}," +
+            "#{exam_user_skip_number})")
     void addExamCandidate(exam_user exam_user);
 
 
@@ -417,4 +418,10 @@ public interface ExamMapper {
      */
     @Select("select question_id from exam_question where exam_id=#{exam_id}")
     List<String>getExamQuestionId(String exam_id);
+
+
+
+
+    @Update("update exam set exam_state=#{newState} where exam_id=#{exam_id}")
+    void updateExamState(String exam_id,int newState);
 }

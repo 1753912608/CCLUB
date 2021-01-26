@@ -113,4 +113,15 @@ public class PageController {
         return "exam_candidate_list";
     }
 
+
+    @RequestMapping("/test_before_exam_start/{exam_id}")
+    public String before_exam_start(){
+        return "before_exam_start";
+    }
+
+
+    @RequestMapping("/after_exam_end/{exam_id}")
+    public String after_exam_end(){
+        return "after_exam_end";
+    }
 }

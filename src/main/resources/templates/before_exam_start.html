@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CClub在线笔试</title>
+    <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        *{
+            padding: 0 0px;
+            margin: 0 0px;
+        }
+        .el-header{
+            background-color:#f2f5ff;
+            width:100%;
+            height:50px;
+        }
+        .el-border{
+            width:1490px;
+            height:380px;
+            border: 1px solid rgb(230,230,230);
+            margin-left:20px;
+            margin-top:20px;
+        }
+        .el-bg{
+            background-color:#fbfbff;
+            width:1470px;
+            height:100px;
+            margin-left:10px;
+            margin-top:10px;
+        }
+        .el-button1{
+            width:20px;
+            height:20px;
+            background-color:#5272ff;
+            border-radius:20px;
+            color:white;
+            padding: 5px 0px 5px 10px;
+            font-size:13px;
+        }
+        .el-button2{
+            background-color:#a9b9ff;
+            width:20px;
+            height:20px;
+            border-radius:20px;
+            color:white;
+            padding: 5px 0px 5px 10px;
+            font-size:13px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="el-header">
+        <div style="margin-left:5px;padding-top:15px;font-weight:700;">后端研发</div>
+    </div>
+    <div class="el-border">
+        <div class="el-bg">
+            <div style="margin-left:150px;padding-top:25px;float:left; ">
+                <div class="el-button1">1</div>
+                <div style="margin-top:5px;margin-left:-15px;">信息登记</div>
+            </div>
+            <div style="float:left;margin-left:520px;padding-top:25px;">
+                <div class="el-button2">2</div>
+                <div style="margin-top:5px;margin-left:-15px;">考前须知</div>
+            </div>
+            <div style="float:left;margin-left:500px;padding-top:25px;">
+                <div class="el-button2">3</div>
+                <div style="margin-top:5px;margin-left:-15px">开始考试</div>
+            </div>
+        </div>
+        <!--信息登记-->
+        <div v-if="state===1">
+            <div style="margin-left:620px;margin-top:40px;font-size:12px;">
+                <span style="color:red;">*</span>
+                <span>姓名</span>
+                <span style="margin-left:30px;">
+                    <el-input v-model="candidateInfo.name" size="small" style="width:200px;"></el-input>
+                </span>
+            </div>
+            <div style="margin-left:620px;margin-top:40px;font-size:12px;">
+                <span style="color:red;">*</span>
+                <span>手机</span>
+                <span style="margin-left:30px;">
+                    <el-input v-model="candidateInfo.phone" size="small" style="width:200px;"></el-input>
+                </span>
+            </div>
+            <div style="margin-left:620px;margin-top:40px;font-size:12px;">
+                <span style="color:red;">*</span>
+                <span>邮箱</span>
+                <span style="margin-left:30px;">
+                    <el-input v-model="candidateInfo.mail" size="small" style="width:200px;"></el-input>
+                </span>
+            </div>
+        </div>
+        <!--考试须知-->
+        <div v-if="state===2">
+            <div style="margin-left:600px;margin-top:30px;">
+                <span>1.考试开始时间:</span>
+                <span style="margin-left:10px;">2021-1-27 09:30</span>
+            </div>
+            <div style="margin-left:600px;margin-top:15px;">
+                <span>2.考试时长:</span>
+                <span>120分钟</span>
+            </div>
+            <div style="margin-left:600px;margin-top:15px;">
+                <span>3.笔试开始后</span>
+                <span style="color:red;font-weight:700;">30</span>
+                <span>分钟不允许进入考试</span>
+            </div>
+            <div style="margin-left:600px;margin-top:15px;">
+                <span>4.本次笔试会记录跳出作答页面次数</span>
+            </div>
+            <div style="margin-left:600px;margin-top:15px;">
+                <span>5.考试过程中将会打开摄像头进行过程记录</span>
+            </div>
+            <div style="margin-left:600px;margin-top:15px;">
+                <span>6.考试过程中作答如果遇到问题,可检查设备网络再次从链接进入考试,作答记录将会保存</span>
+            </div>
+        </div>
+        <!--开始考试-->
+        <div v-if="state===3">
+
+        </div>
+    </div>
+    <div style="margin-left:645px;margin-top:20px;">
+        <el-button type="primary" style="width:265px;" v-if="state!=3">下一步</el-button>
+        <el-button type="primary" style="width:265px;" v-if="state===3">开始考试</el-button>
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data:{
+            candidateInfo:{
+                name: '',
+                mail: '',
+                phone: ''
+            },
+            state: 3,
+
+        },
+        created(){
+
+        },
+        methods:{
+
+        }
+    })
+</script>
+</html>
