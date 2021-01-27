@@ -19,7 +19,6 @@
         }
         .el-border{
             width:1490px;
-            height:380px;
             border: 1px solid rgb(230,230,230);
             margin-left:20px;
             margin-top:20px;
@@ -49,85 +48,130 @@
             padding: 5px 0px 5px 10px;
             font-size:13px;
         }
+        .el-frame{
+            background-color:#c6c6c6;
+            font-size:60px;
+            color:white;
+            width:120px;
+            height:140px;
+            border-radius:5px;
+            float:left;
+        }
+        .el-frame1{
+            font-size:60px;
+            color:blue;
+            width:120px;
+            height:140px;
+            border-radius:5px;
+            float:left;
+            background-color:#f2f5ff;
+        }
     </style>
 </head>
 <body>
 <div id="app">
     <div class="el-header">
-        <div style="margin-left:5px;padding-top:15px;font-weight:700;">后端研发</div>
+        <div style="margin-left:5px;padding-top:15px;font-weight:700;">{{exam.exam_name}}</div>
     </div>
     <div class="el-border">
         <div class="el-bg">
             <div style="margin-left:150px;padding-top:25px;float:left; ">
-                <div class="el-button1">1</div>
+                <div :class="state===1?'el-button1':'el-button2'">1</div>
                 <div style="margin-top:5px;margin-left:-15px;">信息登记</div>
             </div>
             <div style="float:left;margin-left:520px;padding-top:25px;">
-                <div class="el-button2">2</div>
+                <div :class="state===2?'el-button1':'el-button2'">2</div>
                 <div style="margin-top:5px;margin-left:-15px;">考前须知</div>
             </div>
             <div style="float:left;margin-left:500px;padding-top:25px;">
-                <div class="el-button2">3</div>
+                <div :class="state===3?'el-button1':'el-button2'">3</div>
                 <div style="margin-top:5px;margin-left:-15px">开始考试</div>
             </div>
         </div>
         <!--信息登记-->
-        <div v-if="state===1">
-            <div style="margin-left:620px;margin-top:40px;font-size:12px;">
-                <span style="color:red;">*</span>
-                <span>姓名</span>
-                <span style="margin-left:30px;">
-                    <el-input v-model="candidateInfo.name" size="small" style="width:200px;"></el-input>
-                </span>
-            </div>
-            <div style="margin-left:620px;margin-top:40px;font-size:12px;">
-                <span style="color:red;">*</span>
-                <span>手机</span>
-                <span style="margin-left:30px;">
-                    <el-input v-model="candidateInfo.phone" size="small" style="width:200px;"></el-input>
-                </span>
-            </div>
-            <div style="margin-left:620px;margin-top:40px;font-size:12px;">
-                <span style="color:red;">*</span>
-                <span>邮箱</span>
-                <span style="margin-left:30px;">
-                    <el-input v-model="candidateInfo.mail" size="small" style="width:200px;"></el-input>
-                </span>
+        <div v-if="state===1" style="margin-bottom:70px;">
+            <div style="margin-left:600px;padding-top:50px;font-size:12px;" v-for="(item,index) in exam.exam_user_info">
+                <div style="color:red;float:left;" v-if="item.isMust==='2'">*</div>
+                <div style="float:left;width:50px;" :style="{'margin-left':item.isMust==='1'?'10px':'5px'}">{{item.name}}</div>
+                <div style="margin-left:30px;float:left;margin-top:-5px;">
+                    <el-input v-model="candidateInfo[index]" size="small" style="width:200px;"></el-input>
+                </div>
             </div>
         </div>
         <!--考试须知-->
-        <div v-if="state===2">
+        <div v-if="state===2" style="margin-bottom:70px;">
             <div style="margin-left:600px;margin-top:30px;">
-                <span>1.考试开始时间:</span>
-                <span style="margin-left:10px;">2021-1-27 09:30</span>
+                <span>考试开始时间:</span>
+                <span style="margin-left:10px;">{{exam.exam_start_time}}</span>
             </div>
             <div style="margin-left:600px;margin-top:15px;">
-                <span>2.考试时长:</span>
-                <span>120分钟</span>
+                <span>考试时长:</span>
+                <span>{{exam.exam_longTime}}分钟</span>
             </div>
             <div style="margin-left:600px;margin-top:15px;">
-                <span>3.笔试开始后</span>
-                <span style="color:red;font-weight:700;">30</span>
+                <span>笔试开始后</span>
+                <span style="color:red;font-weight:700;">{{exam.exam_noEntry_time}}</span>
                 <span>分钟不允许进入考试</span>
             </div>
-            <div style="margin-left:600px;margin-top:15px;">
-                <span>4.本次笔试会记录跳出作答页面次数</span>
+            <div style="margin-left:600px;margin-top:15px;" v-if="exam.exam_jumpOut_number===1">
+                <span>本次笔试会记录跳出作答页面次数</span>
+            </div>
+            <div style="margin-left:600px;margin-top:15px;" v-if="exam.exam_recording===1">
+                <span>考试过程中将会打开摄像头进行过程记录</span>
             </div>
             <div style="margin-left:600px;margin-top:15px;">
-                <span>5.考试过程中将会打开摄像头进行过程记录</span>
+                <span>考试过程中作答如果遇到问题,可检查设备网络再次从链接进入考试,作答记录将会保存</span>
             </div>
-            <div style="margin-left:600px;margin-top:15px;">
-                <span>6.考试过程中作答如果遇到问题,可检查设备网络再次从链接进入考试,作答记录将会保存</span>
+        </div>
+        <!--等待考试-->
+        <div v-if="state===3" style="margin-bottom:190px;">
+            <div style="margin-left:470px;margin-top:50px;">
+                <div style="margin-left:200px;margin-top:20px;font-size:14px;">距笔试开始还有</div>
+                <div style="margin-top:15px;">
+                    <div class="el-frame">
+                        <div style="margin-left:25px;margin-top:10px;">{{time.day}}</div>
+                        <div style="margin-left:45px;margin-top:10px;font-size:24px;">天</div>
+                    </div>
+                    <div class="el-frame" style="margin-left:10px;">
+                        <div style="margin-left:25px;margin-top:10px;">{{time.hour}}</div>
+                        <div style="margin-left:35px;margin-top:10px;font-size:24px;">小时</div>
+                    </div>
+                    <div class="el-frame" style="margin-left:10px;">
+                        <div style="margin-left:25px;margin-top:10px;">{{time.minute}}</div>
+                        <div style="margin-left:35px;margin-top:10px;font-size:24px;">分钟</div>
+                    </div>
+                    <div class="el-frame" style="margin-left:10px;">
+                        <div style="margin-left:25px;margin-top:10px;">{{time.second}}</div>
+                        <div style="margin-left:45px;margin-top:10px;font-size:24px;">秒</div>
+                    </div>
+                </div>
             </div>
         </div>
         <!--开始考试-->
-        <div v-if="state===3">
-
+        <div v-if="state===4" style="margin-bottom:190px;">
+            <div style="margin-left:550px;margin-top:50px;">
+                <div style="margin-left:150px;margin-top:20px;font-size:14px;">距笔试结束还有</div>
+                <div style="margin-top:15px;">
+                    <div class="el-frame1" style="margin-left:10px;">
+                        <div style="margin-left:25px;margin-top:10px;">{{time.hour}}</div>
+                        <div style="margin-left:35px;margin-top:10px;font-size:24px;">小时</div>
+                    </div>
+                    <div class="el-frame1" style="margin-left:10px;">
+                        <div style="margin-left:25px;margin-top:10px;">{{time.minute}}</div>
+                        <div style="margin-left:35px;margin-top:10px;font-size:24px;">分钟</div>
+                    </div>
+                    <div class="el-frame1" style="margin-left:10px;">
+                        <div style="margin-left:25px;margin-top:10px;">{{time.second}}</div>
+                        <div style="margin-left:45px;margin-top:10px;font-size:24px;">秒</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div style="margin-left:645px;margin-top:20px;">
-        <el-button type="primary" style="width:265px;" v-if="state!=3">下一步</el-button>
-        <el-button type="primary" style="width:265px;" v-if="state===3">开始考试</el-button>
+    <div style="margin-left:635px;margin-top:20px;">
+        <el-button type="primary" style="width:280px;" v-if="state===1||state===2" @click="next">下一步</el-button>
+        <el-button type="primary" style="width:280px;" v-if="state===3" disabled>开始考试</el-button>
+        <el-button type="primary" style="width:280px;" v-if="state===4">开始考试</el-button>
     </div>
 </div>
 </body>
@@ -135,19 +179,119 @@
     new Vue({
         el: '#app',
         data:{
-            candidateInfo:{
-                name: '',
-                mail: '',
-                phone: ''
+            candidateInfo:[],
+            state: 1,
+            time:{
+                day: '',
+                hour: '',
+                minute: '',
+                second: ''
             },
-            state: 3,
-
+            exam:{}
         },
         created(){
-
+            this.getExamInfo();
         },
         methods:{
-
+            showTime(){
+                let the=new Date(this.exam.exam_start_time+'');
+                if(parseInt(the.getTime())<parseInt(new Date().getTime())){
+                    this.state=4;
+                    this.showStartExamTime();
+                }else{
+                    let timer = setInterval(() => {
+                        let date = the - new Date();
+                        let days = Math.floor(date / 1000 / 60 / 60 / 24) // 从这里开始
+                        let daysmod = date - days * 24 *60 * 60 * 1000
+                        let hours = Math.floor(daysmod / 1000 / 60 / 60)
+                        let hoursmod = date - (days * 24 *60 * 60 * 1000) - (hours * 1000 * 60 * 60)
+                        let minutes = Math.floor(hoursmod / 1000 / 60)
+                        let minutesmod = date - (days * 24 *60 * 60 * 1000) - (hours * 1000 * 60 * 60) - (minutes * 1000 * 60)
+                        let seconds = Math.floor(minutesmod / 1000) // 到这里结束，是将总毫秒转化成对应天数+小时数+分钟数+秒数的转换方法
+                        this.timeUtils(days,hours,minutes,seconds);
+                    }, 1000);
+                }
+            },
+            showStartExamTime(){
+                let time=this.exam.exam_start_time;
+                let time1=time.split(" ")[1].split(":")[0];
+                let time2=time.split(" ")[1].split(":")[1];
+                time1=parseInt(time1)+Math.floor(this.exam.exam_longTime/60);
+                time2=parseInt(time2)+this.exam.exam_longTime%60;
+                if(time2>=60){
+                    time2-=60;
+                    time1++;
+                }
+                let timeStr=time.split(" ")[0]+" "+time1+":"+time2;
+                let endTime=new Date(timeStr);
+                console.log(endTime);
+                let timer=setInterval(() => {
+                    let date=endTime-new Date();
+                    let days = Math.floor(date / 1000 / 60 / 60 / 24) // 从这里开始
+                    let daysmod = date - days * 24 *60 * 60 * 1000
+                    let hours = Math.floor(daysmod / 1000 / 60 / 60)
+                    let hoursmod = date - (days * 24 *60 * 60 * 1000) - (hours * 1000 * 60 * 60)
+                    let minutes = Math.floor(hoursmod / 1000 / 60)
+                    let minutesmod = date - (days * 24 *60 * 60 * 1000) - (hours * 1000 * 60 * 60) - (minutes * 1000 * 60)
+                    let seconds = Math.floor(minutesmod / 1000) // 到这里结束，是将总毫秒转化成对应天数+小时数+分钟数+秒数的转换方法
+                    this.timeUtils(days,hours,minutes,seconds);
+                }, 1000);
+            },
+            timeUtils(day,hour,minute,second){
+                if(day+hour+minute+second===0){
+                    this.state=4;
+                    this.showStartExamTime();
+                }else{
+                    this.time.day=day<10?('0'+day):day;
+                    this.time.hour=hour<10?('0'+hour):hour;
+                    this.time.minute=minute<10?('0'+minute):minute;
+                    this.time.second=second<10?('0'+second):second;
+                }
+            },
+            async getExamInfo(){
+                let url=window.location.href.split("/");
+                let result=await axios.get('/getOneExamInfo?exam_id='+url[url.length-1]);
+                this.exam=result.data;
+                this.exam.exam_user_info=eval('('+this.exam.exam_user_info+')');
+            },
+            next(){
+              if(this.state===1){
+                  this.judgeExamUserInfoExist();
+               }else{
+                  this.state++;
+                  this.showTime();
+              }
+            },
+            async judgeExamUserInfoExist(){
+                let params=new FormData();
+                let nameIndex,phoneIndex,mailIndex;
+                for(let i=0;i<this.exam.exam_user_info.length;i++){
+                    if(this.exam.exam_user_info[i].name==='姓名'){
+                        nameIndex=i;
+                    }else if(this.exam.exam_user_info[i].name==='电话号码'){
+                        phoneIndex=i;
+                    }else if(this.exam.exam_user_info[i].name==='邮箱'){
+                        mailIndex=i;
+                    }
+                }
+                params.append("exam_id",this.exam.exam_id);
+                params.append("candidate_name",this.candidateInfo[nameIndex]);
+                params.append("candidate_phone",this.candidateInfo[phoneIndex]);
+                params.append("candidate_mail",this.candidateInfo[mailIndex]);
+                let result=await axios({
+                    method: 'post',
+                    url: '/judgeExamUserInfoExist',
+                    data: params,
+                });
+                if(result.data===1){
+                    this.state++;
+                }else{
+                    this.$message({
+                        message: '个人信息不存在,请确认是否正确,或联系笔试负责人',
+                        type: 'warning'
+                    });
+                }
+            }
         }
     })
 </script>

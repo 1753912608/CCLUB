@@ -649,4 +649,24 @@ public class ExamController {
                                     String[] questionIdList){
         return examService.addQuestionBySubject(exam_id,questionIdList);
     }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param candidate_name
+     * @param candidate_phone
+     * @param candidate_mail
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/judgeExamUserInfoExist")
+    public int judgeExamUserInfoExist(String exam_id,
+                                      String candidate_name,
+                                      String candidate_phone,
+                                      String candidate_mail)
+    {
+        return examService.judgeExamUserInfoExist(exam_id,candidate_name,candidate_phone,candidate_mail);
+    }
 }

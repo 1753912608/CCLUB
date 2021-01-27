@@ -421,7 +421,27 @@ public interface ExamMapper {
 
 
 
-
+    /**
+     *
+     * @param exam_id
+     * @param newState
+     * 更新笔试的状态
+     */
     @Update("update exam set exam_state=#{newState} where exam_id=#{exam_id}")
     void updateExamState(String exam_id,int newState);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param name
+     * @param phone
+     * @param mail
+     * @return
+     */
+    @Select("select * from exam_user where candidate_name=#{name} " +
+            "and candidate_phone=#{phone} and candidate_mail=#{mail} " +
+            "and exam_id=#{exam_id}")
+    exam_user judgeExamUserInfoExist(String exam_id,String name,String phone,String mail);
 }

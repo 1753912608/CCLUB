@@ -331,4 +331,9 @@ public class ExamServiceImpl implements ExamService {
         }
         return examList;
     }
+
+    @Override
+    public int judgeExamUserInfoExist(String exam_id, String candidate_name, String candidate_phone, String candidate_mail) {
+        return examMapper.judgeExamUserInfoExist(exam_id,candidate_name,candidate_phone,candidate_mail)==null?0:1;
+    }
 }

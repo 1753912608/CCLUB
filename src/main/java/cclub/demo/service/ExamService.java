@@ -295,4 +295,17 @@ public interface ExamService {
      * 从题库中导入笔试题
      */
     int addQuestionBySubject(String exam_id,String[] questionIdList);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param candidate_name
+     * @param candidate_phone
+     * @param candidate_mail
+     * @return
+     * 获选人进入笔试页面校验身份是否存在
+     */
+    int judgeExamUserInfoExist(String exam_id,String candidate_name,String candidate_phone,String candidate_mail);
 }
