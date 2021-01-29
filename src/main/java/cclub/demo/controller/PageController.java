@@ -120,7 +120,7 @@ public class PageController {
     }
 
 
-    @RequestMapping("/after_exam_end/{exam_id}")
+    @RequestMapping("/test_after_exam_end/{exam_id}")
     public String after_exam_end(){
         return "after_exam_end";
     }

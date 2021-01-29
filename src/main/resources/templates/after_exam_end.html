@@ -2,9 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>CCLUB在线笔试</title>
+    <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        *{
+            padding: 0 0px;
+            margin: 0 0px;
+        }
+        .el-header{
+            width:100%;
+            height:50px;
+            background-color:#f2f5ff;
+        }
+        .el-border{
+            width:1490px;
+            height:200px;
+            border:1px solid rgb(230,230,230);
+            margin-left:20px;
+            margin-top:20px;
+        }
+    </style>
 </head>
 <body>
-
+<div id="app">
+    <div class="el-header">
+        <div style="margin-left:10px;padding-top:15px;font-weight:700;">{{exam.exam_name}}</div>
+    </div>
+    <div class="el-border">
+        <div style="margin-left:700px;margin-top:60px;">
+            <div style="margin-left:10px;">
+                <img src="../img/exam_on.png" alt="" width="60px">
+            </div>
+            <div style="margin-top:10px;">
+                笔试已结束
+            </div>
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    new Vue({
+        el: '#app',
+        data:{
+            exam:{},
+        },
+        created(){
+            this.getExamInfo();
+        },
+        methods:{
+            async getExamInfo(){
+                let url=window.location.href.split("/");
+                let result=await axios.get('/getOneExamInfo?exam_id='+url[url.length-1]);
+                this.exam=result.data;
+                this.exam.exam_user_info=eval('('+this.exam.exam_user_info+')');
+            }
+        }
+    })
+</script>
 </html>

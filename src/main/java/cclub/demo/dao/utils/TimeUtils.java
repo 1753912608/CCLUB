@@ -40,8 +40,8 @@ public class TimeUtils {
         String str2=exam.getExam_start_time().split(" ")[1];
         int year=Integer.parseInt(str1.split("-")[0]),month=Integer.parseInt(str1.split("-")[1]),day=Integer.parseInt(str1.split("-")[2]);
         int hour= Integer.parseInt(str2.split(":")[0]),minute=Integer.parseInt(str2.split(":")[1]);
-        long exam_time=(year-1)*365*24*60+(month-1)*30+(hour-1)*60+minute;
-        long now_time=(now_year-1)*365*24*60+(now_month-1)*30+(now_hour-1)*60+now_minute;
+        long exam_time=(year-1)*365*24*60+(month-1)*30*60*24+(day-1)*60*24+(hour-1)*60+minute;
+        long now_time=(now_year-1)*365*24*60+(now_month-1)*30*60*24+(now_day-1)*60*24+(now_hour-1)*60+now_minute;
         if(exam_time>now_time){
             return 0;
         }else if(exam_time+exam_long>=now_time){
