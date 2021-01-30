@@ -1,12 +1,14 @@
 package cclub.demo.impl.redisUtils;
 
 import cclub.demo.dao.Interview;
+import cclub.demo.dao.exam.cacheQuestion;
 import com.google.gson.Gson;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -63,6 +65,37 @@ public class RedisServiceImpl {
      */
     public List<List<String>> getCandidateExcel(String user_id){
         return (List<List<String>>)redisTemplate.opsForValue().get("candidateExcel:"+user_id);
+    }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param question_id
+     * @param user_id
+     * @param answer
+     * 将用户作答的答案进行缓存
+     */
+    public void setCacheQestion(String exam_id,String question_id,String user_id,String answer){
+        redisTemplate.opsForValue().set(exam_id+":"+user_id+":"+question_id,answer);
+    }
+
+
+    /**
+     *
+     * @param exam_id
+     * @param user_id
+     * @param questionId
+     * @return
+     * 获取用户缓存的作答记录
+     */
+    public List<cacheQuestion>getCacheQuestionList(String exam_id,String user_id,List<String>questionId){
+        List<cacheQuestion>cacheQuestions=new ArrayList<>();
+        for(String str:questionId){
+            cacheQuestions.add(new cacheQuestion(str,(String)redisTemplate.opsForValue().get(exam_id+":"+user_id+":"+str)));
+        }
+        return cacheQuestions;
     }
 
 }

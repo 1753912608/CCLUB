@@ -307,7 +307,7 @@
             },
             joinExam(){
                 if(this.isCanJoinExam()){
-                    window.location.href="/test_examing/"+this.exam_id;
+                    window.location.href="/test_examing/"+this.exam.exam_id;
                 }else{
                     this.$message({
                         message: '笔试开始'+this.exam.exam_noEntry_time+"后不允许进入",

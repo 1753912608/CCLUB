@@ -50,7 +50,7 @@
             距离结束:
         </div>
         <div style="float:left;color:#5272ff;font-size:24px;font-weight:700;margin-left:10px;margin-top:10px;">
-            00:58:38
+            {{time.hour}}:{{time.minute}}:{{time.second}}
         </div>
         <div style="float:left;margin-top:10px;margin-left:15px;">
             <el-button type="primary" size="small">
@@ -252,7 +252,12 @@
             selected:[],
             input: '',
             nowQuestionType:0,
-            finishQuestion:[]
+            finishQuestion:[],
+            time:{
+                hour: '',
+                minute: '',
+                second: ''
+            }
         },
         created(){
             this.getExamInfo();
@@ -264,6 +269,7 @@
                 let result=await axios.get('/getOneExamInfo?exam_id='+url[url.length-1]);
                 this.exam=result.data;
                 this.exam.exam_user_info=eval('('+this.exam.exam_user_info+')');
+                this.showExamTime();
             },
             async getQuestionList() {
                 let url=window.location.href.split("/");
@@ -302,6 +308,48 @@
             nextQuestion(){
                 this.nowQuestionIndex++;
                 this.getQuestionType();
+            },
+            showExamTime(){
+                let time=this.exam.exam_start_time;
+                let time1=time.split(" ")[1].split(":")[0];
+                let time2=time.split(" ")[1].split(":")[1];
+                time1=parseInt(time1)+Math.floor(this.exam.exam_longTime/60);
+                time2=parseInt(time2)+this.exam.exam_longTime%60;
+                if(time2>=60){
+                    time2-=60;
+                    time1++;
+                }
+                let timeStr=time.split(" ")[0]+" "+time1+":"+time2;
+                let endTime=new Date(timeStr);
+                console.log(endTime);
+                let timer=setInterval(() => {
+                    let date=endTime-new Date();
+                    if(date<=0){
+                        window.location.href="/test_after_exam_end/"+this.exam.exam_id;
+                    }
+                    let days = Math.floor(date / 1000 / 60 / 60 / 24) // 从这里开始
+                    let daysmod = date - days * 24 *60 * 60 * 1000
+                    let hours = Math.floor(daysmod / 1000 / 60 / 60)
+                    let hoursmod = date - (days * 24 *60 * 60 * 1000) - (hours * 1000 * 60 * 60)
+                    let minutes = Math.floor(hoursmod / 1000 / 60)
+                    let minutesmod = date - (days * 24 *60 * 60 * 1000) - (hours * 1000 * 60 * 60) - (minutes * 1000 * 60)
+                    let seconds = Math.floor(minutesmod / 1000) // 到这里结束，是将总毫秒转化成对应天数+小时数+分钟数+秒数的转换方法
+                    this.timeUtils(days,hours,minutes,seconds);
+                }, 1000);
+            },
+            timeUtils(day,hour,minute,second){
+                if(day+hour+minute+second===0){
+                    this.state=4;
+                    this.showStartExamTime();
+                }else{
+                    this.time.day=day<10?('0'+day):day;
+                    this.time.hour=hour<10?('0'+hour):hour;
+                    this.time.minute=minute<10?('0'+minute):minute;
+                    this.time.second=second<10?('0'+second):second;
+                }
+            },
+            selectQuestionOption(){
+
             }
         }
     })

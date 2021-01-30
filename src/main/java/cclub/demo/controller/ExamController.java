@@ -669,4 +669,64 @@ public class ExamController {
     {
         return examService.judgeExamUserInfoExist(exam_id,candidate_name,candidate_phone,candidate_mail);
     }
+
+
+    /**
+     *
+     * @param exam_id
+     * @param request
+     * @return
+     * 当用户断线后获取缓存的作答记录
+     */
+    @ResponseBody
+    @RequestMapping("/getExamQuestionUserAnswer")
+    public List<cacheQuestion>getExamQuestionUserAnswer(String exam_id,
+                                                 HttpServletRequest request)
+    {
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        List<String>questionId=new ArrayList<>();
+        List<choice_question>choice_questions=examService.getChoiceQuestionListByExamId(exam_id);
+        List<judge_question>judge_questions=examService.getJudgeQuestionListByExamId(exam_id);
+        List<completion_question>completion_questions=examService.getCompletionQuestionListByExamId(exam_id);
+        for(choice_question choice:choice_questions){
+            questionId.add(choice.getChoice_question_id());
+        }
+        for(judge_question judge:judge_questions){
+            questionId.add(judge.getJudge_question_id());
+        }
+        for(completion_question completion:completion_questions){
+            questionId.add(completion.getCompletion_question_id());
+        }
+        return redisService.getCacheQuestionList(exam_id,user_id,questionId);
+    }
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param question_id
+     * @param answer
+     * @param request
+     * @return
+     * 将用户作答题目答案进行缓存
+     */
+    @ResponseBody
+    @RequestMapping("/cacheUserAnswer")
+    public int cacheUserAnswer(String exam_id,
+                               String question_id,
+                               String answer,
+                               HttpServletRequest request)
+    {
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        try {
+            redisService.setCacheQestion(exam_id,question_id,user_id,answer);
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+        return 1;
+    }
 }
