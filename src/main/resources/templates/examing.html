@@ -70,14 +70,14 @@
                 <div class="el-option">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-radio v-model="radio" label="1">{{nowQuestion.judge_question_option_true}}</el-radio>
+                            <el-radio v-model="questionAnswer[nowQuestionIndex-1].judge" :label="nowQuestion.judge_question_option_true">{{nowQuestion.judge_question_option_true}}</el-radio>
                         </div>
                     </a>
                 </div>
                 <div class="el-option">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-radio v-model="radio" label="2">{{nowQuestion.judge_question_option_false}}</el-radio>
+                            <el-radio v-model="questionAnswer[nowQuestionIndex-1].judge" :label="nowQuestion.judge_question_option_false">{{nowQuestion.judge_question_option_false}}</el-radio>
                         </div>
                     </a>
                 </div>
@@ -93,49 +93,63 @@
                 <div class="el-option">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-radio v-model="radio" label="1">{{nowQuestion.choice_question_option_A}}</el-radio>
+                            <el-radio v-model="questionAnswer[nowQuestionIndex-1].singleChoice" :label="nowQuestion.choice_question_option_A">
+                                {{nowQuestion.choice_question_option_A}}
+                            </el-radio>
                         </div>
                     </a>
                 </div>
                 <div class="el-option">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-radio v-model="radio" label="2">{{nowQuestion.choice_question_option_B}}</el-radio>
+                            <el-radio v-model="questionAnswer[nowQuestionIndex-1].singleChoice" :label="nowQuestion.choice_question_option_B">
+                                {{nowQuestion.choice_question_option_B}}
+                            </el-radio>
                         </div>
                     </a>
                 </div>
                 <div class="el-option">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-radio v-model="radio" label="2">{{nowQuestion.choice_question_option_C}}</el-radio>
+                            <el-radio v-model="questionAnswer[nowQuestionIndex-1].singleChoice" :label="nowQuestion.choice_question_option_C">
+                                {{nowQuestion.choice_question_option_C}}
+                            </el-radio>
                         </div>
                     </a>
                 </div>
                 <div class="el-option" v-if="nowQuestion.choice_question_option_D!=null">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-radio v-model="radio" label="2">{{nowQuestion.choice_question_option_D}}</el-radio>
+                            <el-radio v-model="questionAnswer[nowQuestionIndex-1].singleChoice" :label="nowQuestion.choice_question_option_D">
+                                {{nowQuestion.choice_question_option_D}}
+                            </el-radio>
                         </div>
                     </a>
                 </div>
                 <div class="el-option" v-if="nowQuestion.choice_question_option_E!=null">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-radio v-model="radio" label="2">{{nowQuestion.choice_question_option_E}}</el-radio>
+                            <el-radio v-model="questionAnswer[nowQuestionIndex-1].singleChoice" :label="nowQuestion.choice_question_option_E">
+                                {{nowQuestion.choice_question_option_E}}
+                            </el-radio>
                         </div>
                     </a>
                 </div>
                 <div class="el-option" v-if="nowQuestion.choice_question_option_F!=null">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-radio v-model="radio" label="2">{{nowQuestion.choice_question_option_F}}</el-radio>
+                            <el-radio v-model="questionAnswer[nowQuestionIndex-1].singleChoice" :label="nowQuestion.choice_question_option_F">
+                                {{nowQuestion.choice_question_option_F}}
+                            </el-radio>
                         </div>
                     </a>
                 </div>
                 <div class="el-option" v-if="nowQuestion.choice_question_option_G!=null">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-radio v-model="radio" label="2">{{nowQuestion.choice_question_option_G}}</el-radio>
+                            <el-radio v-model="questionAnswer[nowQuestionIndex-1].singleChoice" :label="nowQuestion.choice_question_option_G">
+                                {{nowQuestion.choice_question_option_G}}
+                            </el-radio>
                         </div>
                     </a>
                 </div>
@@ -151,49 +165,63 @@
                 <div class="el-option">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-checkbox v-model="selected" :label="1">{{nowQuestion.choice_question_option_A}}</el-checkbox>
+                            <el-checkbox  v-model="questionAnswer[nowQuestionIndex-1].multipleChoice" :label="nowQuestion.choice_question_option_A" @change="change">
+                                {{nowQuestion.choice_question_option_A}}
+                            </el-checkbox>
                         </div>
                     </a>
                 </div>
                 <div class="el-option">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-checkbox v-model="selected" :label="2">{{nowQuestion.choice_question_option_B}}</el-checkbox>
+                            <el-checkbox  v-model="questionAnswer[nowQuestionIndex-1].multipleChoice" :label="nowQuestion.choice_question_option_B" @change="change">
+                                {{nowQuestion.choice_question_option_B}}
+                            </el-checkbox>
                         </div>
                     </a>
                 </div>
                 <div class="el-option">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-checkbox v-model="selected" :label="3">{{nowQuestion.choice_question_option_C}}</el-checkbox>
+                            <el-checkbox v-model="questionAnswer[nowQuestionIndex-1].multipleChoice" :label="nowQuestion.choice_question_option_C" @change="change">
+                                {{nowQuestion.choice_question_option_C}}
+                            </el-checkbox>
                         </div>
                     </a>
                 </div>
                 <div class="el-option" v-if="nowQuestion.choice_question_option_D!=null">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-checkbox v-model="selected" :label="4">{{nowQuestion.choice_question_option_D}}</el-checkbox>
+                            <el-checkbox  v-model="questionAnswer[nowQuestionIndex-1].multipleChoice" :label="nowQuestion.choice_question_option_D" @change="change">
+                                {{nowQuestion.choice_question_option_D}}
+                            </el-checkbox>
                         </div>
                     </a>
                 </div>
                 <div class="el-option" v-if="nowQuestion.choice_question_option_E!=null">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-checkbox v-model="selected" :label="4">{{nowQuestion.choice_question_option_E}}</el-checkbox>
+                            <el-checkbox v-model="questionAnswer[nowQuestionIndex-1].multipleChoice" :label="nowQuestion.choice_question_option_E">
+                                {{nowQuestion.choice_question_option_E}}
+                            </el-checkbox>
                         </div>
                     </a>
                 </div>
                 <div class="el-option" v-if="nowQuestion.choice_question_option_F!=null">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-checkbox v-model="selected" :label="4">{{nowQuestion.choice_question_option_F}}</el-checkbox>
+                            <el-checkbox v-model="questionAnswer[nowQuestionIndex-1].multipleChoice" :label="nowQuestion.choice_question_option_F">
+                                {{nowQuestion.choice_question_option_F}}
+                            </el-checkbox>
                         </div>
                     </a>
                 </div>
                 <div class="el-option" v-if="nowQuestion.choice_question_option_G!=null">
                     <a href="javascript:void(0);">
                         <div style="padding:8px;">
-                            <el-checkbox v-model="selected" :label="4">{{nowQuestion.choice_question_option_G}}</el-checkbox>
+                            <el-checkbox v-model="questionAnswer[nowQuestionIndex-1].multipleChoice" :label="nowQuestion.choice_question_option_G">
+                                {{nowQuestion.choice_question_option_G}}
+                            </el-checkbox>
                         </div>
                     </a>
                 </div>
@@ -207,7 +235,7 @@
             </div>
             <div style="margin-left:130px;padding-top:30px;">
                 <div v-for="i in nowQuestion.completion_question_answer.split(',').length" style="margin-top:15px;">
-                    <el-input v-model="input" size="small" style="width:1300px;"></el-input>
+                    <el-input v-model="questionAnswer[nowQuestionIndex-1].completion[i]" size="small" style="width:1300px;"></el-input>
                 </div>
             </div>
         </div>
@@ -257,7 +285,12 @@
                 hour: '',
                 minute: '',
                 second: ''
-            }
+            },
+            questionAnswer:[],
+            test:[]
+        },
+        mounted(){
+            document.addEventListener('visibilitychange', this.handleVisiable)
         },
         created(){
             this.getExamInfo();
@@ -280,8 +313,10 @@
                 result=await axios.get('/getCompletionQuestionListByExamId?exam_id='+url[url.length-1]);
                 this.completionQuestion=result.data;
                 this.getQuestionType();
+                this.initQuestionAnswer();
             },
             clickQuestion(index){
+                this.cacheQuestionOption();
                 this.nowQuestionIndex=index;
                 this.getQuestionType();
             },
@@ -302,10 +337,12 @@
                 }
             },
             preQuestion(){
+                this.cacheQuestionOption();
                 this.nowQuestionIndex--;
                 this.getQuestionType();
             },
             nextQuestion(){
+                this.cacheQuestionOption();
                 this.nowQuestionIndex++;
                 this.getQuestionType();
             },
@@ -348,8 +385,50 @@
                     this.time.second=second<10?('0'+second):second;
                 }
             },
-            selectQuestionOption(){
+            async cacheQuestionOption(){
+                let answer= '',question_id;
+                if(this.nowQuestionType===1){
+                    answer=this.questionAnswer[this.nowQuestionIndex-1].singleChoice;
+                    question_id=this.nowQuestion.choice_question_id;
+                }else if(this.nowQuestionType===2){
+                    answer=this.questionAnswer[this.nowQuestionIndex-1].multipleChoice;
+                    question_id=this.nowQuestion.choice_question_id;
+                }else if(this.nowQuestionType===3){
+                    answer=this.questionAnswer[this.nowQuestionIndex-1].judge;
+                    question_id=this.nowQuestion.judge_question_id;
+                }else if(this.nowQuestionType===4){
+                    answer=this.questionAnswer[this.nowQuestionIndex-1].completion;
+                    question_id=this.nowQuestion.completion_question_id;
+                }
+                let result=await axios.get('/cacheUserAnswer?exam_id='+this.exam.exam_id+"&question_id="+question_id+"&answer="+answer);
 
+            },
+            initQuestionAnswer(){
+                let size=this.choiceQuestion.length+this.judgeQuestion.length+this.completionQuestion.length;
+                for(let i=0;i<size;i++){
+                    let obj={
+                      'singleChoice': '',
+                      'multipleChoice': [],
+                      'judge':'',
+                      'completion': []
+                    };
+                    this.questionAnswer.push(obj);
+                }
+            },
+            change(){
+                console.log(this.questionAnswer[this.nowQuestionIndex-1].multipleChoice);
+            },
+            getCacheQuestionOption(){
+
+            },
+            handleVisiable(e){
+                if(document.hidden){
+                    this.$message({
+                        showClose: true,
+                        message: '请不要切换页面,目前已经切换2次',
+                        type: 'error'
+                    });
+                }
             }
         }
     })
