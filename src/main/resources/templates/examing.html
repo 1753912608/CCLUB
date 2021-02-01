@@ -314,6 +314,7 @@
                 this.completionQuestion=result.data;
                 this.getQuestionType();
                 this.initQuestionAnswer();
+                this.getCacheQuestionOption();
             },
             clickQuestion(index){
                 this.cacheQuestionOption();
@@ -391,7 +392,12 @@
                     answer=this.questionAnswer[this.nowQuestionIndex-1].singleChoice;
                     question_id=this.nowQuestion.choice_question_id;
                 }else if(this.nowQuestionType===2){
-                    answer=this.questionAnswer[this.nowQuestionIndex-1].multipleChoice;
+                    for(let i=0;i<this.questionAnswer[this.nowQuestionIndex-1].multipleChoice.length;i++){
+                        answer+=this.questionAnswer[this.nowQuestionIndex-1].multipleChoice[i];
+                        if(i<this.questionAnswer[this.nowQuestionIndex-1].multipleChoice.length-1){
+                            answer+=',';
+                        }
+                    }
                     question_id=this.nowQuestion.choice_question_id;
                 }else if(this.nowQuestionType===3){
                     answer=this.questionAnswer[this.nowQuestionIndex-1].judge;
@@ -406,7 +412,16 @@
             initQuestionAnswer(){
                 let size=this.choiceQuestion.length+this.judgeQuestion.length+this.completionQuestion.length;
                 for(let i=0;i<size;i++){
+                    let question_id='';
+                    if(i<this.choiceQuestion.length){
+                        question_id=this.choiceQuestion[i].choice_question_id;
+                    }else if(i>=this.choiceQuestion.length&&i<this.judgeQuestion.length+this.choiceQuestion.length){
+                        question_id=this.judgeQuestion[i-this.choiceQuestion.length].judge_question_id;
+                    }else{
+                        question_id=this.completionQuestion[i-this.judgeQuestion.length-this.choiceQuestion.length].completion_question_id;
+                    }
                     let obj={
+                      'question_id': question_id,
                       'singleChoice': '',
                       'multipleChoice': [],
                       'judge':'',
@@ -416,16 +431,50 @@
                 }
             },
             change(){
+
                 console.log(this.questionAnswer[this.nowQuestionIndex-1].multipleChoice);
             },
-            getCacheQuestionOption(){
+            async getCacheQuestionOption(){
+                let result=await axios.get('/getExamQuestionUserAnswer?exam_id='+this.exam.exam_id);
+                let type={};
+                console.log(result.data);
+                let size=this.choiceQuestion.length+this.judgeQuestion.length+this.completionQuestion.length;
+                for(let i=0;i<size;i++){
+                    if(i<this.choiceQuestion.length){
+                        if(this.choiceQuestion[i].choice_question_answer.split(" ").length>1){
+                            type[i]=2;
+                        }else{
+                            type[i]=1;
+                        }
+                    }else if(i>=this.choiceQuestion.length&&i<this.judgeQuestion.length+this.choiceQuestion.length){
+                        type[i]=3;
+                    }else{
+                        type[i]=4;
+                    }
+                }
+                for(let i=0;i<result.data.length;i++){
+                    for(let j=0;j<this.questionAnswer.length;j++){
+                        if(result.data[i].question_id===this.questionAnswer[j].question_id){
+                            if(type[j]===1){
+                                this.questionAnswer[j].singleChoice=result.data[i].answer;
+                            }else if(type[j]===2){
+                                this.questionAnswer[i].multipleChoice=result.data[i].answer.split(",");
+                            }else if(type[j]===3){
+                                this.questionAnswer[j].judge=result.data[i].answer;
+                            }else{
 
+                            }
+                        }
+                    }
+                }
+                console.log(this.questionAnswer);
             },
-            handleVisiable(e){
+            async handleVisiable(e){
                 if(document.hidden){
+                    let result=await axios.get('/getExamUserSkipNumber?exam_id='+this.exam.exam_id);
                     this.$message({
                         showClose: true,
-                        message: '请不要切换页面,目前已经切换2次',
+                        message: '请不要切换页面,目前已经切换'+result.data+"次",
                         type: 'error'
                     });
                 }

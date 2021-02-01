@@ -281,15 +281,16 @@
                 let isLegal=true;
                 for(let i=0;i<tempList.length;i++){
                     let flag=0;
-                    for(let j=0;j<this.checkList.length;j++){
-                        if(this.checkList[i].name===tempList[i]){
+                    for(let j=0;j<this.list.length;j++){
+                        if(this.list[j].name===tempList[i]){
                             flag=1;
                             break;
                         }
                     }
                     if(flag===0){
+                        console.log(tempList[i])
                         isLegal=false;
-                        break;
+                        //break;
                     }
                 }
                 if(isLegal){

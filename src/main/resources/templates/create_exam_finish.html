@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CClub在线笔试</title>
+    <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        .number1{
+            color:#fff;
+            background-color:#5272ff;
+            width:30px;
+            height:30px;
+            border-radius:50%;
+            font-size:24px;
+            padding-left:13px;
+            padding-top:5px;
+            padding-bottom:5px;
+        }
+        .number2{
+            color:#5272ff;
+            background-color:#d0d9ff;
+            width:30px;
+            height:30px;
+            font-size:24px;
+            border-radius:50%;
+            padding-left:13px;
+            padding-top:5px;
+            padding-bottom:5px;
+        }
+        .el-border{
+            width:1340px;
+            height:300px;
+            border:1px solid rgb(230,230,230);
+            margin-left:50px;
+            margin-top:10px;
+        }
+        .el-bg1{
+            width:1320px;
+            height:130px;
+            background-color:#e9f8f5;
+            margin-left:10px;
+            margin-top:10px;
+        }
+        .el-bg2{
+            width:1320px;
+            height:140px;
+            background-color:#eff2ff;
+            margin-left:10px;
+            margin-top:10px;
+        }
+        .el-input{
+            width:420px;
+            height:20px;
+            border-radius:3px;
+            background-color:white;
+            padding:5px 5px 5px 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div style="margin-left:30px;margin-top:15px;font-size:24px;height:28px;">
+        <div style="float:left;">{{name}}</div>
+        <div style="float:left;margin-left:1100px;">
+            <a href="javascript:void(0);" style="text-decoration:none;color:rgb(60,60,60);font-size:14px;">视频面试</a>
+        </div>
+        <div style="float:left;margin-left:30px;">
+            <el-dropdown placement="bottom-start">
+                <span class="el-dropdown-link">{{userInfo.user_company}}
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item style="background-color:#f6f8ff;">{{userInfo.user_phone}}</el-dropdown-item>
+                    <el-dropdown-item disabled style="font-size:12px;">当前公司:</el-dropdown-item>
+                    <el-dropdown-item style="font-size:12px;">&nbsp;&nbsp;&nbsp;{{userInfo.user_company}}</el-dropdown-item>
+                    <el-dropdown-item >个人中心</el-dropdown-item>
+                    <el-dropdown-item divided>
+                        <a href="javascript:void(0);" @click="signOut" style="text-decoration:none;color:rgb(30,30,30);">
+                            退出登录
+                        </a>
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+    </div>
+    <el-divider></el-divider>
+    <div style="margin-top:30px;width:1340px;height:103px;background-color:#FBFBFF;margin-left:50px;">
+        <div style="margin-left:250px;padding-top:15px;float:left;">
+            <div class="number1">1</div>
+            <div style="color:#2b313a;font-size:12px;margin-top:15px;margin-left:-15px;">设置考试规则</div>
+        </div>
+        <div style="float:left;margin-left:350px;padding-top:15px;">
+            <div class="number1">2</div>
+            <div style="color:#8b8f94;font-size:12px;margin-top:15px;margin-left:-5px;">编辑题目</div>
+        </div>
+        <div style="float:left;margin-left:350px;padding-top:15px;">
+            <div class="number1">3</div>
+            <div style="color:#8b8f94;font-size:12px;margin-top:15px;margin-left:10px;">完成</div>
+        </div>
+    </div>
+    <div class="el-border">
+        <div class="el-bg1">
+            <div style="margin-left:650px;padding-top:20px;">
+                <img src="../img/exam_add_over.png" alt="">
+            </div>
+            <div style="margin-left:610px;margin-top:10px;">
+                您已创建完"{{exam.exam_name}}"
+            </div>
+        </div>
+        <div class="el-bg2">
+            <div style="margin-left:580px;font-size:13px;padding-top:30px;">请复制考试地址，发送给候选人</div>
+            <div style="margin-left:450px;font-size:13px;margin-top:15px;">
+                <div style="float:left;">考试地址</div>
+                <div class="el-input" style="float:left;margin-left:10px;margin-top:-5px;">{{url}}{{exam.exam_id}}</div>
+                <div style="float:left;">
+                    <el-button type="primary" size="small" style="width:80px;margin-left:10px;margin-top:-5px;">复制链接</el-button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="margin-left:650px;margin-top:30px;">
+        <el-button type="primary" size="small" style="width:150px;" @click="examList">返回考试列表</el-button>
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data:{
+            name: 'CCLUB 在线笔试',
+            userInfo:{
+                user_phone: '18229583486',
+                user_company: '茗少集团'
+            },
+            exam:{},
+            url: '127.0.0.1:8080/test_create_exam_finish/'
+        },
+        created(){
+            this.getExamInfo();
+        },
+        methods:{
+            signOut(){
+
+            },
+            examList(){
+                window.location.href="/test_exam";
+            },
+            async getExamInfo(){
+                let url=window.location.href.split("/");
+                let result=await axios.get('/getOneExamInfo?exam_id='+url[url.length-1]);
+                this.exam=result.data;
+                console.log(this.exam);
+            }
+        }
+    })
+</script>
+</html>

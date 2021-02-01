@@ -336,4 +336,16 @@ public class ExamServiceImpl implements ExamService {
     public int judgeExamUserInfoExist(String exam_id, String candidate_name, String candidate_phone, String candidate_mail) {
         return examMapper.judgeExamUserInfoExist(exam_id,candidate_name,candidate_phone,candidate_mail)==null?0:1;
     }
+
+    @Override
+    public void updateExamUserState(String exam_id, String candidate_name, String candidate_phone, String candidate_mail) {
+        examMapper.updateExamUserState(exam_id,candidate_name,candidate_phone,candidate_mail,1);
+    }
+
+    @Override
+    public int getExamUserSkipNumber(String exam_id, String exam_user_mail) {
+        int skip_number=examMapper.getExamUserSkipNumber(exam_id,exam_user_mail);
+        examMapper.updateExamUserSkipNumber(exam_id,exam_user_mail,skip_number+1);
+        return skip_number+1;
+    }
 }

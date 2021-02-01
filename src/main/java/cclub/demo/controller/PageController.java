@@ -124,4 +124,10 @@ public class PageController {
     public String after_exam_end(){
         return "after_exam_end";
     }
+
+
+    @RequestMapping("/test_create_exam_finish/{exam_id}")
+    public String createExamFinish(){
+        return "create_exam_finish";
+    }
 }

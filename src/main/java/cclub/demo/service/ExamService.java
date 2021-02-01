@@ -308,4 +308,27 @@ public interface ExamService {
      * 获选人进入笔试页面校验身份是否存在
      */
     int judgeExamUserInfoExist(String exam_id,String candidate_name,String candidate_phone,String candidate_mail);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param candidate_name
+     * @param candidate_phone
+     * @param candidate_mail
+     * 当用户进入笔试房间后,将用户的状态进行更新
+     */
+    void updateExamUserState(String exam_id,String candidate_name,String candidate_phone,String candidate_mail);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param exam_user_mail
+     * @return
+     * 更新并返回用户切换页面的次数
+     */
+    int getExamUserSkipNumber(String exam_id,String exam_user_mail);
 }

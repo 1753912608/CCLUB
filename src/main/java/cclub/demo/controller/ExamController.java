@@ -720,6 +720,7 @@ public class ExamController {
                                HttpServletRequest request)
     {
         HttpSession session=request.getSession();
+        System.out.println(answer+" "+question_id);
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
         try {
             redisService.setCacheQestion(exam_id,question_id,user_id,answer);
@@ -728,5 +729,45 @@ public class ExamController {
             return 0;
         }
         return 1;
+    }
+
+
+    /**
+     *
+     * @param exam_id
+     * @param candidate_name
+     * @param candidate_phone
+     * @param candidate_mail
+     * @param request
+     * 当用户进入笔试房间后将用户的状态更新
+     */
+    @ResponseBody
+    @RequestMapping("/updateExamUserState")
+    public void updateExamUserState(String exam_id,
+                                    String candidate_name,
+                                    String candidate_phone,
+                                    String candidate_mail,
+                                    HttpServletRequest request)
+    {
+        HttpSession session=request.getSession();
+        session.setAttribute(SessionInfo.EXAM_USER_MAIL,candidate_mail);
+       examService.updateExamUserState(exam_id,candidate_name,candidate_phone,candidate_mail);
+    }
+
+
+    /**
+     *
+     * @param exam_id
+     * @param request
+     * @return
+     * 更新并返回用户切换页面的次数
+     */
+    @ResponseBody
+    @RequestMapping("/getExamUserSkipNumber")
+    public int getExamUserSkipNumber(String exam_id,
+                                     HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String exam_user_mail=(String)session.getAttribute(SessionInfo.EXAM_USER_MAIL);
+        return examService.getExamUserSkipNumber(exam_id,exam_user_mail);
     }
 }

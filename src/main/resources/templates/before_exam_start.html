@@ -307,6 +307,16 @@
             },
             joinExam(){
                 if(this.isCanJoinExam()){
+                    let params=new FormData();
+                    params.append("exam_id",this.exam.exam_id);
+                    params.append("candidate_name",this.candidateInfo[0]);
+                    params.append("candidate_phone",this.candidateInfo[1]);
+                    params.append("candidate_mail",this.candidateInfo[2]);
+                    axios({
+                        method: 'post',
+                        url: '/updateExamUserState',
+                        data: params,
+                    });
                     window.location.href="/test_examing/"+this.exam.exam_id;
                 }else{
                     this.$message({

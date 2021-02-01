@@ -444,4 +444,43 @@ public interface ExamMapper {
             "and candidate_phone=#{phone} and candidate_mail=#{mail} " +
             "and exam_id=#{exam_id}")
     exam_user judgeExamUserInfoExist(String exam_id,String name,String phone,String mail);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param candidate_name
+     * @param candidate_phone
+     * @param candidate_mail
+     * @param newState
+     * 当用户进入笔试房间后,更新用户的状态
+     */
+    @Update("update exam_user set exam_user_state=#{newState} where " +
+            "exam_id=#{exam_id} and candidate_name=#{candidate_name} " +
+            "and candidate_phone=#{candidate_phone} and candidate_mail=#{candidate_mail}")
+    void updateExamUserState(String exam_id,String candidate_name,String candidate_phone,String candidate_mail,int newState);
+
+
+    /**
+     *
+     * @param exam_id
+     * @param exam_user_mail
+     * @param newNumber
+     * @return
+     * 更新用户切换页面的次数
+     */
+    @Update("update exam_user set exam_user_skip_number=#{newNumber} where exam_id=#{exam_id} and candidate_mail=#{exam_user_mail}")
+    void updateExamUserSkipNumber(String exam_id,String exam_user_mail,int newNumber);
+
+
+    /**
+     *
+     * @param exam_id
+     * @param exam_user_mail
+     * @return
+     * 获取用户笔试中切换页面的次数
+     */
+    @Select("select exam_user_skip_number from exam_user where exam_id=#{exam_id} and candidate_mail=#{exam_user_mail}")
+    int getExamUserSkipNumber(String exam_id,String exam_user_mail);
 }
