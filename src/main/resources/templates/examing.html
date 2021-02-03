@@ -294,7 +294,6 @@
         },
         created(){
             this.getExamInfo();
-            this.getQuestionList();
         },
         methods:{
             async getExamInfo(){
@@ -303,6 +302,7 @@
                 this.exam=result.data;
                 this.exam.exam_user_info=eval('('+this.exam.exam_user_info+')');
                 this.showExamTime();
+                this.getQuestionList();
             },
             async getQuestionList() {
                 let url=window.location.href.split("/");
@@ -312,6 +312,9 @@
                 this.judgeQuestion=result.data;
                 result=await axios.get('/getCompletionQuestionListByExamId?exam_id='+url[url.length-1]);
                 this.completionQuestion=result.data;
+                if(this.exam.exam_Upset_question===1){
+                    this.swapQuestion();
+                }
                 this.getQuestionType();
                 this.initQuestionAnswer();
                 this.getCacheQuestionOption();
@@ -478,6 +481,52 @@
                         type: 'error'
                     });
                 }
+            },
+            swapQuestion(){
+                for(let i=0;i<this.choiceQuestion.length;i++){
+                    let rand_i=Math.floor(Math.random()*(this.choiceQuestion.length+1));
+                    let rand_j=this.choiceQuestion.length-1-rand_i;
+                    let swap_i=this.swapOption(this.choiceQuestion[rand_i]);
+                    let swap_j=this.swapOption(this.choiceQuestion[rand_j]);
+                    this.choiceQuestion[rand_i]=swap_j;
+                    this.choiceQuestion[rand_j]=swap_i;
+                }
+            },
+            swapOption(obj){
+                console.log(obj);
+                if(this.exam.exam_Upset_answer===1){
+                    let options=[],j=3;
+                    options[0]=obj.choice_question_option_A;
+                    options[1]=obj.choice_question_option_B;
+                    options[2]=obj.choice_question_option_C;
+                    if(obj.choice_question_option_D!=null){
+                        options[j++]=obj.choice_question_option_D;
+                    }
+                    if(obj.choice_question_option_E!=null){
+                        options[j++]=obj.choice_question_option_E;
+                    }
+                    if(obj.choice_question_option_F!=null){
+                        options[j++]=obj.choice_question_option_F;
+                    }
+                    if(obj.choice_question_option_G!=null){
+                        options[j++]=obj.choice_question_option_G;
+                    }
+                    for(let i=0;i<j;i++){
+                        let rand_i=Math.floor(Math.random()*(j+1));
+                        let rand_j=(j-1)-rand_i;
+                        let temp=options[rand_i];
+                        options[rand_i]=options[rand_j];
+                        options[rand_j]=temp;
+                    }
+                    obj.choice_question_option_A=options[0];
+                    obj.choice_question_option_B=options[1];
+                    obj.choice_question_option_C=options[2];
+                    obj.choice_question_option_D=j>3?options[3]:null;
+                    obj.choice_question_option_E=j>4?options[4]:null;
+                    obj.choice_question_option_F=j>5?options[5]:null;
+                    obj.choice_question_option_G=j>6?options[6]:null;
+                }
+                return obj;
             }
         }
     })
