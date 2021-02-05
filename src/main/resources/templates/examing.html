@@ -53,7 +53,7 @@
             {{time.hour}}:{{time.minute}}:{{time.second}}
         </div>
         <div style="float:left;margin-top:10px;margin-left:15px;">
-            <el-button type="primary" size="small">
+            <el-button type="primary" size="small" @click="vedioStop">
                 <span><i class="el-icon-s-promotion"></i></span>
                 <spans style="margin-left:5px;">我要交卷</spans>
             </el-button>
@@ -287,7 +287,7 @@
                 second: ''
             },
             questionAnswer:[],
-            test:[]
+            recorder: ''
         },
         mounted(){
             document.addEventListener('visibilitychange', this.handleVisiable)
@@ -303,6 +303,7 @@
                 this.exam.exam_user_info=eval('('+this.exam.exam_user_info+')');
                 this.showExamTime();
                 this.getQuestionList();
+                this.vedioStart();
             },
             async getQuestionList() {
                 let url=window.location.href.split("/");
@@ -527,6 +528,36 @@
                     obj.choice_question_option_G=j>6?options[6]:null;
                 }
                 return obj;
+            },
+            vedioStart(){
+                navigator.mediaDevices.getUserMedia({audio: true, video: {width: 400, height: 600}})
+                    .then((stream) => {
+                        this.recorder = new MediaRecorder(stream);
+                        this.recorder.ondataavailable = (event) => {
+                            console.log(event.data);
+                            this.endExam(event.data);
+                        };
+                        this.recorder.start();
+                });
+            },
+            vedioStop(){
+                this.recorder.stop();
+            },
+            async endExam(data){
+                let params=new FormData();
+                params.append("exam_id",this.exam.exam_id);
+                params.append("vedio",data);
+                let result=await axios({
+                    method: 'post',
+                    url: '/endExam',
+                    data: params,
+                    headers:{
+                        "Content-Type": "multipart/form-data"
+                    }
+                });
+                if(result.data===1){
+                    window.location.href="/test_after_exam_end/"+this.exam.exam_id;
+                }
             }
         }
     })

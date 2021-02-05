@@ -13,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
@@ -750,7 +751,9 @@ public class ExamController {
                                     HttpServletRequest request)
     {
         HttpSession session=request.getSession();
+        System.out.println(candidate_mail);
         session.setAttribute(SessionInfo.EXAM_USER_MAIL,candidate_mail);
+        System.out.println(session.getAttribute(SessionInfo.EXAM_USER_MAIL));
        examService.updateExamUserState(exam_id,candidate_name,candidate_phone,candidate_mail);
     }
 
@@ -768,6 +771,30 @@ public class ExamController {
                                      HttpServletRequest request){
         HttpSession session=request.getSession();
         String exam_user_mail=(String)session.getAttribute(SessionInfo.EXAM_USER_MAIL);
+        System.out.println(exam_user_mail);
         return examService.getExamUserSkipNumber(exam_id,exam_user_mail);
+    }
+
+
+    /**
+     *
+     * @param exam_id
+     * @param vedio
+     * @param request
+     * 结束笔试
+     */
+    @ResponseBody
+    @RequestMapping("/endExam")
+    public int endExam(@RequestParam(value = "exam_id",required = false) String exam_id,
+                        @RequestParam(value = "vedio",required = false) MultipartFile vedio,
+                        HttpServletRequest request)
+               throws IOException
+    {
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String fileSrc=exam_id+"-"+user_id+"-"+vedio.getOriginalFilename()+".mp4";
+        System.out.println(fileSrc);
+        FileUtils.copyInputStreamToFile(vedio.getInputStream(),new File("src/main/resources/static/video/"+fileSrc));
+        return 1;
     }
 }
