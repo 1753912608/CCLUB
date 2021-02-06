@@ -331,4 +331,15 @@ public interface ExamService {
      * 更新并返回用户切换页面的次数
      */
     int getExamUserSkipNumber(String exam_id,String exam_user_mail);
+
+
+
+    /**
+     *
+     * @param exam_id
+     * @param user_id
+     * @param recording_url
+     * 结束笔试
+     */
+    void endExam(String exam_id,String user_id,String recording_url);
 }

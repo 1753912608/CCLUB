@@ -348,4 +348,16 @@ public class ExamServiceImpl implements ExamService {
         examMapper.updateExamUserSkipNumber(exam_id,exam_user_mail,skip_number+1);
         return skip_number+1;
     }
+
+    @Transactional
+    @Override
+    public void endExam(String exam_id, String user_id, String recording_url) {
+        try {
+            examMapper.updateExamUserRecordingUrl(exam_id,user_id,recording_url);
+            examMapper.updateExamUserState(exam_id,user_id,2);
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+        }
+    }
 }

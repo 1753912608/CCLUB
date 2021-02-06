@@ -483,4 +483,26 @@ public interface ExamMapper {
      */
     @Select("select exam_user_skip_number from exam_user where exam_id=#{exam_id} and candidate_mail=#{exam_user_mail}")
     int getExamUserSkipNumber(String exam_id,String exam_user_mail);
+
+
+    /**
+     *
+     * @param exam_id
+     * @param user_id
+     * @param recording_url
+     * 更新用户的笔试录屏
+     */
+    @Update("update exam_user set exam_user_recording=#{recording_url} where exam_id=#{exam_id} candidate_phone=#{user_id}")
+    void updateExamUserRecordingUrl(String exam_id,String user_id,String recording_url);
+
+
+    /**
+     *
+     * @param exam_id
+     * @param user_id
+     * @param newState
+     * 结束笔试后更新用户的新状态
+     */
+    @Update("update exam_user set exam_user_state=#{newState} where exam_id=#{exam_id} and candidate_phone=#{user_id}")
+    void updateExamUserState(String exam_id,String user_id,int newState);
 }

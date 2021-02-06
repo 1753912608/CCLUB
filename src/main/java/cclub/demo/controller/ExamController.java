@@ -793,7 +793,7 @@ public class ExamController {
         HttpSession session=request.getSession();
         String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
         String fileSrc=exam_id+"-"+user_id+"-"+vedio.getOriginalFilename()+".mp4";
-        System.out.println(fileSrc);
+        examService.endExam(exam_id,user_id,"src/main/resources/static/video/"+fileSrc);
         FileUtils.copyInputStreamToFile(vedio.getInputStream(),new File("src/main/resources/static/video/"+fileSrc));
         return 1;
     }
