@@ -253,6 +253,7 @@
                 let result=await axios.get('/getOneExamInfo?exam_id='+url[url.length-1]);
                 this.exam=result.data;
                 this.exam.exam_user_info=eval('('+this.exam.exam_user_info+')');
+                this.isEndExam();
             },
             next(){
               if(this.state===1){
@@ -323,6 +324,15 @@
                         message: '笔试开始'+this.exam.exam_noEntry_time+"后不允许进入",
                         type: 'warning'
                     });
+                }
+            },
+            async isEndExam(){
+                let result=await axios.get('/getOneExamUser?exam_id='+this.exam.exam_id);
+                if(result.data.exam_user_state===2){
+                    window.location.href="/test_after_exam_end/"+this.exam.exam_id;
+                }
+                if(!this.isCanJoinExam()){
+                    window.location.href="/test_after_exam_end/"+this.exam.exam_id;
                 }
             }
         }

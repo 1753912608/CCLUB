@@ -504,5 +504,16 @@ public interface ExamMapper {
      * 结束笔试后更新用户的新状态
      */
     @Update("update exam_user set exam_user_state=#{newState} where exam_id=#{exam_id} and candidate_phone=#{user_id}")
-    void updateExamUserState(String exam_id,String user_id,int newState);
+    void updateEndExamUserState(String exam_id,String user_id,int newState);
+
+
+    /**
+     *
+     * @param exam_id
+     * @param user_id
+     * @return
+     * 获取当前用户进入该笔试的信息
+     */
+    @Select("select * from exam_user where exam_id=#{exam_id} and candidate_phone=#{user_id}")
+    exam_user getOneExamUser(String exam_id,String user_id);
 }

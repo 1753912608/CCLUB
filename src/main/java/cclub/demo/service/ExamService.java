@@ -342,4 +342,8 @@ public interface ExamService {
      * 结束笔试
      */
     void endExam(String exam_id,String user_id,String recording_url);
+
+
+
+    exam_user getOneExamUser(String exam_id,String user_id);
 }

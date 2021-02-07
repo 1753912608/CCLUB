@@ -797,4 +797,21 @@ public class ExamController {
         FileUtils.copyInputStreamToFile(vedio.getInputStream(),new File("src/main/resources/static/video/"+fileSrc));
         return 1;
     }
+
+
+    /**
+     *
+     * @param exam_id
+     * @param request
+     * @return
+     * 获取当前用户进入该笔试的信息
+     */
+    @ResponseBody
+    @RequestMapping("/getOneExamUser")
+    public exam_user getOneExamUser(String exam_id,
+                                    HttpServletRequest request){
+        HttpSession session=request.getSession();
+        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        return examService.getOneExamUser(exam_id,user_id);
+    }
 }

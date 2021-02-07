@@ -354,10 +354,15 @@ public class ExamServiceImpl implements ExamService {
     public void endExam(String exam_id, String user_id, String recording_url) {
         try {
             examMapper.updateExamUserRecordingUrl(exam_id,user_id,recording_url);
-            examMapper.updateExamUserState(exam_id,user_id,2);
+            examMapper.updateEndExamUserState(exam_id,user_id,2);
         }catch (Exception e){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public exam_user getOneExamUser(String exam_id, String user_id) {
+        return examMapper.getOneExamUser(exam_id,user_id);
     }
 }
