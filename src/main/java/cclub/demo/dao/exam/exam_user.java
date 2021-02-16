@@ -10,7 +10,7 @@ public class exam_user {
     private int exam_user_score;
     private int exam_user_state;
     private int exam_user_skip_number;
-    private String exam_user_recprding;
+    private String exam_user_recording;
 
     public exam_user(String access_code, String exam_id, String candidate_phone,
                      String candidate_name, int exam_notice, int exam_user_score,
@@ -98,12 +98,12 @@ public class exam_user {
         return exam_user_skip_number;
     }
 
-    public void setExam_user_recprding(String exam_user_recprding) {
-        this.exam_user_recprding = exam_user_recprding;
+    public void setExam_user_recording(String exam_user_recording) {
+        this.exam_user_recording = exam_user_recording;
     }
 
-    public String getExam_user_recprding() {
-        return exam_user_recprding;
+    public String getExam_user_recording() {
+        return exam_user_recording;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class exam_user {
                 ", exam_user_score=" + exam_user_score +
                 ", exam_user_state=" + exam_user_state +
                 ", exam_user_skip_number=" + exam_user_skip_number +
-                ", exam_user_recprding='" + exam_user_recprding + '\'' +
+                ", exam_user_recording='" + exam_user_recording + '\'' +
                 '}';
     }
 }

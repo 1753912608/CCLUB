@@ -14,6 +14,11 @@ spring:
         min-idle: 0
     lettuce:
       shutdown-timeout: 0
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
 
 mybatis:
   type-aliases-package: main.cclub.demo

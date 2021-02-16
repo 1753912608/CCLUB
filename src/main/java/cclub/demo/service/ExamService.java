@@ -344,6 +344,21 @@ public interface ExamService {
     void endExam(String exam_id,String user_id,String recording_url);
 
 
-
+    /**
+     *
+     * @param exam_id
+     * @param user_id
+     * @return
+     * 获取用户对于该笔试的信息
+     */
     exam_user getOneExamUser(String exam_id,String user_id);
+
+
+    /**
+     *
+     * @param exam_id
+     * @param user_id
+     * 进行判题
+     */
+    void eValuteQuestion(String exam_id,String user_id);
 }

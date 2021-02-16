@@ -98,4 +98,27 @@ public class RedisServiceImpl {
         return cacheQuestions;
     }
 
+
+    /**
+     *
+     * @param exam_id
+     * @param user_id
+     * @param question_id
+     * @return
+     * 获取单个用户试题的答案
+     */
+    public String getOneQuestionAnswer(String exam_id,String user_id,String question_id){
+        return (String)redisTemplate.opsForValue().get(exam_id+":"+user_id+":"+question_id);
+    }
+
+
+    /**
+     *
+     * @param key
+     * 将redis的某个key进行手动移除
+     */
+    public void removeKey(String key){
+        redisTemplate.delete(key);
+    }
+
 }

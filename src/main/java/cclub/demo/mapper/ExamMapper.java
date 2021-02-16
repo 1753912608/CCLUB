@@ -516,4 +516,15 @@ public interface ExamMapper {
      */
     @Select("select * from exam_user where exam_id=#{exam_id} and candidate_phone=#{user_id}")
     exam_user getOneExamUser(String exam_id,String user_id);
+
+
+    /**
+     *
+     * @param exam_id
+     * @param user_id
+     * @param addScore
+     * 给用户的笔试加分
+     */
+    @Update("update exam_user set exam_user_score=exam_user_score+#{addScore} where exam_id=#{exam_id} and candidate_phone=#{user_id}")
+    void updateExamUserScore(String exam_id,String user_id,int addScore);
 }
