@@ -19,6 +19,7 @@ spring:
     port: 5672
     username: guest
     password: guest
+    virtual-host: /ems
 
 mybatis:
   type-aliases-package: main.cclub.demo

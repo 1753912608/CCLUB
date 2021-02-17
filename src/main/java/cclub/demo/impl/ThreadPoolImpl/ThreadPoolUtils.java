@@ -15,9 +15,15 @@ import java.util.concurrent.Executors;
 public class ThreadPoolUtils {
      private static ExecutorService pool;
 
+     private static ExecutorService examQuestionPool;
+
      private static int initPoolSize=20;
 
-     private static volatile boolean isWork=false;
+
+     static {
+         pool=Executors.newFixedThreadPool(initPoolSize);
+         examQuestionPool=Executors.newFixedThreadPool(initPoolSize);
+     }
 
      @Autowired
      private ExamServiceImpl examService;
@@ -25,18 +31,11 @@ public class ThreadPoolUtils {
      @Autowired
      private mailDemoUtils mailDemoUtils;
 
-     public static void initPool(){
-         if(!isWork){
-             pool=Executors.newFixedThreadPool(initPoolSize);
-             isWork=true;
-         }
-     }
 
      public int handleExcelTask(List<List<String>>list,String exam_id,int exam_notice,String exam_name,String exam_start_time,int exam_noEntry_time,int exam_longTime,String url){
          List<String>nameList=list.get(0);
          List<String>phoneList=list.get(1);
          List<String>mailList=list.get(2);
-         initPool();
          for(int i=0;i<nameList.size();i++){
              final int index=i;
              pool.execute(new Runnable() {
@@ -57,7 +56,6 @@ public class ThreadPoolUtils {
 
 
      public int noticeMoreCandidate(List<exam_user>list,String exam_name,String exam_start_time,int exam_noEntry_time,int exam_longTime,String url){
-         initPool();
          for(int i=0;i<list.size();i++){
              final int index=i;
              pool.execute(new Runnable() {
@@ -69,5 +67,16 @@ public class ThreadPoolUtils {
              });
          }
          return 1;
+     }
+
+
+
+     public void handleExamQuestion(String user_id,String exam_id){
+         pool.execute(new Runnable() {
+             @Override
+             public void run() {
+                 examService.eValuteQuestion(user_id,exam_id);
+             }
+         });
      }
 }

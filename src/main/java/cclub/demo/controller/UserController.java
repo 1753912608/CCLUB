@@ -7,8 +7,11 @@ import cclub.demo.impl.redisUtils.RedisServiceImpl;
 import cclub.demo.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,7 +56,7 @@ public class UserController {
      * @param rand_uuid
      * @param code
      * @param phone
-     * @param request
+     * @param session
      * @param response
      * @return
      * 对用户输入的短信验证码做校验
@@ -63,12 +66,11 @@ public class UserController {
     public int check(String rand_uuid,
                      String code,
                      String phone,
-                     HttpServletRequest request,
+                     HttpSession session,
                      HttpServletResponse response)
     {
         if(redisService.getPhoneCode(rand_uuid).equals(code)){
             System.out.println("phone:"+phone);
-            HttpSession session=request.getSession();
             session.setAttribute(SessionInfo.Session_phone,phone);
             Cookie cookie=new Cookie(SessionInfo.CCLUB_phone,phone);
             response.addCookie(cookie);

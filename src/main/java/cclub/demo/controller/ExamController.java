@@ -8,13 +8,12 @@ import cclub.demo.impl.ExamServiceImpl;
 import cclub.demo.impl.ExcelImpl.ExcelUtils;
 import cclub.demo.impl.ThreadPoolImpl.ThreadPoolUtils;
 import cclub.demo.impl.mailServiceImpl.mailDemoUtils;
+import cclub.demo.impl.mqServiceImpl.workProvider;
 import cclub.demo.impl.redisUtils.RedisServiceImpl;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +23,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 
 @Controller
 public class ExamController {
@@ -39,6 +39,9 @@ public class ExamController {
 
     @Autowired
     private mailDemoUtils mailDemoUtils;
+
+    @Autowired
+    private workProvider workProvider;
 
     private static String HOSTURLEXAM="127.0.0.1:8080/test_examing/";
 
@@ -780,21 +783,21 @@ public class ExamController {
      *
      * @param exam_id
      * @param vedio
-     * @param request
+     * @param session
      * 结束笔试
      */
     @ResponseBody
     @RequestMapping("/endExam")
     public int endExam(@RequestParam(value = "exam_id",required = false) String exam_id,
                         @RequestParam(value = "vedio",required = false) MultipartFile vedio,
-                        HttpServletRequest request)
+                        HttpSession session)
                throws IOException
     {
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
-        String fileSrc=exam_id+"-"+user_id+"-"+vedio.getOriginalFilename()+".mp4";
-        examService.endExam(exam_id,user_id,"src/main/resources/static/video/"+fileSrc);
-        FileUtils.copyInputStreamToFile(vedio.getInputStream(),new File("src/main/resources/static/video/"+fileSrc));
+        System.out.println((String)session.getAttribute(SessionInfo.Session_phone));
+//        String fileSrc=exam_id+"-"+user_id+"-"+vedio.getOriginalFilename()+".mp4";
+//        examService.endExam(exam_id,user_id,"src/main/resources/static/video/"+fileSrc);
+//        FileUtils.copyInputStreamToFile(vedio.getInputStream(),new File("src/main/resources/static/video/"+fileSrc));
+//        workProvider.publish(user_id+" "+exam_id);
         return 1;
     }
 
