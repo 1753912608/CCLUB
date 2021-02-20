@@ -75,8 +75,7 @@ public class ExamController {
                           String exam_id,
                           HttpServletRequest request)
     {
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         exam exam=new exam("",exam_name,user_id,exam_start_time,
                 exam_noEntry_time,exam_longTime,exam_Upset_question,exam_Upset_answer,
                 exam_jumpOut_number,exam_recording,exam_user_info,0,0,0,0);
@@ -101,8 +100,7 @@ public class ExamController {
     @ResponseBody
     @RequestMapping("/getMyCreatedExam")
     public List<exam>getMyCreatedExam(HttpServletRequest request){
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         return examService.getMyCreatedExamList(user_id);
     }
 
@@ -236,8 +234,7 @@ public class ExamController {
                                     HttpServletRequest request)
     throws Exception
     {
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         String fileSrc="file/"+file.getOriginalFilename();
         FileUtils.copyInputStreamToFile(file.getInputStream(),new File("src/main/resources/static/"+fileSrc));
         if(!ExcelUtils.analysisCandidateExcel(fileSrc))return -1;
@@ -276,8 +273,7 @@ public class ExamController {
                                    int exam_longTime,
                                    HttpServletRequest request)
     {
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         List<List<String>>list=redisService.getCandidateExcel(user_id);
         if(list==null)return 0;
         else{
@@ -417,8 +413,7 @@ public class ExamController {
                                  String choice_question_remarks,
                                  HttpServletRequest request)
     {
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         return examService.updateChoiceQuestion(exam_id,question_id,choice_question_name,question_options,choice_question_answer,choice_question_difficult,choice_question_score,choice_question_remarks,user_id);
     }
 
@@ -451,8 +446,7 @@ public class ExamController {
                                 String judge_question_remarks,
                                 HttpServletRequest request)
     {
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         return examService.updateJudgeQuestion(exam_id,new judge_question(question_id,judge_question_name,judge_question_option_false,judge_question_option_true,user_id,judge_question_answer,judge_question_difficult,judge_question_score,judge_question_remarks));
     }
 
@@ -482,8 +476,7 @@ public class ExamController {
                                      String completion_question_remarks,
                                      HttpServletRequest request)
     {
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         return examService.updateCompletionQuestion(exam_id,new completion_question(question_id,completion_question_name,completion_question_answer,user_id,completion_question_difficult,completion_question_score,completion_question_remarks));
     }
 
@@ -498,8 +491,7 @@ public class ExamController {
     @ResponseBody
     @RequestMapping("/getChoiceQuestionList")
     public List<choice_question>getChoiceQuestionListByUserId(HttpServletRequest request){
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         return examService.getChoiceQuestionList(user_id);
     }
 
@@ -515,8 +507,7 @@ public class ExamController {
     @RequestMapping("/getJudgeQuestionList")
     public List<judge_question>getJudgeQuestionListByUserId(HttpServletRequest request)
     {
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         return examService.getJudgeQuestionList(user_id);
     }
 
@@ -533,8 +524,7 @@ public class ExamController {
     @RequestMapping("/getCompletionQuestionList")
     public List<completion_question>getCompletionQuestionListByUserId(HttpServletRequest request)
     {
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         return examService.getCompletionQuestionList(user_id);
     }
 
@@ -687,8 +677,7 @@ public class ExamController {
     public List<cacheQuestion>getExamQuestionUserAnswer(String exam_id,
                                                  HttpServletRequest request)
     {
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         List<String>questionId=new ArrayList<>();
         List<choice_question>choice_questions=examService.getChoiceQuestionListByExamId(exam_id);
         List<judge_question>judge_questions=examService.getJudgeQuestionListByExamId(exam_id);
@@ -723,9 +712,8 @@ public class ExamController {
                                String answer,
                                HttpServletRequest request)
     {
-        HttpSession session=request.getSession();
         System.out.println(answer+" "+question_id);
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         try {
             redisService.setCacheQestion(exam_id,question_id,user_id,answer);
         }catch (Exception e){
@@ -753,10 +741,9 @@ public class ExamController {
                                     String candidate_mail,
                                     HttpServletRequest request)
     {
-        HttpSession session=request.getSession();
-        System.out.println(candidate_mail);
-        session.setAttribute(SessionInfo.EXAM_USER_MAIL,candidate_mail);
-        System.out.println(session.getAttribute(SessionInfo.EXAM_USER_MAIL));
+        SessionInfo info=redisService.getSession(request.getRemoteAddr());
+        info.setExam_user_mail(candidate_mail);
+        redisService.setSession(request.getRemoteAddr(),info);
        examService.updateExamUserState(exam_id,candidate_name,candidate_phone,candidate_mail);
     }
 
@@ -772,9 +759,7 @@ public class ExamController {
     @RequestMapping("/getExamUserSkipNumber")
     public int getExamUserSkipNumber(String exam_id,
                                      HttpServletRequest request){
-        HttpSession session=request.getSession();
-        String exam_user_mail=(String)session.getAttribute(SessionInfo.EXAM_USER_MAIL);
-        System.out.println(exam_user_mail);
+        String exam_user_mail=redisService.getSession(request.getRemoteAddr()).getExam_user_mail();
         return examService.getExamUserSkipNumber(exam_id,exam_user_mail);
     }
 
@@ -783,21 +768,20 @@ public class ExamController {
      *
      * @param exam_id
      * @param vedio
-     * @param session
      * 结束笔试
      */
     @ResponseBody
     @RequestMapping("/endExam")
     public int endExam(@RequestParam(value = "exam_id",required = false) String exam_id,
                         @RequestParam(value = "vedio",required = false) MultipartFile vedio,
-                        HttpSession session)
+                        HttpServletRequest request)
                throws IOException
     {
-        System.out.println((String)session.getAttribute(SessionInfo.Session_phone));
-//        String fileSrc=exam_id+"-"+user_id+"-"+vedio.getOriginalFilename()+".mp4";
-//        examService.endExam(exam_id,user_id,"src/main/resources/static/video/"+fileSrc);
-//        FileUtils.copyInputStreamToFile(vedio.getInputStream(),new File("src/main/resources/static/video/"+fileSrc));
-//        workProvider.publish(user_id+" "+exam_id);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
+        String fileSrc=exam_id+"-"+user_id+"-"+vedio.getOriginalFilename()+".mp4";
+        examService.endExam(exam_id,user_id,"src/main/resources/static/video/"+fileSrc);
+        FileUtils.copyInputStreamToFile(vedio.getInputStream(),new File("src/main/resources/static/video/"+fileSrc));
+        workProvider.publish(user_id+" "+exam_id);
         return 1;
     }
 
@@ -813,8 +797,7 @@ public class ExamController {
     @RequestMapping("/getOneExamUser")
     public exam_user getOneExamUser(String exam_id,
                                     HttpServletRequest request){
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         return examService.getOneExamUser(exam_id,user_id);
     }
 }

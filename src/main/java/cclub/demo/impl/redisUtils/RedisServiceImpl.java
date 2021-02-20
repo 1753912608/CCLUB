@@ -1,6 +1,7 @@
 package cclub.demo.impl.redisUtils;
 
 import cclub.demo.dao.Interview;
+import cclub.demo.dao.SessionInfo;
 import cclub.demo.dao.exam.cacheQuestion;
 import com.google.gson.Gson;
 import org.apache.poi.ss.formula.functions.T;
@@ -120,5 +121,29 @@ public class RedisServiceImpl {
     public void removeKey(String key){
         redisTemplate.delete(key);
     }
+
+
+    /**
+     *
+     * @param ip
+     * @param info
+     *
+     */
+    public void setSession(String ip, SessionInfo info){
+        redisTemplate.opsForValue().set(ip,info);
+    }
+
+
+
+    /**
+     *
+     * @param ip
+     * @return
+     */
+    public SessionInfo getSession(String ip){
+        return (SessionInfo) redisTemplate.opsForValue().get(ip);
+    }
+
+
 
 }

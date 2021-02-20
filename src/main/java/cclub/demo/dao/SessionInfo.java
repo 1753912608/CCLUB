@@ -16,15 +16,39 @@ public class SessionInfo {
     //用于存储当前笔试的用户邮箱
     public static String EXAM_USER_MAIL="exam_user_mail";
 
-    public static void setSession(HttpServletRequest request,String key,String value){
-        RequestAttributes ra= RequestContextHolder.getRequestAttributes();
-        request=((ServletRequestAttributes)ra).getRequest();
-        request.getSession(true).setAttribute(key,value);
+
+    private String phone="session_phone";
+
+    private String exam_user_mail="exam_user_mail";
+
+    public SessionInfo(String phone, String exam_user_mail) {
+        this.phone = phone;
+        this.exam_user_mail = exam_user_mail;
     }
 
-    public static Object getSession(HttpServletRequest request,String key){
-        RequestAttributes ra=RequestContextHolder.getRequestAttributes();
-        request = ((ServletRequestAttributes)ra).getRequest();
-        return request.getSession(true).getAttribute(key);
+    public SessionInfo(){}
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setExam_user_mail(String exam_user_mail) {
+        this.exam_user_mail = exam_user_mail;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getExam_user_mail() {
+        return exam_user_mail;
+    }
+
+    @Override
+    public String toString() {
+        return "SessionInfo{" +
+                "phone='" + phone + '\'' +
+                ", exam_user_mail='" + exam_user_mail + '\'' +
+                '}';
     }
 }

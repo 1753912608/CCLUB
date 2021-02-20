@@ -59,9 +59,8 @@ public class InterviewController {
             suffex=filename.substring(filename.lastIndexOf('.'));
             filesrc="file/"+newFileName+suffex;
         }
-        HttpSession session=request.getSession();
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         String interview_id= Rand.getInterviewId();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
         List<String>list=interviewService.getInterviewUrlNotice(interview_company_name,interview_candidate_position,interview_begin_time,interview_candidate_name,user_id);
         Interview interview=new Interview(interview_id,user_id,interview_begin_time,interview_company_name,
                 interview_candidate_position,interview_candidate_phone,interview_candidate_name,
@@ -94,8 +93,7 @@ public class InterviewController {
     @ResponseBody
     @RequestMapping("/getMyCreateInterviewList")
     public List<Interview>getMyCreateInterviewList(HttpServletRequest request){
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         List<Interview>list= interviewService.getMyCreateInterviewList(user_id);
         return list;
     }
@@ -140,8 +138,7 @@ public class InterviewController {
     @ResponseBody
     @RequestMapping("/getMyCreateInterviewRemarksList")
     public List<remarks>getMyCreateInterviewRemarksList(HttpServletRequest request){
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         return interviewService.getMyCreateInterviewRemarksList(user_id);
     }
 
@@ -189,8 +186,7 @@ public class InterviewController {
     {
         System.out.println(interview_id+" "+company+" "+position+" "+isSendMail+" "+mail+" "+name);
         if(isSendMail){
-            HttpSession session=request.getSession();
-            String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+            String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
             mailDemoUtils.sendTemplateNoticeCancel(mail,name,position,company,user_id);
         }
         return interviewService.cancelInterview(interview_id,"22");

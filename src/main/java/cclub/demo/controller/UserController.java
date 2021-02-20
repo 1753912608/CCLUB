@@ -67,10 +67,13 @@ public class UserController {
                      String code,
                      String phone,
                      HttpSession session,
-                     HttpServletResponse response)
+                     HttpServletResponse response,
+                     HttpServletRequest request)
     {
         if(redisService.getPhoneCode(rand_uuid).equals(code)){
             System.out.println("phone:"+phone);
+            String ip=request.getRemoteAddr();
+            redisService.setSession(ip,new SessionInfo(phone,""));
             session.setAttribute(SessionInfo.Session_phone,phone);
             Cookie cookie=new Cookie(SessionInfo.CCLUB_phone,phone);
             response.addCookie(cookie);
@@ -97,8 +100,7 @@ public class UserController {
     @RequestMapping("/init_company")
     public int init_company(HttpServletRequest request,
                             String user_company){
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         return userService.init_company(user_id,user_company);
     }
 
@@ -112,8 +114,7 @@ public class UserController {
     @ResponseBody
     @RequestMapping("/getUserInfo")
     public User getUserInfo(HttpServletRequest request){
-        HttpSession session=request.getSession();
-        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
+        String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         return userService.getUserInfo(user_id);
     }
 
@@ -127,7 +128,6 @@ public class UserController {
     @ResponseBody
     @RequestMapping("/signOut")
     public void signOut(HttpServletRequest request){
-        HttpSession session=request.getSession();
-        session.removeAttribute(SessionInfo.Session_phone);
+        redisService.removeKey(request.getRemoteAddr());
     }
 }
