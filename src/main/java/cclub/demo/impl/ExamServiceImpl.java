@@ -371,22 +371,23 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public void eValuteQuestion(String exam_id, String user_id) {
+    public void eValuteQuestion(String user_id, String exam_id) {
         List<choice_question>choice_questions=examMapper.getChoiceQuestionListByExamId(exam_id);
         List<judge_question>judge_questions=examMapper.getJudgeQuestionListByExamId(exam_id);
         List<completion_question>completion_questions=examMapper.getCompletionQuestionListByExamId(exam_id);
         for(choice_question question:choice_questions){
-            if(redisService.getOneQuestionAnswer(exam_id,user_id,question.getChoice_question_id()).replace(","," ").equals(question.getChoice_question_answer())){
-                examMapper.updateExamUserScore(exam_id,user_id,question.getChoice_question_score());
+            if(redisService.getOneQuestionAnswer(exam_id,user_id,question.getChoice_question_id()).replace(","," ").equals(question.getChoice_question_answer())) {
+                examMapper.updateExamUserScore(exam_id, user_id, question.getChoice_question_score());
             }
             redisService.removeKey(exam_id+":"+user_id+":"+question.getChoice_question_id());
         }
-        for(completion_question question:completion_questions){
-            if(redisService.getOneQuestionAnswer(exam_id,user_id,question.getCompletion_question_id()).replace(","," ").equals(question.getCompletion_question_answer())){
-                examMapper.updateExamUserScore(exam_id,user_id,question.getCompletion_question_score());
-            }
-            redisService.removeKey(exam_id+":"+user_id+":"+question.getCompletion_question_id());
-        }
+//        for(completion_question question:completion_questions){
+//            if(redisService.getOneQuestionAnswer(exam_id,user_id,question.getCompletion_question_id()).replace(","," ").equals(question.getCompletion_question_answer())){
+//                examMapper.updateExamUserScore(exam_id,user_id,question.getCompletion_question_score());
+//            }
+//            System.out.println(redisService.getOneQuestionAnswer(exam_id,user_id,question.getCompletion_question_id()));
+//            redisService.removeKey(exam_id+":"+user_id+":"+question.getCompletion_question_id());
+//        }
         for(judge_question question:judge_questions){
             if(redisService.getOneQuestionAnswer(exam_id,user_id,question.getJudge_question_id()).equals(question.getJudge_question_answer())){
                 examMapper.updateExamUserScore(exam_id,user_id,question.getJudge_question_score());

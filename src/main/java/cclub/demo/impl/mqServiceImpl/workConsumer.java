@@ -18,6 +18,7 @@ public class workConsumer {
 
     @RabbitHandler
     public void reserve(String message){
+        System.out.println("rabbitmq接收消息");
         threadPoolUtils.handleExamQuestion(message.split(" ")[0],message.split(" ")[1]);
     }
 }

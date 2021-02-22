@@ -779,7 +779,7 @@ public class ExamController {
     {
         String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         String fileSrc=exam_id+"-"+user_id+"-"+vedio.getOriginalFilename()+".mp4";
-        examService.endExam(exam_id,user_id,"src/main/resources/static/video/"+fileSrc);
+        examService.endExam(exam_id,user_id,"video/"+fileSrc);
         FileUtils.copyInputStreamToFile(vedio.getInputStream(),new File("src/main/resources/static/video/"+fileSrc));
         workProvider.publish(user_id+" "+exam_id);
         return 1;

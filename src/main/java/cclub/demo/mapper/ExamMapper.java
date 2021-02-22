@@ -492,7 +492,7 @@ public interface ExamMapper {
      * @param recording_url
      * 更新用户的笔试录屏
      */
-    @Update("update exam_user set exam_user_recording=#{recording_url} where exam_id=#{exam_id} candidate_phone=#{user_id}")
+    @Update("update exam_user set exam_user_recording=#{recording_url} where exam_id=#{exam_id} and candidate_phone=#{user_id}")
     void updateExamUserRecordingUrl(String exam_id,String user_id,String recording_url);
 
 
