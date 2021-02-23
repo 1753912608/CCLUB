@@ -1,5 +1,6 @@
 package cclub.demo.mapper.sqlProvider;
 
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.jdbc.SQL;
 
 import java.util.List;
@@ -170,6 +171,24 @@ public class ExamProvider {
                 SET("choice_question_option_G=#{question_options[6]}");
             }
             WHERE("choice_question_id=#{question_id}");
+        }}.toString();
+    }
+
+
+    /**
+     *
+     * @param user_id
+     * @param exam_id
+     * @param addScore
+     * @return
+     * 更新用户笔试分数
+     */
+    public String updateExamUserScore(String exam_id,String user_id,int addScore)
+    {
+        return new SQL(){{
+            UPDATE("exam_user");
+            SET("exam_user_score=exam_user_score+#{addScore}");
+            WHERE("exam_id=#{exam_id} and candidate_phone=#{user_id}");
         }}.toString();
     }
 

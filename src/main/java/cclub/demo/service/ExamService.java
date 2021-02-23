@@ -361,4 +361,14 @@ public interface ExamService {
      * 进行判题
      */
     void eValuteQuestion(String exam_id,String user_id);
+
+
+    /**
+     *
+     * @param exam_id
+     * @param user_id
+     * @param newScore
+     * 更新用户笔试的分数
+     */
+    void updateUserExamScore(String exam_id,String user_id,int newScore);
 }

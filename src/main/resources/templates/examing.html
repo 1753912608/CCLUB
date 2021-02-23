@@ -407,11 +407,10 @@
                     answer=this.questionAnswer[this.nowQuestionIndex-1].judge;
                     question_id=this.nowQuestion.judge_question_id;
                 }else if(this.nowQuestionType===4){
-                    answer=this.questionAnswer[this.nowQuestionIndex-1].completion;
+                    answer=this.questionAnswer[this.nowQuestionIndex-1].completion[1];
                     question_id=this.nowQuestion.completion_question_id;
                 }
                 let result=await axios.get('/cacheUserAnswer?exam_id='+this.exam.exam_id+"&question_id="+question_id+"&answer="+answer);
-
             },
             initQuestionAnswer(){
                 let size=this.choiceQuestion.length+this.judgeQuestion.length+this.completionQuestion.length;
@@ -435,7 +434,6 @@
                 }
             },
             change(){
-
                 console.log(this.questionAnswer[this.nowQuestionIndex-1].multipleChoice);
             },
             async getCacheQuestionOption(){
@@ -466,7 +464,7 @@
                             }else if(type[j]===3){
                                 this.questionAnswer[j].judge=result.data[i].answer;
                             }else{
-
+                                this.questionAnswer[j].completionQuestion=result.data[i].answer.split(",")
                             }
                         }
                     }
@@ -544,6 +542,7 @@
                 this.recorder.stop();
             },
             async endExam(data){
+                this.cacheQuestionOption();
                 let params=new FormData();
                 params.append("exam_id",this.exam.exam_id);
                 params.append("vedio",data);

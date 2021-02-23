@@ -212,7 +212,7 @@ public class ExamController {
                                  int exam_notice)
     {
         String access_code=Rand.getInterviewCode();
-        int result= examService.addExamCandidate(new exam_user(access_code,exam_id,candidate_phone,candidate_name,exam_notice,-1,0,candidate_mail,0));
+        int result= examService.addExamCandidate(new exam_user(access_code,exam_id,candidate_phone,candidate_name,exam_notice,0,0,candidate_mail,0));
         if(result==1){
             //发送笔试邀请到候选人邮箱
             mailDemoUtils.sendExamTemplateNotice(candidate_mail,exam_name,exam_start_time,exam_noEntry_time,exam_longTime,candidate_name,HOSTURLEXAM+exam_id);
@@ -743,6 +743,7 @@ public class ExamController {
     {
         SessionInfo info=redisService.getSession(request.getRemoteAddr());
         info.setExam_user_mail(candidate_mail);
+        String user_id=info.getPhone();
         redisService.setSession(request.getRemoteAddr(),info);
        examService.updateExamUserState(exam_id,candidate_name,candidate_phone,candidate_mail);
     }
@@ -800,4 +801,5 @@ public class ExamController {
         String user_id=redisService.getSession(request.getRemoteAddr()).getPhone();
         return examService.getOneExamUser(exam_id,user_id);
     }
+
 }

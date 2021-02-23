@@ -525,6 +525,6 @@ public interface ExamMapper {
      * @param addScore
      * 给用户的笔试加分
      */
-    @Update("update exam_user set exam_user_score=exam_user_score+#{addScore} where exam_id=#{exam_id} and candidate_phone=#{user_id}")
+    @UpdateProvider(type = ExamProvider.class,method = "updateUserExamScore")
     void updateExamUserScore(String exam_id,String user_id,int addScore);
 }

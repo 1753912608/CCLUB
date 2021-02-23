@@ -376,23 +376,31 @@ public class ExamServiceImpl implements ExamService {
         List<judge_question>judge_questions=examMapper.getJudgeQuestionListByExamId(exam_id);
         List<completion_question>completion_questions=examMapper.getCompletionQuestionListByExamId(exam_id);
         for(choice_question question:choice_questions){
-            if(redisService.getOneQuestionAnswer(exam_id,user_id,question.getChoice_question_id()).replace(","," ").equals(question.getChoice_question_answer())) {
+            String answer=redisService.getOneQuestionAnswer(exam_id,user_id,question.getChoice_question_id());
+            if(answer!=null&&answer.replace(","," ").equals(question.getChoice_question_answer())) {
                 examMapper.updateExamUserScore(exam_id, user_id, question.getChoice_question_score());
             }
             redisService.removeKey(exam_id+":"+user_id+":"+question.getChoice_question_id());
         }
-//        for(completion_question question:completion_questions){
-//            if(redisService.getOneQuestionAnswer(exam_id,user_id,question.getCompletion_question_id()).replace(","," ").equals(question.getCompletion_question_answer())){
-//                examMapper.updateExamUserScore(exam_id,user_id,question.getCompletion_question_score());
-//            }
-//            System.out.println(redisService.getOneQuestionAnswer(exam_id,user_id,question.getCompletion_question_id()));
-//            redisService.removeKey(exam_id+":"+user_id+":"+question.getCompletion_question_id());
-//        }
+        for(completion_question question:completion_questions){
+            String answer=redisService.getOneQuestionAnswer(exam_id,user_id,question.getCompletion_question_id());
+            System.out.println(answer);
+            if(answer!=null&&answer.replace(","," ").equals(question.getCompletion_question_answer())){
+                examMapper.updateExamUserScore(exam_id,user_id,question.getCompletion_question_score());
+            }
+            redisService.removeKey(exam_id+":"+user_id+":"+question.getCompletion_question_id());
+        }
         for(judge_question question:judge_questions){
-            if(redisService.getOneQuestionAnswer(exam_id,user_id,question.getJudge_question_id()).equals(question.getJudge_question_answer())){
+            String answer=redisService.getOneQuestionAnswer(exam_id,user_id,question.getJudge_question_id());
+            if(answer!=null&&answer.equals(question.getJudge_question_answer())){
                 examMapper.updateExamUserScore(exam_id,user_id,question.getJudge_question_score());
             }
             redisService.removeKey(exam_id+":"+user_id+":"+question.getJudge_question_id());
         }
+    }
+
+    @Override
+    public void updateUserExamScore(String exam_id, String user_id, int newScore) {
+        examMapper.updateExamUserScore(exam_id,user_id,newScore);
     }
 }
