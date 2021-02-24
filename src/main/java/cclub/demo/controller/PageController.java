@@ -130,4 +130,10 @@ public class PageController {
     public String createExamFinish(){
         return "create_exam_finish";
     }
+
+
+    @RequestMapping("/test_recording/{type}/{id}")
+    public String recording(){
+        return "recording";
+    }
 }

@@ -15,8 +15,14 @@ public class recordingServiceImpl implements recordingService {
      @Autowired
      private recordingMapper recordingMapper;
 
+
     @Override
     public List<recording> getMyCreateInterviewRecording(String user_id) {
         return recordingMapper.getMyCreateInterviewRecording(user_id);
+    }
+
+    @Override
+    public String getRecordingInfo(String type, String id) {
+        return recordingMapper.getRecordingInfo(type,id);
     }
 }

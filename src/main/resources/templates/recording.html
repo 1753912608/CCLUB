@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CClub在线笔试</title>
+    <script src="https://cdn.bootcss.com/vue/2.6.8/vue.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        *{
+            padding: 0 0px;
+            margin: 0 0px;
+        }
+        .el-header{
+            width:100%;
+            height:50px;
+            background-color:#f2f5ff;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="el-header">
+        <div style="margin-left:10px;padding-top:15px;font-weight:700;">
+            <div>CCLUB笔试录屏</div>
+        </div>
+        <div style="margin-left:60px;margin-top:20px;">
+            <video width="1380" height="580" controls>
+                <source src="../../video/cclub592705823484-18229583486-blob.mp4" type="video/mp4">
+                <source src="../../video/cclub592705823484-18229583486-blob.mp4" type="video/ogg">
+                您的浏览器不支持 HTML5 video 标签。
+            </video>
+        </div>
+        <div style="margin-left:620px;margin-top:30px;">
+            <el-button type="primary" plain style="width:200px;">返回</el-button>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data:{
+            url: ''
+        },
+        created(){
+            this.getRecordingInfo();
+        },
+        methods:{
+            async getRecordingInfo(){
+                let type=window.location.href.split('/')[4],id=window.location.href.split('/')[5];
+                let result=await axios.get('/getRecordingInfo?type='+type+'&id='+id);
+                this.url='../../'+result.data;
+                console.log(this.url);
+            }
+        }
+    })
+</script>
+</html>

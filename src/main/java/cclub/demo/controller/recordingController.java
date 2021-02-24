@@ -21,6 +21,7 @@ public class recordingController {
    private recordingServiceImpl recordingService;
 
 
+
     /**
      *
      * @param request
@@ -33,6 +34,21 @@ public class recordingController {
        HttpSession session=request.getSession();
        String user_id=(String)session.getAttribute(SessionInfo.Session_phone);
        return recordingService.getMyCreateInterviewRecording(user_id);
+   }
+
+
+    /**
+     *
+     * @param type
+     * @param id
+     * @return
+     * 获取录屏的信息
+     */
+   @ResponseBody
+   @RequestMapping("/getRecordingInfo")
+   public String getRecordingInfo(String type,String id){
+       System.out.println(type+" "+id);
+       return recordingService.getRecordingInfo(type,id);
    }
 
 }
