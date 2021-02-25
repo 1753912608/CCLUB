@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="../../js/ckplayer/ckplayer.js"></script>
     <style>
         *{
             padding: 0 0px;
@@ -26,14 +27,17 @@
             <div>CCLUB笔试录屏</div>
         </div>
         <div style="margin-left:60px;margin-top:20px;">
-            <video width="1380" height="580" controls>
-                <source src="../../video/cclub592705823484-18229583486-blob.mp4" type="video/mp4">
-                <source src="../../video/cclub592705823484-18229583486-blob.mp4" type="video/ogg">
-                您的浏览器不支持 HTML5 video 标签。
-            </video>
+            <!--<video width="1380" height="580" controls>-->
+                <!--<source src="../../video/cclub592705823484-18229583486-blob.mp4" type="video/mp4">-->
+                <!--<source src="../../video/cclub592705823484-18229583486-blob.mp4" type="video/ogg">-->
+                <!--您的浏览器不支持 HTML5 video 标签。-->
+            <!--</video>-->
+            <div id="video" style="width:1380px;height:580px;">
+
+            </div>
         </div>
         <div style="margin-left:620px;margin-top:30px;">
-            <el-button type="primary" plain style="width:200px;">返回</el-button>
+            <el-button type="primary" plain style="width:200px;" @click="goBack">返回</el-button>
         </div>
     </div>
 </div>
@@ -51,8 +55,22 @@
             async getRecordingInfo(){
                 let type=window.location.href.split('/')[4],id=window.location.href.split('/')[5];
                 let result=await axios.get('/getRecordingInfo?type='+type+'&id='+id);
-                this.url='../../'+result.data;
+                this.url=result.data;
                 console.log(this.url);
+                this.initVideo();
+            },
+            goBack(){
+                window.location.href=duration.referrer;
+            },
+            initVideo(){
+                var vedioObject1={
+                    container: '#video',
+                    variable: 'player',
+                    autoplay: true,
+                    live: true,
+                    video: '../../'+this.url
+                }
+                var player1=new ckplayer(vedioObject1);
             }
         }
     })

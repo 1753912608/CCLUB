@@ -132,7 +132,6 @@ public class InterviewServiceImpl implements InterviewService {
 
     @Override
     public Interview getOneInterviewInfo(String interview_code) {
-        System.out.println(interview_code+"=======================");
         Interview interview=interviewMapper.getOneInterviewInfo(interview_code);
         if(interview.getInterview_candidate_code().equals(interview_code)){
             interview.setInterview_create_user_id("candidate");
