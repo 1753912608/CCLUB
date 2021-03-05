@@ -25,4 +25,9 @@ public class recordingServiceImpl implements recordingService {
     public String getRecordingInfo(String type, String id) {
         return recordingMapper.getRecordingInfo(type,id);
     }
+
+    @Override
+    public void saveInterviewRecording(String interview_id, String interview_time_length, String fileSrc) {
+        recordingMapper.saveInterviewRecording(interview_id,interview_time_length,fileSrc);
+    }
 }

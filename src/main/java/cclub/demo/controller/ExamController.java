@@ -742,8 +742,11 @@ public class ExamController {
                                     HttpServletRequest request)
     {
         SessionInfo info=redisService.getSession(request.getRemoteAddr());
-        info.setExam_user_mail(candidate_mail);
-        String user_id=info.getPhone();
+        if(info==null){
+            info=new SessionInfo(candidate_phone,candidate_mail);
+        }else{
+            info.setExam_user_mail(candidate_mail);
+        }
         redisService.setSession(request.getRemoteAddr(),info);
        examService.updateExamUserState(exam_id,candidate_name,candidate_phone,candidate_mail);
     }

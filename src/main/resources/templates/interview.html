@@ -223,7 +223,8 @@
                 type: '',
                 chat_content: '',
                 from_user: ''
-            }
+            },
+            recorder: ''
         },
         created() {
             this.init();
@@ -290,6 +291,9 @@
                 }
             },
             breakInterview(){
+                if(this.interviewInfo.interview_create_user_id==='candidate'&&this.interviewInfo.interview_recording===1){
+                    this.vedioStop();
+                }
                 let location=window.location.href.split("/");
                 this.$confirm('是否确认结束当前面试?', '提示', {
                     confirmButtonText: '确定',
@@ -301,7 +305,7 @@
                         message: '结束面试成功!'
                     });
                     axios.get('/end_Interview_State?interview_id='+this.interviewInfo.interview_id+'&interview_state='+'33');
-                    window.location.href="/test_interview_end/"+location[location.length-1];
+                    //window.location.href="/test_interview_end/"+location[location.length-1];
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -322,6 +326,9 @@
                 this.chat.interview_id=this.interviewInfo.interview_id;
                 this.chat.from_user=this.interviewInfo.interview_create_user_id;
                 this.getOneInterviewRemarks();
+                if(this.interviewInfo.interview_recording===1){
+                    this.vedioStart();
+                }
             },
             getMessage(msg){
                 editor2 = ace.edit("code");
@@ -363,6 +370,34 @@
                 let result=await axios.get('/getOneInterviewRemarks?interview_id='+this.interviewInfo.interview_id);
                 this.remarks.radio=result.data.remarks_state;
                 this.remarks.textarea=result.data.remarks_content;
+            },
+            vedioStart(){
+                navigator.mediaDevices.getUserMedia({audio: true, video: {width: 400, height: 600}})
+                    .then((stream) => {
+                        this.recorder = new MediaRecorder(stream);
+                        this.recorder.ondataavailable = (event) => {
+                            console.log(event.data);
+                            this.saveInterviewRecording(event.data);
+                        };
+                        this.recorder.start();
+                    });
+            },
+            vedioStop(){
+                this.recorder.stop();
+            },
+            async saveInterviewRecording(data){
+                let params=new FormData();
+                params.append("interview_id",this.interviewInfo.interview_id);
+                params.append("video",data);
+                params.append("interview_time_length","1分28秒");
+                let result=await axios({
+                    method: 'post',
+                    url: '/saveInterviewRecording',
+                    data: params,
+                    headers:{
+                        "Content-Type": "multipart/form-data"
+                    }
+                });
             }
         }
     })

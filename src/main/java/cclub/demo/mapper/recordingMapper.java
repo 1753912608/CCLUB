@@ -2,9 +2,7 @@ package cclub.demo.mapper;
 
 import cclub.demo.dao.recording;
 import cclub.demo.mapper.sqlProvider.RecordingProvider;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -32,4 +30,15 @@ public interface recordingMapper {
      */
     @SelectProvider(type = RecordingProvider.class,method = "getRecordingInfo")
     String getRecordingInfo(String type,String id);
+
+
+    /**
+     *
+     * @param interview_id
+     * @param interview_time_length
+     * @param fileSrc
+     * 存储视频面试的录屏信息
+     */
+    @Insert("insert into recording values(#{interview_id},#{interview_time_length},#{fileSrc})")
+    void saveInterviewRecording(String interview_id,String interview_time_length,String fileSrc);
 }

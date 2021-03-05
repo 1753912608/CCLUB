@@ -18,9 +18,9 @@ public class LoginConfig extends WebMvcConfigurationSupport {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor(redisService)).addPathPatterns("/ming",
-                "test_login_init")
-        .excludePathPatterns("/login");
+        registry.addInterceptor(new LoginInterceptor(redisService))
+                .addPathPatterns("/ming","/test_login_init","/test_exam")
+        .excludePathPatterns("/test_login");
         super.addInterceptors(registry);
     }
 
