@@ -45,7 +45,11 @@
             /*自动继承父元素的背景*/
             transform: rotate(45deg);
         }
-
+        .el-interview_time{
+            font-size:24px;
+            color:dodgerblue;
+            font-weight:700;
+        }
     </style>
 </head>
 <body>
@@ -63,7 +67,14 @@
     <div style="width:100%;height:40px;">
         <div style="padding-top:10px;">
             <span style="font-size:24px;margin-left:-1100px;">{{name}}</span>
-            <span style="margin-left:1100px;"><a href="javascript:void(0);" class="el-a-style">设备检测</a></span>
+            <span style="margin-left:360px;">面试持续时间:</span>
+            <span v-if="hour>=10" style="margin-left:10px;" class="el-interview_time">{{hour}}:</span>
+            <span v-if="hour<10" style="margin-left:10px;" class="el-interview_time">0{{hour}}:</span>
+            <span v-if="minute>=10" class="el-interview_time">{{minute}}:</span>
+            <span v-if="minute<10" class="el-interview_time">0{{minute}}:</span>
+            <span v-if="second>=10" class="el-interview_time">{{second}}</span>
+            <span v-if="second<10" class="el-interview_time">0{{second}}</span>
+            <span style="margin-left:450px;"><a href="javascript:void(0);" class="el-a-style">设备检测</a></span>
             <span style="margin-left:30px;"><a href="javascript:void(0);" class="el-a-style">帮助中心</a></span>
         </div>
     </div>
@@ -224,11 +235,15 @@
                 chat_content: '',
                 from_user: ''
             },
-            recorder: ''
+            recorder: '',
+            hour: 0,
+            minute: 0,
+            second: 0
         },
         created() {
             this.init();
             this.getOneInterviewInfo();
+            this.handleTime();
         },
         methods: {
             async init() {
@@ -389,7 +404,7 @@
                 let params=new FormData();
                 params.append("interview_id",this.interviewInfo.interview_id);
                 params.append("video",data);
-                params.append("interview_time_length","1分28秒");
+                params.append("interview_time_length",this.timeUtils());
                 let result=await axios({
                     method: 'post',
                     url: '/saveInterviewRecording',
@@ -398,6 +413,33 @@
                         "Content-Type": "multipart/form-data"
                     }
                 });
+            },
+            handleTime(){
+                let timer=setInterval(() => {
+                    if(this.second===59){
+                        this.second=0;
+                        this.minute++;
+                    }else{
+                        this.second++;
+                    }
+                    if(this.minute===59){
+                        this.hour++;
+                        this.minute=0;
+                    }
+                }, 1000);
+            },
+            timeUtils(){
+                let time='';
+                if(this.hour!=0){
+                    time+=(this.hour+"小时");
+                }
+                if(this.minute!=0){
+                    time+=(this.minute+"分钟");
+                }
+                if(this.second!=0){
+                    time+=(this.second+"秒");
+                }
+                return time;
             }
         }
     })
